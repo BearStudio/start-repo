@@ -96,13 +96,6 @@ NEXT_PUBLIC_DEV_ENV_NAME=staging
 NEXT_PUBLIC_DEV_ENV_COLOR_SCHEME=teal
 ```
 
-## API Documentation
-
-API documentation is accessible by admins in the app with [Swagger-UI](https://www.npmjs.com/package/swagger-ui-react).
-```
-yarn docs:build
-```
-This will build the json documentation from the main file `/src/mocks/openapi/openapi.yaml`.
 
 ## Translations
 

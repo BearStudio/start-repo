@@ -12,27 +12,8 @@ import { AVAILABLE_LANGUAGES } from './constants/i18n';
 
 const queryClient = new QueryClient();
 
-const useMocksServer = () => {
-  const [isLoadingMocks, setIsLoadingMocks] = useState(
-    !process.env.NEXT_PUBLIC_API_BASE_URL
-  );
-
-  useEffect(() => {
-    (async () => {
-      if (!process.env.NEXT_PUBLIC_API_BASE_URL) {
-        const { mockServer } = await import('@/mocks/server');
-        mockServer();
-        setIsLoadingMocks(false);
-      }
-    })();
-  }, []);
-
-  return { isLoadingMocks };
-};
-
 export const Providers = ({ children }) => {
   const { i18n } = useTranslation();
-  const { isLoadingMocks } = useMocksServer();
 
   return (
     <QueryClientProvider client={queryClient}>
@@ -45,7 +26,7 @@ export const Providers = ({ children }) => {
                 ?.dir ?? 'ltr',
           }}
         >
-          {!isLoadingMocks && children}
+          {children}
         </ChakraProvider>
       </AuthProvider>
     </QueryClientProvider>

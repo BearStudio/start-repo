@@ -1,12 +1,12 @@
 {
-  "name": "start-ui",
+  "name": "start-ui-courses",
   "private": true,
   "version": "1.0.0",
-  "description": "Opinionated UI starter with ⚛️ React, ⚡️ Chakra UI, ⚛️ React Query & 🐜 Formiz — From the 🐻 BearStudio Team",
+  "description": "Source code for the 🚀 Start UI Courses project.",
   "scripts": {
     "postinstall": "husky install",
     "test": "jest --roots src --watch",
-    "dev": "yarn docs:build && next dev",
+    "dev": "next dev",
     "build": "yarn docs:build && next build",
     "start": "next start",
     "pretty": "prettier -w .",
@@ -15,12 +15,12 @@
     "storybook:build": "build-storybook && mv ./storybook-static ./public/storybook",
     "static:build": "yarn build && next export",
     "static:serve": "yarn static:build && npx servor out app.html 5000",
-    "docs:build": "swagger-cli bundle src/mocks/openapi/openapi.yaml -t json --outfile public/open-api.json"
+    "db:ui": "prisma studio",
+    "db:push": "prisma db push"
   },
   "lint-staged": {
     "*.{ts,tsx,js,jsx,json}": "prettier --write",
-    "*.{ts,tsx,js,jsx}": "eslint --cache --fix",
-    "src/mocks/**/*.{yaml,yml}": "yarn docs:build"
+    "*.{ts,tsx,js,jsx}": "eslint --cache --fix"
   },
   "dependencies": {
     "@chakra-ui/react": "1.7.3",
@@ -30,6 +30,7 @@
     "@fontsource/inter": "4.5.1",
     "@formiz/core": "1.8.0",
     "@formiz/validations": "1.0.0",
+    "@prisma/client": "3.7.0",
     "axios": "0.24.0",
     "dayjs": "1.10.7",
     "faker": "5.5.3",
@@ -49,8 +50,7 @@
     "react-query": "3.34.7",
     "react-router-dom": "6.2.1",
     "react-select": "5.2.1",
-    "swagger-cli": "4.0.4",
-    "swagger-ui-react": "4.1.3",
+    "slugify": "1.6.5",
     "zustand": "3.6.8"
   },
   "devDependencies": {
@@ -87,6 +87,7 @@
     "lint-staged": "12.1.4",
     "miragejs": "0.1.43",
     "prettier": "2.5.1",
+    "prisma": "3.7.0",
     "react-is": "17.0.2",
     "storybook-dark-mode": "1.0.8",
     "tsconfig-paths-webpack-plugin": "3.5.2",
@@ -97,13 +98,13 @@
     "url": "git+https://github.com/bearstudio/start-ui.git"
   },
   "author": {
-    "name": "Ivan Dalmet",
-    "email": "ivan@dalmet.fr",
-    "url": "https://github.com/ivan-dalmet"
+    "name": "Yoann Fleury",
+    "email": "yoannfleurydev@gmail.com",
+    "url": "https://github.com/yoannfleurydev"
   },
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/bearstudio/start-ui/issues"
+    "url": "https://github.com/bearstudio/start-ui-courses/issues"
   },
-  "homepage": "https://github.com/bearstudio/start-ui#readme"
+  "homepage": "https://github.com/bearstudio/start-ui-courses#readme"
 }

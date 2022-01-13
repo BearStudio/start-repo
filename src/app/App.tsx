@@ -66,9 +66,9 @@ export const App = () => {
               <Route
                 path="admin/*"
                 element={
-                  <AdminRouteGuard>
-                    <AdminRoutes />
-                  </AdminRouteGuard>
+                  // <AdminRouteGuard>
+                  <AdminRoutes />
+                  // </AdminRouteGuard>
                 }
               />
 
