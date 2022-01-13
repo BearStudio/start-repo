@@ -14,7 +14,6 @@ import { FiPlus } from 'react-icons/fi';
 import { Link } from 'react-router-dom';
 
 import { AdminNav } from '@/app/admin/AdminNav';
-import { UserStatus } from '@/app/admin/users/UserStatus';
 import { Page, PageContent } from '@/app/layout';
 import { usePaginationFromUrl } from '@/app/router';
 import {

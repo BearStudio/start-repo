@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 
 import { ChakraProvider } from '@chakra-ui/react';
 import { useTranslation } from 'react-i18next';

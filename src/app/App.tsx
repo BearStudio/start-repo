@@ -7,7 +7,6 @@ import { PageLogin } from '@/app/auth/PageLogin';
 import { PageLogout } from '@/app/auth/PageLogout';
 import { Layout, Loader } from '@/app/layout';
 import {
-  AdminRouteGuard,
   AuthenticatedRouteGuard,
   PublicOnlyRouteGuard,
 } from '@/app/router/guards';
