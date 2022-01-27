@@ -1,27 +1,18 @@
 import React from 'react';
 
 import { Stack } from '@chakra-ui/react';
-import {
-  isEmail,
-  isMaxLength,
-  isMinLength,
-  isPattern,
-} from '@formiz/validations';
+import { isEmail, isMaxLength, isMinLength } from '@formiz/validations';
+import { Role } from '@prisma/client';
 import { useTranslation } from 'react-i18next';
 
-import { FieldCheckboxes, FieldInput, FieldSelect } from '@/components';
+import { FieldInput, FieldRadios, FieldSelect } from '@/components';
 import { AVAILABLE_LANGUAGES, DEFAULT_LANGUAGE_KEY } from '@/constants/i18n';
 import { useDarkMode } from '@/hooks/useDarkMode';
-
-const AUTHORITIES = {
-  ADMIN: 'ROLE_ADMIN',
-  USER: 'ROLE_USER',
-};
 
 export const UserForm = () => {
   const { t } = useTranslation();
   const { colorModeValue } = useDarkMode();
-  const authorities = Object.values(AUTHORITIES).map((value) => ({ value }));
+  const authorities = Object.values(Role).map((value) => ({ value }));
   return (
     <Stack
       direction="column"
@@ -31,30 +22,8 @@ export const UserForm = () => {
       spacing="6"
       shadow="md"
     >
-      <FieldInput
-        name="login"
-        label={t('users:data.login.label')}
-        required={t('users:data.login.required') as string}
-        validations={[
-          {
-            rule: isMinLength(2),
-            message: t('users:data.login.tooShort', { min: 2 }),
-          },
-          {
-            rule: isMaxLength(50),
-            message: t('users:data.login.tooLong', { max: 50 }),
-          },
-          {
-            rule: isPattern(
-              '^[a-zA-Z0-9!$&*+=?^_`{|}~.-]+@[a-zA-Z0-9-]+(?:\\.[a-zA-Z0-9-]+)*$|^[_.@A-Za-z0-9-]+$'
-            ),
-            message: t('users:data.login.invalid'),
-          },
-        ]}
-      />
       <Stack direction={{ base: 'column', sm: 'row' }} spacing="6">
-        <FieldInput name="firstName" label={t('users:data.firstname.label')} />
-        <FieldInput name="lastName" label={t('users:data.lastname.label')} />
+        <FieldInput name="name" label={t('users:data.name.label')} />
       </Stack>
       <FieldInput
         name="email"
@@ -84,8 +53,8 @@ export const UserForm = () => {
         }))}
         defaultValue={DEFAULT_LANGUAGE_KEY}
       />
-      <FieldCheckboxes
-        name="authorities"
+      <FieldRadios
+        name="role"
         label={t('users:data.authorities.label')}
         options={authorities}
         required={t('users:data.authorities.required') as string}

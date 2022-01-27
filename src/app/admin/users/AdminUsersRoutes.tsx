@@ -12,7 +12,7 @@ const AdminUsersRoutes = () => {
     <Routes>
       <Route path="/" element={<PageUsers />} />
       <Route path="create" element={<PageUserCreate />} />
-      <Route path=":login" element={<PageUserUpdate />} />
+      <Route path=":id" element={<PageUserUpdate />} />
       <Route path="*" element={<Error404 />} />
     </Routes>
   );

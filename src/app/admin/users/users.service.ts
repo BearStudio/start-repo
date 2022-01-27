@@ -1,3 +1,4 @@
+import { User } from '@prisma/client';
 import Axios, { AxiosError } from 'axios';
 import {
   UseMutationOptions,
@@ -7,7 +8,6 @@ import {
   useQueryClient,
 } from 'react-query';
 
-import { User, UserList } from '@/app/admin/users/users.types';
 import { DEFAULT_LANGUAGE_KEY } from '@/constants/i18n';
 
 type UserMutateError = {
@@ -17,26 +17,26 @@ type UserMutateError = {
 
 export const useUserList = (
   { page = 0, size = 10 } = {},
-  config: UseQueryOptions<UserList, AxiosError> = {}
+  config: UseQueryOptions<PageinatedResponse<User>, AxiosError> = {}
 ) => {
   const result = useQuery(
     ['users', { page, size }],
-    (): Promise<UserList> =>
-      Axios.get('/users', { params: { page, size, sort: 'id,desc' } }),
+    (): Promise<PageinatedResponse<User>> =>
+      Axios.get('/users', { params: { page, size } }),
     {
       keepPreviousData: true,
       ...config,
     }
   );
 
-  const { content: users, totalItems } = result.data || {};
-  const totalPages = Math.ceil(totalItems / size);
+  const { data: users, pagination } = result.data || {};
+  const totalPages = Math.ceil(pagination?.total / size);
   const hasMore = page + 1 < totalPages;
   const isLoadingPage = result.isFetching;
 
   return {
     users,
-    totalItems,
+    totalItems: pagination?.total,
     hasMore,
     totalPages,
     isLoadingPage,
@@ -45,20 +45,20 @@ export const useUserList = (
 };
 
 export const useUser = (
-  userLogin: string,
-  config: UseQueryOptions<User> = {}
+  userId: User['id'],
+  config: UseQueryOptions<UniqueResponse<User>> = {}
 ) => {
-  const result = useQuery(
-    ['user', userLogin],
-    (): Promise<User> => Axios.get(`/users/${userLogin}`),
+  const { data: response, ...rest } = useQuery(
+    ['user', userId],
+    (): Promise<UniqueResponse<User>> => Axios.get(`/users/${userId}`),
     {
       ...config,
     }
   );
 
   return {
-    user: result.data,
-    ...result,
+    user: response?.data,
+    ...rest,
   };
 };
 
@@ -74,18 +74,21 @@ export const useUserUpdate = (
         .getQueryCache()
         .findAll('users')
         .forEach(({ queryKey }) => {
-          queryClient.setQueryData(queryKey, (cachedData: UserList) => {
-            if (!cachedData) return;
-            return {
-              ...cachedData,
-              content: (cachedData.content || []).map((user) =>
-                user.id === data.id ? data : user
-              ),
-            };
-          });
+          queryClient.setQueryData(
+            queryKey,
+            (cachedData: PageinatedResponse<User>) => {
+              if (!cachedData) return;
+              return {
+                ...cachedData,
+                content: (cachedData.data || []).map((user) =>
+                  user.id === data.id ? data : user
+                ),
+              };
+            }
+          );
         });
       queryClient.invalidateQueries('users');
-      queryClient.invalidateQueries(['user', payload.login]);
+      queryClient.invalidateQueries(['user', payload.id]);
       if (config.onSuccess) {
         config.onSuccess(data, payload, ...rest);
       }
@@ -97,32 +100,22 @@ export const useUserCreate = (
   config: UseMutationOptions<
     User,
     AxiosError<UserMutateError>,
-    Pick<
-      User,
-      'login' | 'email' | 'firstName' | 'lastName' | 'langKey' | 'authorities'
-    >
+    Pick<User, 'email' | 'name'>
   > = {}
 ) => {
-  return useMutation(
-    ({ langKey = DEFAULT_LANGUAGE_KEY, ...payload }) =>
-      Axios.post('/users', {
-        langKey,
-        ...payload,
-      }),
-    {
-      ...config,
-    }
-  );
+  return useMutation((user) => Axios.post('/users', user), {
+    ...config,
+  });
 };
 
-type UserWithLoginOnly = Pick<User, 'login'>;
+type UserWithIdAndNameOnly = Pick<User, 'id' | 'name'>;
 
 export const useUserRemove = (
-  config: UseMutationOptions<void, unknown, UserWithLoginOnly> = {}
+  config: UseMutationOptions<void, unknown, UserWithIdAndNameOnly> = {}
 ) => {
   return useMutation(
-    (user: UserWithLoginOnly): Promise<void> =>
-      Axios.delete(`/users/${user.login}`),
+    (user: UserWithIdAndNameOnly): Promise<void> =>
+      Axios.delete(`/users/${user.id}`),
     { ...config }
   );
 };

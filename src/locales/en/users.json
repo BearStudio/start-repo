@@ -74,6 +74,9 @@
     },
     "language": {
       "label": "Language"
+    },
+    "name": {
+      "label": "Name"
     }
   },
   "update": {

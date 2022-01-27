@@ -3,7 +3,6 @@ import React from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
 
 import { PageActivate } from '@/app/account/PageActivate';
-import { PagePassword } from '@/app/account/PagePassword';
 import { PageProfile } from '@/app/account/PageProfile';
 import { PageRegister } from '@/app/account/PageRegister';
 import { PageResetPasswordConfirm } from '@/app/account/PageResetPasswordConfirm';
@@ -64,14 +63,6 @@ const AccountRoutes = () => {
         element={
           <AuthenticatedRouteGuard>
             <PageProfile />
-          </AuthenticatedRouteGuard>
-        }
-      />
-      <Route
-        path="password"
-        element={
-          <AuthenticatedRouteGuard>
-            <PagePassword />
           </AuthenticatedRouteGuard>
         }
       />

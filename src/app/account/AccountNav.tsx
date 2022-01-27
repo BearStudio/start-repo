@@ -21,14 +21,6 @@ export const AccountNav = () => {
         >
           {t('account:nav.profile')}
         </NavItem>
-        <NavItem
-          as={Link}
-          to="/account/password"
-          isActive={isActive('/account/password')}
-          icon={FiLock}
-        >
-          {t('account:nav.password')}
-        </NavItem>
       </NavGroup>
     </Nav>
   );

@@ -1,14 +1,12 @@
-import slugify from 'slugify';
-
 import { apiMethods, badRequest, getPagination } from '@/utils/api';
 import { db } from '@/utils/db';
 
 export default apiMethods({
   GET: {
     handler: async (req, res) => {
-      const { skip, take } = getPagination(req);
+      const { skip, take = 1000 } = getPagination(req);
 
-      const courses = await db.course.findMany({
+      const issues = await db.issue.findMany({
         skip,
         take,
         orderBy: {
@@ -16,10 +14,10 @@ export default apiMethods({
         },
       });
 
-      const total = await db.course.count();
+      const total = await db.issue.count();
 
       res.json({
-        data: courses,
+        data: issues,
         pagination: {
           total,
           pages: Math.ceil(total / skip),
@@ -32,12 +30,9 @@ export default apiMethods({
       if (!req.body) {
         return badRequest(res);
       }
-      const courses = await db.course.create({
+      const courses = await db.issue.create({
         data: {
-          name: req.body.title,
-          slug: slugify(req.body.title, {
-            lower: true,
-          }),
+          title: req.body.title,
           description: req.body.description,
         },
       });

@@ -27,19 +27,18 @@ import { Error404 } from '@/errors';
 import { useDarkMode } from '@/hooks/useDarkMode';
 
 import { UserForm } from './UserForm';
-import { UserStatus } from './UserStatus';
 
 export const PageUserUpdate = () => {
   const { t } = useTranslation();
   const { colorModeValue } = useDarkMode();
-  const { login } = useParams();
+  const { id } = useParams();
   const navigate = useNavigate();
   const {
     user,
     isLoading: userIsLoading,
     isFetching: userIsFetching,
     isError: userIsError,
-  } = useUser(login, { refetchOnWindowFocus: false });
+  } = useUser(id, { refetchOnWindowFocus: false });
 
   const form = useForm({ subscribe: false });
 
@@ -83,6 +82,8 @@ export const PageUserUpdate = () => {
     editUser(userToSend);
   };
 
+  console.log({ user });
+
   return (
     <Page containerSize="md" isFocusMode>
       <PageTopBar showBack onBack={() => navigate(-1)}>
@@ -92,7 +93,7 @@ export const PageUserUpdate = () => {
               <SkeletonText maxW="6rem" noOfLines={2} />
             ) : (
               <Stack spacing="0">
-                <Heading size="sm">{user?.login}</Heading>
+                <Heading size="sm">{user?.name}</Heading>
                 <Text
                   fontSize="xs"
                   color={colorModeValue('gray.600', 'gray.300')}
@@ -102,11 +103,6 @@ export const PageUserUpdate = () => {
               </Stack>
             )}
           </Box>
-          {!!user && (
-            <Box>
-              <UserStatus isActivated={user?.activated} />
-            </Box>
-          )}
         </HStack>
       </PageTopBar>
       {userIsFetching && <Loader />}

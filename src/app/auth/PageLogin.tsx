@@ -29,23 +29,8 @@ export const PageLogin = () => {
           borderRadius="md"
           boxShadow="md"
         >
-          <Heading size="md" mb="4">
-            {t('auth:login.title')}
-          </Heading>
           <LoginForm onSuccess={onLogin} />
         </Box>
-        <Center mt="8">
-          <Button as={RouterLink} to="/account/register" variant="link">
-            {t('auth:login.actions.needAccount')}{' '}
-            <Box
-              as="strong"
-              color={colorModeValue('brand.500', 'brand.300')}
-              ms="2"
-            >
-              {t('auth:login.actions.register')}
-            </Box>
-          </Button>
-        </Center>
       </Box>
     </SlideIn>
   );

@@ -1,8 +1,7 @@
-import React from 'react';
+import React, { FC } from 'react';
 
 import {
   Avatar,
-  Badge,
   Box,
   Button,
   Code,
@@ -16,28 +15,17 @@ import {
   MenuDivider,
   MenuItem,
   MenuList,
+  MenuProps,
   Portal,
   Text,
-  Wrap,
-  WrapItem,
 } from '@chakra-ui/react';
+import { User } from '@prisma/client';
 import { useTranslation } from 'react-i18next';
-import {
-  FiCheckCircle,
-  FiEdit,
-  FiPlus,
-  FiTrash2,
-  FiXCircle,
-} from 'react-icons/fi';
+import { FiEdit, FiPlus, FiTrash2 } from 'react-icons/fi';
 import { useQueryClient } from 'react-query';
 import { Link } from 'react-router-dom';
 
-import { UserStatus } from '@/app/admin/users/UserStatus';
-import {
-  useUserList,
-  useUserRemove,
-  useUserUpdate,
-} from '@/app/admin/users/users.service';
+import { useUserList, useUserRemove } from '@/app/admin/users/users.service';
 import { Page, PageContent } from '@/app/layout';
 import { usePaginationFromUrl } from '@/app/router';
 import {
@@ -48,7 +36,6 @@ import {
   DataListFooter,
   DataListHeader,
   DataListRow,
-  DateAgo,
   Icon,
   Pagination,
   PaginationButtonFirstPage,
@@ -63,67 +50,31 @@ import { useDarkMode } from '@/hooks/useDarkMode';
 
 import { AdminNav } from '../AdminNav';
 
-const UserActions = ({ user, ...rest }) => {
+type UserActionsProps = {
+  user: User;
+} & Omit<MenuProps, 'children'>;
+
+const UserActions: FC<UserActionsProps> = ({ user, ...rest }) => {
   const { t } = useTranslation();
   const toastSuccess = useToastSuccess();
   const toastError = useToastError();
-  const { mutate: userUpdate, ...userUpdateData } = useUserUpdate({
-    onSuccess: ({ activated, login }) => {
-      if (activated) {
-        toastSuccess({
-          title: t('users:feedbacks.activateUserSuccess.title'),
-          description: t('users:feedbacks.activateUserSuccess.description', {
-            login,
-          }),
-        });
-      } else {
-        toastSuccess({
-          title: t('users:feedbacks.deactivateUserSuccess.title'),
-          description: t('users:feedbacks.deactivateUserSuccess.description', {
-            login,
-          }),
-        });
-      }
-    },
-    onError: (_, __, { activated, login }) => {
-      if (activated) {
-        toastError({
-          title: t('users:feedbacks.activateUserError.title'),
-          description: t('users:feedbacks.activateUserError.description', {
-            login,
-          }),
-        });
-      } else {
-        toastError({
-          title: t('users:feedbacks.deactivateUserError.title'),
-          description: t('users:feedbacks.deactivateUserError.description', {
-            login,
-          }),
-        });
-      }
-    },
-  });
-
-  const activateUser = () => userUpdate({ ...user, activated: true });
-  const deactivateUser = () => userUpdate({ ...user, activated: false });
-  const isActionsLoading = userUpdateData.isLoading;
 
   const queryClient = useQueryClient();
   const { mutate: userRemove, ...userRemoveData } = useUserRemove({
-    onSuccess: (_, { login }) => {
+    onSuccess: (_, { name }) => {
       toastSuccess({
         title: t('users:feedbacks.deleteUserSuccess.title'),
         description: t('users:feedbacks.deleteUserSuccess.description', {
-          login,
+          name,
         }),
       });
       queryClient.invalidateQueries('users');
     },
-    onError: (_, { login }) => {
+    onError: (_, { name }) => {
       toastError({
         title: t('users:feedbacks.deleteUserError.title'),
         description: t('users:feedbacks.deleteUserError.description', {
-          login,
+          name,
         }),
       });
     },
@@ -133,36 +84,16 @@ const UserActions = ({ user, ...rest }) => {
 
   return (
     <Menu isLazy placement="left-start" {...rest}>
-      <MenuButton
-        as={ActionsButton}
-        isLoading={isActionsLoading || isRemovalLoading}
-      />
+      <MenuButton as={ActionsButton} isLoading={isRemovalLoading} />
       <Portal>
         <MenuList>
           <MenuItem
             as={Link}
-            to={user.login}
+            to={user.id}
             icon={<Icon icon={FiEdit} fontSize="lg" color="gray.400" />}
           >
             {t('actions.edit')}
           </MenuItem>
-          {user.activated ? (
-            <MenuItem
-              onClick={deactivateUser}
-              icon={<Icon icon={FiXCircle} fontSize="lg" color="gray.400" />}
-            >
-              {t('actions.deactivate')}
-            </MenuItem>
-          ) : (
-            <MenuItem
-              onClick={activateUser}
-              icon={
-                <Icon icon={FiCheckCircle} fontSize="lg" color="gray.400" />
-              }
-            >
-              {t('actions.activate')}
-            </MenuItem>
-          )}
           <MenuDivider />
           <ConfirmMenuItem
             icon={<Icon icon={FiTrash2} fontSize="lg" color="gray.400" />}
@@ -216,42 +147,11 @@ export const PageUsers = () => {
         </HStack>
         <DataList>
           <DataListHeader isVisible={{ base: false, md: true }}>
-            <DataListCell colName="login" colWidth="2">
+            <DataListCell colName="login">
               {t('users:data.login.label')} / {t('users:data.email.label')}
             </DataListCell>
-            <DataListCell
-              colName="id"
-              colWidth="4rem"
-              isVisible={{ base: false, lg: true }}
-            >
+            <DataListCell colName="id" isVisible={{ base: false, lg: true }}>
               {t('users:data.id.label')}
-            </DataListCell>
-            <DataListCell
-              colName="authorities"
-              isVisible={{ base: false, lg: true }}
-            >
-              {t('users:data.authorities.label')}
-            </DataListCell>
-            <DataListCell
-              colName="created"
-              isVisible={{ base: false, lg: true }}
-            >
-              {t('users:data.createdBy.label')}
-            </DataListCell>
-            <DataListCell
-              colName="lastModified"
-              isVisible={{ base: false, md: true }}
-            >
-              {t('users:data.modifiedBy.label')}
-            </DataListCell>
-            <DataListCell
-              colName="status"
-              colWidth={{ base: '2rem', md: '0.5' }}
-              align="center"
-            >
-              <Box as="span" d={{ base: 'none', md: 'block' }}>
-                {t('users:data.status.label')}
-              </Box>
             </DataListCell>
             <DataListCell colName="actions" colWidth="4rem" align="flex-end" />
           </DataListHeader>
@@ -259,11 +159,11 @@ export const PageUsers = () => {
             <DataListRow as={LinkBox} key={user.id}>
               <DataListCell colName="login">
                 <HStack maxW="100%">
-                  <Avatar size="sm" name={user.login} mx="1" />
+                  <Avatar size="sm" src={user.image} name={user.name} mx="1" />
                   <Box minW="0">
                     <Text isTruncated maxW="full" fontWeight="bold">
-                      <LinkOverlay as={Link} to={user.login}>
-                        {user.login}
+                      <LinkOverlay as={Link} to={user.id}>
+                        {user.email}
                       </LinkOverlay>
                     </Text>
                     <Text
@@ -281,58 +181,6 @@ export const PageUsers = () => {
                 <Text isTruncated maxW="full" as={Code} fontSize="xs">
                   {user.id}
                 </Text>
-              </DataListCell>
-              <DataListCell colName="authorities">
-                <Wrap>
-                  {user.authorities?.map((authority) => (
-                    <WrapItem key={authority}>
-                      <Badge size="sm">{authority}</Badge>
-                    </WrapItem>
-                  ))}
-                </Wrap>
-              </DataListCell>
-              <DataListCell
-                colName="created"
-                fontSize="sm"
-                position="relative"
-                pointerEvents="none"
-              >
-                <Text isTruncated maxW="full">
-                  {user.createdBy}
-                </Text>
-                {!!user.createdDate && (
-                  <Text
-                    isTruncated
-                    maxW="full"
-                    color={colorModeValue('gray.600', 'gray.300')}
-                    pointerEvents="auto"
-                  >
-                    <DateAgo date={user.createdDate} />
-                  </Text>
-                )}
-              </DataListCell>
-              <DataListCell
-                colName="lastModified"
-                fontSize="sm"
-                position="relative"
-                pointerEvents="none"
-              >
-                <Text isTruncated maxW="full">
-                  {user.lastModifiedBy}
-                </Text>
-                {!!user.lastModifiedDate && (
-                  <Text
-                    isTruncated
-                    maxW="full"
-                    color={colorModeValue('gray.600', 'gray.300')}
-                    pointerEvents="auto"
-                  >
-                    <DateAgo position="relative" date={user.lastModifiedDate} />
-                  </Text>
-                )}
-              </DataListCell>
-              <DataListCell colName="status">
-                <UserStatus isActivated={user.activated} />
               </DataListCell>
               <DataListCell colName="actions">
                 <UserActions user={user} />

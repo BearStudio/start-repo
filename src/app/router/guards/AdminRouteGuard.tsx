@@ -1,14 +1,16 @@
-import { useAccount } from '@/app/account/account.service';
+import { Role } from '@prisma/client';
+import { useSession } from 'next-auth/react';
+
 import { Error403, ErrorBoundary } from '@/errors';
 
 export const AdminRouteGuard = ({ children }) => {
-  const { isAdmin, isLoading } = useAccount();
+  const { data: session, status } = useSession();
 
-  if (isLoading) {
+  if (status === 'loading') {
     return null;
   }
 
-  if (!isAdmin) {
+  if (session?.user?.role === Role.USER) {
     return <Error403 />;
   }
 
