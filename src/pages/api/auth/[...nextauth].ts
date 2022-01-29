@@ -1,6 +1,6 @@
 import { PrismaAdapter } from '@next-auth/prisma-adapter';
 import NextAuth from 'next-auth';
-import GitHubProvider from 'next-auth/providers/github';
+// import GitHubProvider from 'next-auth/providers/github';
 import GitLabProvider from 'next-auth/providers/gitlab';
 
 import { db } from '@/utils/db';
@@ -17,11 +17,4 @@ export default NextAuth({
       clientSecret: process.env.GITLAB_CLIENT_SECRET,
     }),
   ],
-  // callbacks: {
-  //   async session({ session, user }) {
-  //     // console.log({ user });
-  //     // session.user = user;
-  //     return session;
-  //   },
-  // },
 });

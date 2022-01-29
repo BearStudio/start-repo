@@ -8,8 +8,6 @@ import {
   useQueryClient,
 } from 'react-query';
 
-import { DEFAULT_LANGUAGE_KEY } from '@/constants/i18n';
-
 type UserMutateError = {
   title: string;
   errorKey: string;
@@ -17,11 +15,11 @@ type UserMutateError = {
 
 export const useUserList = (
   { page = 0, size = 10 } = {},
-  config: UseQueryOptions<PageinatedResponse<User>, AxiosError> = {}
+  config: UseQueryOptions<PaginatedResponse<User>, AxiosError> = {}
 ) => {
   const result = useQuery(
     ['users', { page, size }],
-    (): Promise<PageinatedResponse<User>> =>
+    (): Promise<PaginatedResponse<User>> =>
       Axios.get('/users', { params: { page, size } }),
     {
       keepPreviousData: true,
@@ -76,7 +74,7 @@ export const useUserUpdate = (
         .forEach(({ queryKey }) => {
           queryClient.setQueryData(
             queryKey,
-            (cachedData: PageinatedResponse<User>) => {
+            (cachedData: PaginatedResponse<User>) => {
               if (!cachedData) return;
               return {
                 ...cachedData,

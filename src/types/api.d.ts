@@ -1,4 +1,4 @@
-type PageinatedResponse<Type> = {
+type PaginatedResponse<Type> = {
   data: Array<Type>;
   pagination: {
     total: number;

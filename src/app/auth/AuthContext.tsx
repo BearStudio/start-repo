@@ -1,8 +1,6 @@
-import React, { useCallback, useContext, useState } from 'react';
+import React, { useContext } from 'react';
 
 import { useSession } from 'next-auth/react';
-
-import { isBrowser } from '@/utils/ssr';
 
 interface AuthContextValue {
   isAuthenticated: boolean;

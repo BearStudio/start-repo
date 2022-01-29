@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { useTranslation } from 'react-i18next';
-import { FiLock, FiUser } from 'react-icons/fi';
+import { FiUser } from 'react-icons/fi';
 import { Link, useLocation } from 'react-router-dom';
 
 import { Nav, NavGroup, NavItem } from '@/components';

@@ -3,7 +3,7 @@ import React from 'react';
 import { Box, Button } from '@chakra-ui/react';
 import { signIn } from 'next-auth/react';
 import { useTranslation } from 'react-i18next';
-import { FiGithub, FiGitlab } from 'react-icons/fi';
+import { FiGitlab } from 'react-icons/fi';
 
 export const LoginForm = ({ onSuccess = () => undefined, ...rest }) => {
   const { t } = useTranslation();
