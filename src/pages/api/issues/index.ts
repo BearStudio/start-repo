@@ -3,6 +3,7 @@ import { db } from '@/utils/db';
 
 export default apiMethods({
   GET: {
+    isPublic: false,
     handler: async (req, res) => {
       const { skip, take = 1000 } = getPagination(req);
 
@@ -26,6 +27,7 @@ export default apiMethods({
     },
   },
   POST: {
+    isPublic: false,
     handler: async (req, res) => {
       if (!req.body) {
         return badRequest(res);

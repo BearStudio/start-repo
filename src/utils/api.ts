@@ -1,4 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next';
+import { getSession } from 'next-auth/react';
 
 type HttpVerbs = 'GET' | 'POST' | 'DELETE' | 'PATCH' | 'PUT';
 type Methods = {
@@ -38,6 +39,13 @@ export const apiMethods =
 
     if (!method) {
       return res.status(405).end();
+    }
+
+    if (!method.isPublic) {
+      const session = await getSession({ req });
+      if (!session) {
+        return notSignedIn(res);
+      }
     }
 
     await new Promise((r) => setTimeout(r, 1000));
