@@ -17,6 +17,7 @@ const AccountRoutes = React.lazy(() => import('@/app/account/AccountRoutes'));
 const DashboardRoutes = React.lazy(
   () => import('@/app/dashboard/DashboardRoutes')
 );
+const IssuesRoutes = React.lazy(() => import('@/app/issues/IssuesRoutes'));
 
 export const App = () => {
   return (
@@ -25,7 +26,7 @@ export const App = () => {
         <Layout>
           <Suspense fallback={<Loader />}>
             <Routes>
-              <Route path="/" element={<Navigate to="/dashboard" replace />} />
+              <Route path="/" element={<Navigate to="/issues" replace />} />
 
               <Route
                 path="login"
@@ -50,6 +51,15 @@ export const App = () => {
                 element={
                   <AuthenticatedRouteGuard>
                     <DashboardRoutes />
+                  </AuthenticatedRouteGuard>
+                }
+              />
+
+              <Route
+                path="issues/*"
+                element={
+                  <AuthenticatedRouteGuard>
+                    <IssuesRoutes />
                   </AuthenticatedRouteGuard>
                 }
               />

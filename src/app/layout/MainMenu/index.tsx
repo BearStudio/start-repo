@@ -1,8 +1,6 @@
 import React from 'react';
 
 import { Box, Stack } from '@chakra-ui/react';
-import { Role } from '@prisma/client';
-import { useSession } from 'next-auth/react';
 import { useTranslation } from 'react-i18next';
 import { Link as RouterLink, useLocation } from 'react-router-dom';
 
@@ -63,16 +61,10 @@ const MainMenuItem = ({ to, ...rest }: any) => {
 
 export const MainMenu = ({ ...rest }) => {
   const { t } = useTranslation();
-  const { data: session } = useSession();
 
   return (
     <Stack direction="row" spacing="1" {...rest}>
-      <MainMenuItem to="/dashboard">
-        {t('layout:mainMenu.dashboard')}
-      </MainMenuItem>
-      {session?.user?.role === Role.ADMIN && (
-        <MainMenuItem to="/admin">{t('layout:mainMenu.admin')}</MainMenuItem>
-      )}
+      <MainMenuItem to="/issues">{t('layout:mainMenu.issues')}</MainMenuItem>
     </Stack>
   );
 };
