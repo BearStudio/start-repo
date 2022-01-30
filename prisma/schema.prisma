@@ -92,8 +92,8 @@ model Scope {
 
 model Issue {
   id          String           @id @default(uuid())
-  title       String           @unique
-  description String
+  title       String
+  description String?
   scopes      ScopesOnIssues[]
   createdAt   DateTime         @default(now())
   updatedAt   DateTime         @updatedAt

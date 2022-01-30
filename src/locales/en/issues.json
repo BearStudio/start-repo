@@ -1,0 +1,15 @@
+{
+  "feedbacks": {
+    "deleteIssueError": {
+      "description": "Failed to remove {{title}} issue",
+      "title": "Deletion failed"
+    },
+    "deleteIssueSuccess": {
+      "title": "Issue deleted",
+      "description": "Issue {{title}} successfully deleted"
+    }
+  },
+  "create": {
+    "title": "Create new issue"
+  }
+}

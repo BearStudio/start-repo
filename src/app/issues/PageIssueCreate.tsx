@@ -1,6 +1,8 @@
-import { Box, Button, Flex } from '@chakra-ui/react';
+import { Box, Button, Flex, Heading } from '@chakra-ui/react';
 import { Formiz } from '@formiz/core';
 import { Issue } from '@prisma/client';
+import { useTranslation } from 'react-i18next';
+import { useQueryClient } from 'react-query';
 import { useNavigate } from 'react-router-dom';
 
 import { Page, PageBottomBar, PageContent, PageTopBar } from '@/app/layout';
@@ -9,21 +11,30 @@ import { IssueForm } from './IssueForm';
 import { useIssueCreate } from './issues.service';
 
 export const PageIssueCreate = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
 
-  const { mutate, isLoading } = useIssueCreate();
+  const queryClient = useQueryClient();
+  const { mutate, isLoading } = useIssueCreate({
+    onSuccess: () => {
+      queryClient.invalidateQueries('issues');
+    },
+  });
 
   const handleOnValidSubmit = (
     values: Pick<Issue, 'title' | 'description'>
   ) => {
-    mutate(values);
-    navigate(-1);
+    mutate(values, {
+      onSuccess: () => {
+        navigate(-1);
+      },
+    });
   };
 
   return (
     <Page containerSize="lg" isFocusMode>
       <PageTopBar showBack onBack={() => navigate(-1)}>
-        New Issue
+        <Heading size="md">{t('issues:create.title')}</Heading>
       </PageTopBar>
       <Formiz autoForm onValidSubmit={handleOnValidSubmit}>
         <PageContent>

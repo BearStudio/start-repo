@@ -6,5 +6,6 @@ export { default as components } from './components.json';
 export { default as courses } from './courses.json';
 export { default as dashboard } from './dashboard.json';
 export { default as errors } from './errors.json';
+export { default as issues } from './issues.json';
 export { default as layout } from './layout.json';
 export { default as users } from './users.json';

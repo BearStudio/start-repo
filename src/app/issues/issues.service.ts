@@ -47,3 +47,12 @@ export const useIssueCreate = (
     ...config,
   });
 };
+
+export const useIssueRemove = (
+  config: UseMutationOptions<void, unknown, Pick<Issue, 'id' | 'title'>> = {}
+) => {
+  return useMutation(
+    (issue): Promise<void> => axios.delete(`/issues/${issue.id}`),
+    { ...config }
+  );
+};

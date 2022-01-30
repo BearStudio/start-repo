@@ -38,7 +38,7 @@ export default apiMethods({
           description: req.body.description,
         },
       });
-      res.json({ data: courses });
+      res.status(201).json({ data: courses });
     },
   },
 });
