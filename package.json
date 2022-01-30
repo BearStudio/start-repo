@@ -7,7 +7,7 @@
     "postinstall": "husky install",
     "test": "jest --roots src --watch",
     "dev": "next dev",
-    "build": "yarn docs:build && next build",
+    "build": "next build",
     "start": "next start",
     "pretty": "prettier -w .",
     "lint": "eslint ./src --fix",
