@@ -3,14 +3,14 @@ import React from 'react';
 import { Box, Button } from '@chakra-ui/react';
 import { signIn } from 'next-auth/react';
 import { useTranslation } from 'react-i18next';
-import { FiGitlab } from 'react-icons/fi';
+import { FiGithub } from 'react-icons/fi';
 
 export const LoginForm = ({ onSuccess = () => undefined, ...rest }) => {
   const { t } = useTranslation();
 
   return (
     <Box {...rest}>
-      {/* <Button
+      <Button
         w="full"
         colorScheme="github"
         leftIcon={<FiGithub />}
@@ -18,8 +18,8 @@ export const LoginForm = ({ onSuccess = () => undefined, ...rest }) => {
         onClick={() => signIn('github')}
       >
         {t('auth:login.actions.github.login')}
-      </Button> */}
-      <Button
+      </Button>
+      {/* <Button
         w="full"
         colorScheme="orange"
         leftIcon={<FiGitlab />}
@@ -27,7 +27,7 @@ export const LoginForm = ({ onSuccess = () => undefined, ...rest }) => {
         onClick={() => signIn('gitlab')}
       >
         {t('auth:login.actions.gitlab.login')}
-      </Button>
+      </Button> */}
     </Box>
   );
 };
