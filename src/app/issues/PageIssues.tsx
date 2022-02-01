@@ -120,8 +120,14 @@ export const PageIssues = () => {
             >
               Create Issue
             </Button>
-            <Button leftIcon={<FiUpload />} variant="@primary" isDisabled>
-              Populate Repository
+            <Button
+              leftIcon={<FiUpload />}
+              variant="@primary"
+              as="a"
+              href="/api/issues/generate"
+              download="issues.csv"
+            >
+              Generate GitLab CSV
             </Button>
           </HStack>
           <DataList>

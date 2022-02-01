@@ -9,8 +9,12 @@ export default apiMethods({
 
       const body = issues.reduce(
         (accumulator, current) =>
-          accumulator + `${current.title},${current.description}\n`,
-        'title,description\n'
+          accumulator +
+          `"${current.title.replaceAll(
+            '"',
+            '""'
+          )}","${current.description.replaceAll('"', '""')}"\n`,
+        '"title","description"\n'
       );
 
       res.setHeader('Content-Type', 'text/csv').status(200).send(body);
