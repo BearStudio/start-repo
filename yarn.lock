@@ -11160,10 +11160,10 @@ nested-error-stacks@^2.0.0, nested-error-stacks@^2.1.0:
   resolved "https://registry.yarnpkg.com/nested-error-stacks/-/nested-error-stacks-2.1.0.tgz#0fbdcf3e13fe4994781280524f8b96b0cdff9c61"
   integrity sha512-AO81vsIO1k1sM4Zrd6Hu7regmJN1NSiAja10gc4bX3F0wd+9rQmcuHQaHVQCYIEC8iFXnE+mavh23GOt7wBgug==
 
-next-auth@4.1.0:
-  version "4.1.0"
-  resolved "https://registry.yarnpkg.com/next-auth/-/next-auth-4.1.0.tgz#f804a8b5b7a3075f7799109151052c72e80e2ae0"
-  integrity sha512-PGq5jQyhEF3vB8zl4LOXzG1KxTKT5DQnfKbSBgPslg+kIhIFdDCH9cLT64tJfsKKyCchLGuFsVlGu+kDEGbqOQ==
+next-auth@4.1.2:
+  version "4.1.2"
+  resolved "https://registry.yarnpkg.com/next-auth/-/next-auth-4.1.2.tgz#9ae50e2b6ccbbbac02b7f627a6568fd29b56ac66"
+  integrity sha512-r5Km0eIDgGad+yhegk6OpulAnf7pyxsIpLec3xYB3PIb7F3bUTsvgWm/n/wAvlT0aAF1xKQWOgqhwPjrjte89g==
   dependencies:
     "@babel/runtime" "^7.16.3"
     "@panva/hkdf" "^1.0.1"
