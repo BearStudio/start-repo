@@ -14,7 +14,7 @@ datasource db {
 model Account {
   id                       String  @id @default(cuid())
   userId                   String
-  username                 String
+  username                 String?
   type                     String
   provider                 String
   providerAccountId        String
@@ -28,12 +28,10 @@ model Account {
   oauth_token_secret       String?
   oauth_token              String?
   refresh_token_expires_in Int?
-  created_at               Int? // Issue with GitLab Provider, check if we can remove that in a callback.
-  updated_at               Int? // Issue with GitLab Provider, check if we can remove that in a callback.
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@unique([provider, providerAccountId, username])
+  @@unique([provider, providerAccountId])
 }
 
 model Session {

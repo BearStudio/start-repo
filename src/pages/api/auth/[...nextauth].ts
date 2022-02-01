@@ -1,4 +1,5 @@
 import { PrismaAdapter } from '@next-auth/prisma-adapter';
+import axios from 'axios';
 import NextAuth from 'next-auth';
 import GitHubProvider from 'next-auth/providers/github';
 
@@ -10,23 +11,37 @@ export default NextAuth({
     GitHubProvider({
       clientId: process.env.GITHUB_CLIENT_ID,
       clientSecret: process.env.GITHUB_CLIENT_SECRET,
-      profile(profile) {
-        return {
-          id: profile.id.toString(),
-          name: profile.name || profile.login,
-          email: profile.email,
-          image: profile.avatar_url,
-          username: profile.login,
-        };
+      authorization: {
+        url: 'https://github.com/login/oauth/authorize',
+        params: {
+          // The read:org scope is required to get the user's orgs that are
+          // private.
+          scope: 'read:org,read:user,user:email',
+        },
       },
     }),
   ],
   callbacks: {
     async signIn({ account }) {
-      // TODO, get the username from the account, request for organisations,
-      // check if user is from @bearstudio.fr
-      // https://api.github.com/users/{username}/orgs
-      return true;
+      try {
+        // Create a new instance of axios so we are not bothered by the
+        // interceptors.
+        const instance = axios.create();
+        const response = await instance.get<Array<github.Organization>>(
+          'https://api.github.com/user/orgs',
+          {
+            headers: { Authorization: `token ${account.access_token}` },
+          }
+        );
+
+        return response.data.some(
+          // Using the org id in case there is a rename.
+          (org) => org.login === 'BearStudio' || org.id === 21054556
+        );
+      } catch (err) {
+        console.error(err);
+        return false;
+      }
     },
   },
   secret: process.env.NEXTAUTH_SECRET,
