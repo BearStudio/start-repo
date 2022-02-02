@@ -36,7 +36,7 @@ export default NextAuth({
 
         return response.data.some(
           // Using the org id in case there is a rename.
-          (org) => org.login === 'BearStudio' || org.id === 21054556
+          (org) => process.env.GITHUB_ALLOWED_ORGANIZATIONS.includes(org.login)
         );
       } catch (err) {
         console.error(err);

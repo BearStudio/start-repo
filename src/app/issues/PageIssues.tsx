@@ -124,8 +124,9 @@ export const PageIssues = () => {
               leftIcon={<FiUpload />}
               variant="@primary"
               as="a"
-              href="/api/issues/generate"
+              href={issues?.length !== 0 ? '/api/issues/generate' : undefined}
               download="issues.csv"
+              isDisabled={issues?.length === 0}
             >
               Generate GitLab CSV
             </Button>

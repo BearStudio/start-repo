@@ -13,21 +13,13 @@ export const LoginForm = ({ onSuccess = () => undefined, ...rest }) => {
       <Button
         w="full"
         colorScheme="github"
+        color="white"
         leftIcon={<FiGithub />}
         ms="auto"
         onClick={() => signIn('github')}
       >
         {t('auth:login.actions.github.login')}
       </Button>
-      {/* <Button
-        w="full"
-        colorScheme="orange"
-        leftIcon={<FiGitlab />}
-        ms="auto"
-        onClick={() => signIn('gitlab')}
-      >
-        {t('auth:login.actions.gitlab.login')}
-      </Button> */}
     </Box>
   );
 };

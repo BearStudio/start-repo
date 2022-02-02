@@ -6,6 +6,7 @@ import { useQueryClient } from 'react-query';
 import { useNavigate } from 'react-router-dom';
 
 import { Page, PageBottomBar, PageContent, PageTopBar } from '@/app/layout';
+import { useDarkMode } from '@/hooks/useDarkMode';
 
 import { IssueForm } from './IssueForm';
 import { useIssueCreate } from './issues.service';
@@ -13,6 +14,7 @@ import { useIssueCreate } from './issues.service';
 export const PageIssueCreate = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const { colorModeValue } = useDarkMode();
 
   const queryClient = useQueryClient();
   const { mutate, isLoading } = useIssueCreate({
@@ -38,7 +40,13 @@ export const PageIssueCreate = () => {
       </PageTopBar>
       <Formiz autoForm onValidSubmit={handleOnValidSubmit}>
         <PageContent>
-          <Box bg="white" shadow="md" borderRadius="md" p="4" py="6">
+          <Box
+            bg={colorModeValue('white', 'gray.900')}
+            shadow="md"
+            borderRadius="md"
+            p="4"
+            py="6"
+          >
             <IssueForm />
           </Box>
         </PageContent>
