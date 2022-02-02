@@ -76,7 +76,6 @@ const IssueActions: FC<IssueActionsProps> = ({ issue, ...rest }) => {
           <MenuItem
             as={Link}
             to={issue.id}
-            isDisabled
             icon={<Icon icon={FiEdit} fontSize="lg" color="gray.400" />}
           >
             {t('actions.edit')}
@@ -134,7 +133,7 @@ export const PageIssues = () => {
           <DataList>
             {issues?.map((issue) => (
               <DataListRow key={issue.id}>
-                <DataListCell>
+                <DataListCell as={Link} to={issue.id}>
                   <Stack spacing="0">
                     <Text fontWeight="bold">{issue.title}</Text>
                     <Text color="gray.500">{issue.description}</Text>
