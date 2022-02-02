@@ -11,5 +11,8 @@
   },
   "create": {
     "title": "Create new issue"
+  },
+  "update": {
+    "title": "Update Issue"
   }
 }

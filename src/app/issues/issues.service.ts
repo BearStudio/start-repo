@@ -7,6 +7,21 @@ import {
   useQuery,
 } from 'react-query';
 
+export const useIssue = (
+  id: Issue['id'],
+  config: UseQueryOptions<UniqueResponse<Issue>, AxiosError> = {}
+) => {
+  const { data: response, ...rest } = useQuery(
+    ['issue', id],
+    (): Promise<UniqueResponse<Issue>> => axios.get(`/issues/${id}`),
+    {
+      ...config,
+    }
+  );
+
+  return { issue: response?.data, ...rest };
+};
+
 export const useIssueList = (
   { page = 0, size = 10 } = {},
   config: UseQueryOptions<PaginatedResponse<Issue>, AxiosError> = {}
@@ -46,6 +61,19 @@ export const useIssueCreate = (
   return useMutation((issue) => axios.post('/issues', issue), {
     ...config,
   });
+};
+
+export const useIssueUpdate = (
+  config: UseMutationOptions<
+    Issue,
+    AxiosError,
+    Pick<Issue, 'id' | 'title' | 'description'>
+  > = {}
+) => {
+  return useMutation(
+    (issue) => axios.patch(`/issues/${issue.id}`, issue),
+    config
+  );
 };
 
 export const useIssueRemove = (
