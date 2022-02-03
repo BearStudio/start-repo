@@ -30,7 +30,6 @@ export default apiMethods({
     isPublic: false,
     handler: async (req, res: NextApiResponse<UniqueResponse<Issue>>) => {
       const id = req.query.id.toString();
-      console.log({ id, body: req.body });
 
       const issue = await db.issue.findUnique({ where: { id } });
 
