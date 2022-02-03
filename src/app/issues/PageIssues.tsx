@@ -5,6 +5,8 @@ import {
   Button,
   HStack,
   Heading,
+  LinkBox,
+  LinkOverlay,
   Menu,
   MenuButton,
   MenuDivider,
@@ -18,6 +20,7 @@ import {
 import { Issue } from '@prisma/client';
 import { useTranslation } from 'react-i18next';
 import { FiEdit, FiPlus, FiTrash2, FiUpload } from 'react-icons/fi';
+import { VscIssues } from 'react-icons/vsc';
 import { useQueryClient } from 'react-query';
 import { Link } from 'react-router-dom';
 
@@ -98,7 +101,7 @@ export const PageIssues = () => {
   const { issues } = useIssueList();
 
   return (
-    <Page containerSize="full">
+    <Page containerSize="lg">
       <PageContent>
         <Stack spacing={8}>
           <HStack gap="4" align="center">
@@ -132,10 +135,17 @@ export const PageIssues = () => {
           </HStack>
           <DataList>
             {issues?.map((issue) => (
-              <DataListRow key={issue.id}>
-                <DataListCell as={Link} to={issue.id}>
+              <DataListRow as={LinkBox} key={issue.id}>
+                <DataListCell colWidth="3rem" align="flex-end" p="0">
+                  <Icon icon={VscIssues} fontSize="1.5rem" color="brand.500" />
+                </DataListCell>
+                <DataListCell>
                   <Stack spacing="0">
-                    <Text fontWeight="bold">{issue.title}</Text>
+                    <Text fontWeight="bold">
+                      <LinkOverlay as={Link} to={issue.id}>
+                        {issue.title}
+                      </LinkOverlay>
+                    </Text>
                     <Text color="gray.500">{issue.description}</Text>
                   </Stack>
                 </DataListCell>

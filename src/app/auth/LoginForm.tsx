@@ -13,6 +13,7 @@ export const LoginForm = ({ onSuccess = () => undefined, ...rest }) => {
       <Button
         w="full"
         colorScheme="github"
+        bg="github.800"
         color="white"
         leftIcon={<FiGithub />}
         ms="auto"
