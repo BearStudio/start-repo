@@ -1,8 +1,8 @@
 {
-  "name": "start-ui-courses",
+  "name": "start-repo",
   "private": true,
   "version": "1.0.0",
-  "description": "Source code for the 🚀 Start UI Courses project.",
+  "description": "Source code for the 🪲 Start Repo project.",
   "scripts": {
     "postinstall": "husky install",
     "test": "jest --roots src --watch",
@@ -97,7 +97,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/bearstudio/start-ui.git"
+    "url": "git+https://github.com/yoannfleurydev/start-repo.git"
   },
   "author": {
     "name": "Yoann Fleury",
@@ -106,7 +106,7 @@
   },
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/bearstudio/start-ui-courses/issues"
+    "url": "https://github.com/yoannfleurydev/start-repo/issues"
   },
-  "homepage": "https://github.com/bearstudio/start-ui-courses#readme"
+  "homepage": "https://github.com/yoannfleurydev/start-repo#readme"
 }
