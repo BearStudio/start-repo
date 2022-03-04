@@ -89,15 +89,16 @@ const IssueActions: FC<IssueActionsProps> = ({ issue, ...rest }) => {
 
 export const PageIssues = () => {
   const [search, setSearch] = useState('');
-  const { issues, isLoading, isLoadingPage }: TODO = {
-    issues: [],
-    isLoading: false,
-    isLoadingPage: false,
-  };
+
   const brandColor = useToken('colors', 'brand.500');
   const { isOpen, onClose, onOpen } = useDisclosure();
 
-  const hello = trpc.useQuery(['hello', { text: 'world' }]);
+  const {
+    data: issues,
+    isLoading,
+    isLoading: isLoadingPage,
+  } = trpc.useQuery(['issue.all']);
+
   return (
     <Page containerSize="lg">
       <PageContent>
@@ -119,7 +120,7 @@ export const PageIssues = () => {
                 isDisabled={issues?.length === 0}
                 onClick={() => onOpen()}
               >
-                Export Issues {hello?.data?.greeting}
+                Export Issues
               </Button>
               <Button
                 leftIcon={<FiPlus />}
@@ -185,7 +186,7 @@ export const PageIssues = () => {
                   </DataListCell>
                   <DataListCell>
                     <Wrap>
-                      {issue.scopes?.map((scope) => (
+                      {issue.scopes?.map(({ scope }) => (
                         <Tag
                           key={scope.id}
                           color={generateSwatch(scope.color ?? brandColor)[700]}
