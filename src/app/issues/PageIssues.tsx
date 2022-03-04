@@ -42,8 +42,7 @@ import {
 } from '@/components';
 import { SearchInput } from '@/components/SearchInput';
 import { generateSwatch } from '@/utils/colors';
-import { trpc } from '@/utils/trpc';
-import { TQuery } from '@/utils/trpc-helper';
+import { TQuery, trpc } from '@/utils/trpc';
 
 import { ExportModal } from './ExportModal';
 
@@ -120,6 +119,8 @@ export const PageIssues = () => {
     isLoading,
     isLoading: isLoadingPage,
   } = trpc.useQuery(['issue.all']);
+
+  console.log(issues);
 
   return (
     <Page containerSize="lg">
