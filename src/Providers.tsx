@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 
 import { ChakraProvider } from '@chakra-ui/react';
+import { SessionProvider } from 'next-auth/react';
 import { useTranslation } from 'react-i18next';
 import { QueryClient, QueryClientProvider } from 'react-query';
 
@@ -35,19 +36,21 @@ export const Providers = ({ children }) => {
   const { isLoadingMocks } = useMocksServer();
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <AuthProvider>
-        <ChakraProvider
-          theme={{
-            ...theme,
-            direction:
-              AVAILABLE_LANGUAGES.find(({ key }) => key === i18n.language)
-                ?.dir ?? 'ltr',
-          }}
-        >
-          {!isLoadingMocks && children}
-        </ChakraProvider>
-      </AuthProvider>
-    </QueryClientProvider>
+    <SessionProvider>
+      <QueryClientProvider client={queryClient}>
+        <AuthProvider>
+          <ChakraProvider
+            theme={{
+              ...theme,
+              direction:
+                AVAILABLE_LANGUAGES.find(({ key }) => key === i18n.language)
+                  ?.dir ?? 'ltr',
+            }}
+          >
+            {!isLoadingMocks && children}
+          </ChakraProvider>
+        </AuthProvider>
+      </QueryClientProvider>
+    </SessionProvider>
   );
 };

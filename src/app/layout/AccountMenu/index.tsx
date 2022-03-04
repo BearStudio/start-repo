@@ -14,6 +14,7 @@ import {
   useClipboard,
   useColorMode,
 } from '@chakra-ui/react';
+import { signOut, useSession } from 'next-auth/react';
 import { useTranslation } from 'react-i18next';
 import {
   FiCheck,
@@ -23,10 +24,9 @@ import {
   FiSun,
   FiUser,
 } from 'react-icons/fi';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 import appBuild from '@/../app-build.json';
-import { useAccount } from '@/app/account/account.service';
 import { Icon } from '@/components';
 import { useDarkMode } from '@/hooks/useDarkMode';
 
@@ -96,13 +96,18 @@ export const AccountMenu = ({ ...rest }) => {
   const { t } = useTranslation('layout');
   const { colorModeValue } = useDarkMode();
   const { colorMode, toggleColorMode } = useColorMode();
-  const { account, isLoading } = useAccount();
-  const navigate = useNavigate();
+  const { data: session, status } = useSession();
+
+  const isLoading = status === 'loading';
 
   return (
     <Menu placement="bottom-end" {...rest}>
       <MenuButton borderRadius="full" _focus={{ shadow: 'outline' }}>
-        <Avatar size="sm" icon={<></>} name={account?.login}>
+        <Avatar
+          size="sm"
+          name={session?.user?.name ?? ''}
+          src={session?.user?.image ?? ''}
+        >
           {isLoading && <Spinner size="xs" />}
         </Avatar>
       </MenuButton>
@@ -111,7 +116,7 @@ export const AccountMenu = ({ ...rest }) => {
         maxW="12rem"
         overflow="hidden"
       >
-        <MenuGroup title={account?.email} isTruncated>
+        <MenuGroup title={session?.user?.email ?? ''} isTruncated>
           <MenuItem
             as={Link}
             to="/account"
@@ -138,7 +143,7 @@ export const AccountMenu = ({ ...rest }) => {
         <MenuDivider />
         <MenuItem
           icon={<Icon icon={FiLogOut} fontSize="lg" color="gray.400" />}
-          onClick={() => navigate('/logout')}
+          onClick={() => signOut()}
         >
           {t('layout:accountMenu.logout')}
         </MenuItem>

@@ -1,0 +1,15 @@
+{
+  "list": {
+    "title": "Courses Management",
+    "actions": {
+      "createCourse": "Create Course"
+    }
+  },
+  "data": {
+    "name": {
+      "label": "Name"
+    },
+    "published": "Published",
+    "draft": "Draft"
+  }
+}

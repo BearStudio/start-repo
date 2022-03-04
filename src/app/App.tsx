@@ -4,20 +4,18 @@ import { ReactQueryDevtools } from 'react-query/devtools';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 
 import { PageLogin } from '@/app/auth/PageLogin';
-import { PageLogout } from '@/app/auth/PageLogout';
 import { Layout, Loader } from '@/app/layout';
 import {
-  AdminRouteGuard,
   AuthenticatedRouteGuard,
   PublicOnlyRouteGuard,
 } from '@/app/router/guards';
 import { Error404, ErrorBoundary } from '@/errors';
 
-const AdminRoutes = React.lazy(() => import('@/app/admin/AdminRoutes'));
-const AccountRoutes = React.lazy(() => import('@/app/account/AccountRoutes'));
 const DashboardRoutes = React.lazy(
   () => import('@/app/dashboard/DashboardRoutes')
 );
+const IssuesRoutes = React.lazy(() => import('@/app/issues/IssuesRoutes'));
+const ScopesRoutes = React.lazy(() => import('@/app/scopes/ScopesRoutes'));
 
 export const App = () => {
   return (
@@ -26,7 +24,7 @@ export const App = () => {
         <Layout>
           <Suspense fallback={<Loader />}>
             <Routes>
-              <Route path="/" element={<Navigate to="/dashboard" replace />} />
+              <Route path="/" element={<Navigate to="/issues" replace />} />
 
               <Route
                 path="login"
@@ -34,23 +32,6 @@ export const App = () => {
                   <PublicOnlyRouteGuard>
                     <PageLogin />
                   </PublicOnlyRouteGuard>
-                }
-              />
-              <Route
-                path="logout"
-                element={
-                  <ErrorBoundary>
-                    <PageLogout />
-                  </ErrorBoundary>
-                }
-              />
-
-              <Route
-                path="account/*"
-                element={
-                  <ErrorBoundary>
-                    <AccountRoutes />
-                  </ErrorBoundary>
                 }
               />
 
@@ -64,11 +45,20 @@ export const App = () => {
               />
 
               <Route
-                path="admin/*"
+                path="issues/*"
                 element={
-                  <AdminRouteGuard>
-                    <AdminRoutes />
-                  </AdminRouteGuard>
+                  <AuthenticatedRouteGuard>
+                    <IssuesRoutes />
+                  </AuthenticatedRouteGuard>
+                }
+              />
+
+              <Route
+                path="scopes/*"
+                element={
+                  <AuthenticatedRouteGuard>
+                    <ScopesRoutes />
+                  </AuthenticatedRouteGuard>
                 }
               />
 

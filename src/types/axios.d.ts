@@ -3,23 +3,23 @@ import axios from 'axios';
 
 declare module 'axios' {
   export interface AxiosInstance {
-    request<T = unknown>(config: AxiosRequestConfig): Promise<T>;
-    get<T = unknown>(url: string, config?: AxiosRequestConfig): Promise<T>;
-    delete<T = unknown>(url: string, config?: AxiosRequestConfig): Promise<T>;
-    head<T = unknown>(url: string, config?: AxiosRequestConfig): Promise<T>;
-    post<T = unknown>(
+    request<T = TODO>(config: AxiosRequestConfig): Promise<T>;
+    get<T = TODO>(url: string, config?: AxiosRequestConfig): Promise<T>;
+    delete<T = TODO>(url: string, config?: AxiosRequestConfig): Promise<T>;
+    head<T = TODO>(url: string, config?: AxiosRequestConfig): Promise<T>;
+    post<T = TODO>(
       url: string,
-      data?: unknown,
+      data?: TODO,
       config?: AxiosRequestConfig
     ): Promise<T>;
-    put<T = unknown>(
+    put<T = TODO>(
       url: string,
-      data?: unknown,
+      data?: TODO,
       config?: AxiosRequestConfig
     ): Promise<T>;
-    patch<T = unknown>(
+    patch<T = TODO>(
       url: string,
-      data?: unknown,
+      data?: TODO,
       config?: AxiosRequestConfig
     ): Promise<T>;
   }

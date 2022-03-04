@@ -1,48 +1,26 @@
-import React, { useCallback, useContext, useState } from 'react';
+import React, { useContext } from 'react';
 
-import { isBrowser } from '@/utils/ssr';
+import { useSession } from 'next-auth/react';
 
 interface AuthContextValue {
+  isAuthenticating: boolean;
   isAuthenticated: boolean;
-  updateToken(string): void;
 }
 
 export const AUTH_TOKEN_KEY = 'authToken';
 
 const AuthContext = React.createContext<AuthContextValue>(null as TODO);
 
-const updateToken = (newToken) => {
-  if (!isBrowser) {
-    return () => undefined;
-  }
-
-  if (!newToken) {
-    localStorage.removeItem(AUTH_TOKEN_KEY);
-  } else {
-    localStorage.setItem(AUTH_TOKEN_KEY, newToken);
-  }
-};
-
 export const useAuthContext = () => useContext(AuthContext);
 
 export const AuthProvider = ({ children }) => {
-  const [token, setToken] = useState(
-    (isBrowser && localStorage.getItem(AUTH_TOKEN_KEY)) ?? null
-  );
-
-  const handleUpdateToken = useCallback(
-    (newToken) => {
-      setToken(newToken);
-      updateToken(newToken);
-    },
-    [setToken]
-  );
+  const { status } = useSession();
 
   return (
     <AuthContext.Provider
       value={{
-        isAuthenticated: !!token,
-        updateToken: handleUpdateToken,
+        isAuthenticating: status === 'loading',
+        isAuthenticated: status === 'authenticated',
       }}
     >
       {children}

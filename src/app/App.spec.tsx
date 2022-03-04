@@ -10,5 +10,5 @@ test('Mount App without errors', async () => {
     render(<App />);
   });
   expect(screen.queryByText(/error/i)).not.toBeInTheDocument();
-  expect(screen.getByRole('heading', { name: /log in/i })).toBeInTheDocument();
+  expect(screen.getByRole('button', { name: /GitHub/i })).toBeInTheDocument();
 });

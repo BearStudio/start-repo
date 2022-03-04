@@ -1,7 +1,9 @@
 {
   "mainMenu": {
     "dashboard": "Dashboard",
-    "admin": "Admin"
+    "admin": "Admin",
+    "issues": "Issues",
+    "scopes": "Scopes"
   },
   "accountMenu": {
     "version": {

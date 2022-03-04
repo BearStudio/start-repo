@@ -25,8 +25,5 @@
   },
   "fieldRepeater": {
     "invalidMessage": "At least one element is invalid"
-  },
-  "fieldMultiSelect": {
-    "noOption": "No option"
   }
 }
