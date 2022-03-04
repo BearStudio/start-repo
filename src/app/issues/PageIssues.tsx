@@ -43,6 +43,7 @@ import {
 import { SearchInput } from '@/components/SearchInput';
 import { generateSwatch } from '@/utils/colors';
 import { trpc } from '@/utils/trpc';
+import { TQuery } from '@/utils/trpc-helper';
 
 import { ExportModal } from './ExportModal';
 
@@ -56,10 +57,31 @@ const IssueActions: FC<IssueActionsProps> = ({ issue, ...rest }) => {
   const toastError = useToastError();
 
   const queryClient = useQueryClient();
-  const { mutate: issueRemove, ...issueRemoveData }: TODO = {
-    mutate: () => {},
-  };
-  const removeIssue = () => issueRemove(issue);
+  const { mutate: issueRemove, ...issueRemoveData } = trpc.useMutation(
+    ['issue.delete'],
+    {
+      onSuccess: ({ title }) => {
+        toastSuccess({
+          title: t('issues:feedbacks.deleteIssueSuccess.title'),
+          description: t('issues:feedbacks.deleteIssueSuccess.description', {
+            title,
+          }),
+        });
+
+        const queryKey: TQuery = 'issue.all';
+        return queryClient.invalidateQueries([queryKey]);
+      },
+      onError: () => {
+        toastError({
+          title: t('issues:feedbacks.deleteIssueError.title'),
+          description: t('issues:feedbacks.deleteIssueError.description', {
+            title: issue.title,
+          }),
+        });
+      },
+    }
+  );
+  const removeIssue = () => issueRemove(issue.id);
   const isRemovalLoading = issueRemoveData.isLoading;
 
   return (
