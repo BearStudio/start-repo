@@ -33,4 +33,37 @@ export const issueRouter = createProtectedRouter()
 
       return issue;
     },
+  })
+  .mutation('create', {
+    input: z.object({
+      title: z.string(),
+      description: z.string(),
+      scopes: z.array(z.string().uuid()).min(1),
+    }),
+    async resolve({ input }) {
+      const issue = await db.issue.create({
+        data: {
+          title: input.title,
+          description: input.description,
+          scopes: {
+            create: input.scopes.map((id: string) => ({
+              scope: {
+                connect: {
+                  id,
+                },
+              },
+            })),
+          },
+        },
+        include: {
+          scopes: {
+            include: {
+              scope: true,
+            },
+          },
+        },
+      });
+
+      return issue;
+    },
   });

@@ -116,16 +116,6 @@ export const AccountMenu = ({ ...rest }) => {
         maxW="12rem"
         overflow="hidden"
       >
-        <MenuGroup title={session?.user?.email ?? ''} isTruncated>
-          <MenuItem
-            as={Link}
-            to="/account"
-            icon={<Icon icon={FiUser} fontSize="lg" color="gray.400" />}
-          >
-            {t('layout:accountMenu.myAccount')}
-          </MenuItem>
-        </MenuGroup>
-        <MenuDivider />
         <MenuItem
           icon={
             <Icon

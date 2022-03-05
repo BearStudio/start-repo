@@ -2,6 +2,7 @@ import { Stack } from '@chakra-ui/react';
 import { Scope } from '@prisma/client';
 
 import { FieldInput, FieldMarkdown, FieldMultiSelect } from '@/components';
+import { trpc } from '@/utils/trpc';
 
 export type FieldSelectScopeOptions = {
   label: Scope['name'];
@@ -9,15 +10,15 @@ export type FieldSelectScopeOptions = {
 };
 
 export const IssueForm = () => {
-  const { scopes, isLoading: isLoadingScopes }: TODO = {
-    scopes: [],
-    isLoading: false,
-  };
+  const { data: scopes, isLoading: isLoadingScopes } = trpc.useQuery([
+    'scope.all',
+  ]);
 
-  const options: Array<FieldSelectScopeOptions> = scopes?.map((scope) => ({
-    label: scope.name,
-    value: scope.id,
-  }));
+  const options: Array<FieldSelectScopeOptions> =
+    scopes?.map((scope) => ({
+      label: scope.name,
+      value: scope.id,
+    })) ?? [];
 
   return (
     <Stack>
