@@ -13,6 +13,7 @@ import {
 } from '@/app/layout';
 import { Error404 } from '@/errors';
 import { useDarkMode } from '@/hooks/useDarkMode';
+import { TQuery, trpc } from '@/utils/trpc';
 
 import { IssueForm } from './IssueForm';
 
@@ -22,30 +23,33 @@ export const PageIssueUpdate = () => {
   const { id } = useParams();
   const { colorModeValue } = useDarkMode();
 
-  const { issue, isFetching, isError }: TODO = {
-    issue: {},
-    isFetching: false,
-    isError: false,
-  };
+  const {
+    data: issue,
+    isFetching,
+    isError,
+  } = trpc.useQuery(['issue.detail', { id: id ?? '' }]);
 
   const queryClient = useQueryClient();
-  const { mutate, isLoading }: TODO = {
-    mutate: () => {},
-    isLoading: false,
-  };
+  const { mutate, isLoading } = trpc.useMutation('issue.edit');
 
-  const handleOnValidSubmit = (values: TODO) => {
+  const handleOnValidSubmit = (data: {
+    title: string;
+    description: string;
+    scopes: string[];
+  }) => {
     mutate(
-      { id, ...values },
+      { id: id ?? '', data },
       {
         onSuccess: () => {
           navigate(-1);
+          const queryKey: TQuery = 'issue.all';
+          return queryClient.invalidateQueries([queryKey]);
         },
       }
     );
   };
 
-  const scopes = issue?.scopes?.map((scope) => scope.id);
+  const scopes = issue?.scopes?.map(({ scope }) => scope.id);
 
   return (
     <Page containerSize="lg" isFocusMode>

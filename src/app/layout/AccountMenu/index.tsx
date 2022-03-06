@@ -6,7 +6,6 @@ import {
   Menu,
   MenuButton,
   MenuDivider,
-  MenuGroup,
   MenuItem,
   MenuList,
   Spinner,
@@ -16,15 +15,7 @@ import {
 } from '@chakra-ui/react';
 import { signOut, useSession } from 'next-auth/react';
 import { useTranslation } from 'react-i18next';
-import {
-  FiCheck,
-  FiCopy,
-  FiLogOut,
-  FiMoon,
-  FiSun,
-  FiUser,
-} from 'react-icons/fi';
-import { Link } from 'react-router-dom';
+import { FiCheck, FiCopy, FiLogOut, FiMoon, FiSun } from 'react-icons/fi';
 
 import appBuild from '@/../app-build.json';
 import { Icon } from '@/components';

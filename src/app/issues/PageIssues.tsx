@@ -120,8 +120,6 @@ export const PageIssues = () => {
     isLoading: isLoadingPage,
   } = trpc.useQuery(['issue.all']);
 
-  console.log(issues);
-
   return (
     <Page containerSize="lg">
       <PageContent>
