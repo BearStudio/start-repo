@@ -37,6 +37,7 @@ import {
 } from '@/components';
 import { SearchInput } from '@/components/SearchInput';
 import { generateSwatch } from '@/utils/colors';
+import { trpc } from '@/utils/trpc';
 
 type ScopeActionsProps = {
   scope: Scope;
@@ -82,11 +83,7 @@ const ScopeActions: FC<ScopeActionsProps> = ({ scope, ...rest }) => {
 
 export const PageScopes = () => {
   const [search, setSearch] = useState('');
-  const { scopes, isLoading, isLoadingPage }: TODO = {
-    scopes: [],
-    isLoading: false,
-    isLoadingPage: false,
-  };
+  const { data: scopes, isLoading } = trpc.useQuery(['scope.all', { search }]);
 
   return (
     <Page containerSize="lg">
@@ -118,7 +115,7 @@ export const PageScopes = () => {
               gridColumnStart={{ base: 1, md: 2 }}
               gridColumnEnd={{ base: 1, sm: 3, md: 2 }}
               onChange={(value) => setSearch(value ?? '')}
-              isLoading={isLoadingPage}
+              isLoading={isLoading}
               value={search}
             />
           </Grid>

@@ -12,6 +12,7 @@ export type FieldSelectScopeOptions = {
 export const IssueForm = () => {
   const { data: scopes, isLoading: isLoadingScopes } = trpc.useQuery([
     'scope.all',
+    { search: '' },
   ]);
 
   const options: Array<FieldSelectScopeOptions> =

@@ -14,6 +14,7 @@ import {
 } from '@/app/layout';
 import { Error404 } from '@/errors';
 import { useDarkMode } from '@/hooks/useDarkMode';
+import { trpc } from '@/utils/trpc';
 
 import { ScopeForm } from './ScopeForm';
 
@@ -23,11 +24,11 @@ export const PageScopeUpdate = () => {
   const { id } = useParams();
   const { colorModeValue } = useDarkMode();
 
-  const { issue, isFetching, isError } = {
-    issue: {},
-    isFetching: false,
-    isError: false,
-  };
+  const {
+    data: scope,
+    isFetching,
+    isError,
+  } = trpc.useQuery(['scope.detail', { id: id ?? '' }]);
 
   const queryClient = useQueryClient();
   const { mutate, isLoading }: TODO = {
@@ -59,7 +60,9 @@ export const PageScopeUpdate = () => {
         <Formiz
           autoForm
           onValidSubmit={handleOnValidSubmit}
-          initialValues={issue}
+          initialValues={{
+            ...scope,
+          }}
         >
           <PageContent>
             <Box

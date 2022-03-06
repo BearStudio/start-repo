@@ -38,7 +38,7 @@ export const issueRouter = createProtectedRouter()
     }),
     async resolve({ ctx, input: { id } }) {
       const issue = await ctx.db.issue.findUnique({
-        where: { id: id },
+        where: { id },
         include: {
           scopes: {
             include: {

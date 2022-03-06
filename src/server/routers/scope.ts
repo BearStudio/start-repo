@@ -1,12 +1,22 @@
 import { z } from 'zod';
 
 import { createProtectedRouter } from '@/server/create-protected-router';
-import { db } from '@/utils/db';
 
 export const scopeRouter = createProtectedRouter()
   .query('all', {
-    async resolve({ ctx }) {
+    input: z.object({
+      search: z.string(),
+    }),
+    async resolve({ ctx, input: { search } }) {
       const scopes = await ctx.db.scope.findMany({
+        where: {
+          name: {
+            search: search !== '' ? search : undefined,
+          },
+          description: {
+            search: search !== '' ? search : undefined,
+          },
+        },
         orderBy: {
           createdAt: 'desc',
         },
@@ -15,10 +25,22 @@ export const scopeRouter = createProtectedRouter()
       return scopes;
     },
   })
+  .query('detail', {
+    input: z.object({
+      id: z.string().uuid(),
+    }),
+    async resolve({ ctx, input: { id } }) {
+      const scope = await ctx.db.scope.findUnique({
+        where: { id },
+      });
+
+      return scope;
+    },
+  })
   .mutation('delete', {
     input: z.string().uuid(),
-    async resolve({ input: id }) {
-      const scope = await db.scope.delete({
+    async resolve({ ctx, input: id }) {
+      const scope = await ctx.db.scope.delete({
         where: {
           id,
         },
