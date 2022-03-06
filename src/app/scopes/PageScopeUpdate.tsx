@@ -14,7 +14,7 @@ import {
 } from '@/app/layout';
 import { Error404 } from '@/errors';
 import { useDarkMode } from '@/hooks/useDarkMode';
-import { trpc } from '@/utils/trpc';
+import { TQuery, trpc } from '@/utils/trpc';
 
 import { ScopeForm } from './ScopeForm';
 
@@ -31,19 +31,19 @@ export const PageScopeUpdate = () => {
   } = trpc.useQuery(['scope.detail', { id: id ?? '' }]);
 
   const queryClient = useQueryClient();
-  const { mutate, isLoading }: TODO = {
-    mutate: () => {},
-    isLoading: false,
-  };
+  const { mutate, isLoading } = trpc.useMutation('scope.edit');
 
   const handleOnValidSubmit = (
     values: Pick<Scope, 'name' | 'description' | 'color'>
   ) => {
     mutate(
-      { id, ...values },
+      { id: id ?? '', data: { ...values } },
       {
         onSuccess: () => {
           navigate(-1);
+
+          const queryKey: TQuery = 'scope.all';
+          return queryClient.invalidateQueries([queryKey]);
         },
       }
     );

@@ -66,4 +66,28 @@ export const scopeRouter = createProtectedRouter()
 
       return scope;
     },
+  })
+  .mutation('edit', {
+    input: z.object({
+      id: z.string().uuid(),
+      data: z.object({
+        name: z.string().min(1),
+        description: z.string().nullish(),
+        color: z.string().length(7).nullish(),
+      }),
+    }),
+    async resolve({ ctx, input }) {
+      const { id, data } = input;
+
+      const updatedScope = await ctx.db.scope.update({
+        where: { id },
+        data: {
+          name: data.name,
+          description: data.description,
+          color: data.color,
+        },
+      });
+
+      return updatedScope;
+    },
   });
