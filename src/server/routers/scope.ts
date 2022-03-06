@@ -37,6 +37,24 @@ export const scopeRouter = createProtectedRouter()
       return scope;
     },
   })
+  .mutation('create', {
+    input: z.object({
+      name: z.string().min(1),
+      description: z.string().nullish(),
+      color: z.string().length(7).nullish(),
+    }),
+    async resolve({ input: { name, description, color }, ctx }) {
+      const scope = await ctx.db.scope.create({
+        data: {
+          name,
+          description,
+          color,
+        },
+      });
+
+      return scope;
+    },
+  })
   .mutation('delete', {
     input: z.string().uuid(),
     async resolve({ ctx, input: id }) {

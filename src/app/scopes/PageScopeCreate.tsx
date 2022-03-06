@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import { Page, PageBottomBar, PageContent, PageTopBar } from '@/app/layout';
 import { useToastError } from '@/components';
 import { useDarkMode } from '@/hooks/useDarkMode';
+import { TQuery, trpc } from '@/utils/trpc';
 
 import { ScopeForm } from './ScopeForm';
 
@@ -21,10 +22,7 @@ export const PageScopeCreate = () => {
   const toastError = useToastError();
 
   const queryClient = useQueryClient();
-  const { mutate, isLoading }: TODO = {
-    mutate: () => {},
-    isLoading: false,
-  };
+  const { mutate, isLoading } = trpc.useMutation('scope.create');
 
   const handleOnValidSubmit = (
     values: Pick<Scope, 'name' | 'description' | 'color'>
@@ -32,10 +30,12 @@ export const PageScopeCreate = () => {
     mutate(values, {
       onSuccess: () => {
         navigate(-1);
+        const queryKey: TQuery = 'scope.all';
+        return queryClient.invalidateQueries([queryKey]);
       },
       onError: (error) => {
         toastError({
-          title: error.response.data?.error?.message ?? 'An error occured',
+          title: error.message ?? 'An error occured',
         });
       },
     });
