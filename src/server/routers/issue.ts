@@ -4,8 +4,19 @@ import { createProtectedRouter } from '@/server/create-protected-router';
 
 export const issueRouter = createProtectedRouter()
   .query('all', {
-    async resolve({ ctx }) {
+    input: z.object({
+      search: z.string(),
+    }),
+    async resolve({ ctx, input: { search } }) {
       const issues = await ctx.db.issue.findMany({
+        where: {
+          title: {
+            search: search !== '' ? search : undefined,
+          },
+          description: {
+            search: search !== '' ? search : undefined,
+          },
+        },
         orderBy: {
           createdAt: 'desc',
         },

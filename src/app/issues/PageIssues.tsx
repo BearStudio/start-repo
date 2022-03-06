@@ -118,7 +118,7 @@ export const PageIssues = () => {
     data: issues,
     isLoading,
     isLoading: isLoadingPage,
-  } = trpc.useQuery(['issue.all']);
+  } = trpc.useQuery(['issue.all', { search }]);
 
   return (
     <Page containerSize="lg">
