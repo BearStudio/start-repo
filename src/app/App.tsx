@@ -11,9 +11,6 @@ import {
 } from '@/app/router/guards';
 import { Error404, ErrorBoundary } from '@/errors';
 
-const DashboardRoutes = React.lazy(
-  () => import('@/app/dashboard/DashboardRoutes')
-);
 const IssuesRoutes = React.lazy(() => import('@/app/issues/IssuesRoutes'));
 const ScopesRoutes = React.lazy(() => import('@/app/scopes/ScopesRoutes'));
 
@@ -32,15 +29,6 @@ export const App = () => {
                   <PublicOnlyRouteGuard>
                     <PageLogin />
                   </PublicOnlyRouteGuard>
-                }
-              />
-
-              <Route
-                path="dashboard/*"
-                element={
-                  <AuthenticatedRouteGuard>
-                    <DashboardRoutes />
-                  </AuthenticatedRouteGuard>
                 }
               />
 
