@@ -37,7 +37,7 @@ import {
 } from '@/components';
 import { SearchInput } from '@/components/SearchInput';
 import { generateSwatch } from '@/utils/colors';
-import { trpc } from '@/utils/trpc';
+import { TQuery, trpc } from '@/utils/trpc';
 
 type ScopeActionsProps = {
   scope: Scope;
@@ -49,11 +49,31 @@ const ScopeActions: FC<ScopeActionsProps> = ({ scope, ...rest }) => {
   const toastError = useToastError();
 
   const queryClient = useQueryClient();
-  const { mutate: scopeRemove, ...scopeRemoveData }: TODO = {
-    mutate: () => {},
-  };
+  const { mutate: scopeRemove, ...scopeRemoveData } = trpc.useMutation(
+    'scope.delete',
+    {
+      onSuccess: ({ name }) => {
+        toastSuccess({
+          title: t('scopes:feedbacks.deleteScopeSuccess.title'),
+          description: t('scopes:feedbacks.deleteScopeSuccess.description', {
+            name,
+          }),
+        });
+        const queryKey: TQuery = 'scope.all';
+        return queryClient.invalidateQueries([queryKey]);
+      },
+      onError: () => {
+        toastError({
+          title: t('scopes:feedbacks.deleteScopeError.title'),
+          description: t('scopes:feedbacks.deleteScopeError.description', {
+            name: scope.name,
+          }),
+        });
+      },
+    }
+  );
 
-  const removeScope = () => scopeRemove(scope);
+  const removeScope = () => scopeRemove(scope.id);
   const isRemovalLoading = scopeRemoveData.isLoading;
 
   return (
