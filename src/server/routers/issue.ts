@@ -1,3 +1,5 @@
+import { TRPCError } from '@trpc/server';
+import axios from 'axios';
 import { z } from 'zod';
 
 import { createProtectedRouter } from '@/server/create-protected-router';
@@ -66,7 +68,7 @@ export const issueRouter = createProtectedRouter()
   .mutation('create', {
     input: z.object({
       title: z.string().min(1),
-      description: z.string(),
+      description: z.string().nullish(),
       scopes: z.array(z.string().uuid()).min(1),
     }),
     async resolve({ input, ctx }) {
@@ -134,5 +136,74 @@ export const issueRouter = createProtectedRouter()
       });
 
       return updatedIssue;
+    },
+  })
+  .mutation('export.github', {
+    input: z.object({
+      scopes: z.array(z.string().uuid()).min(1),
+      repositoryName: z.string().min(1),
+    }),
+    async resolve({ ctx, input: { scopes, repositoryName } }) {
+      const session = await ctx.db.session.findUnique({
+        where: {
+          sessionToken: ctx.req.cookies['next-auth.session-token'],
+        },
+        include: {
+          user: {
+            include: {
+              accounts: true,
+            },
+          },
+        },
+      });
+
+      if (!session) {
+        throw new TRPCError({
+          code: 'UNAUTHORIZED',
+          message: 'You must be logged in',
+        });
+      }
+
+      const githubToken = session.user.accounts.find(
+        (account) => account.provider === 'github'
+      )?.access_token;
+
+      const issues = await ctx.db.issue.findMany({
+        where: {
+          scopes: {
+            some: {
+              scopeId: { in: scopes },
+            },
+          },
+        },
+        include: {
+          scopes: {
+            include: {
+              scope: true,
+            },
+          },
+        },
+      });
+
+      for (const issue of issues) {
+        await axios.post(
+          `https://api.github.com/repos/${repositoryName}/issues`,
+          {
+            title: issue.title,
+            body: issue.description,
+          },
+          {
+            headers: {
+              Accept: 'application/vnd.github.v3+json',
+              'Content-Type': 'application/json',
+              Authorization: `token ${githubToken}`,
+            },
+          }
+        );
+
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+      }
+
+      return undefined;
     },
   });

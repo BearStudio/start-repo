@@ -5,6 +5,7 @@ import { useQueryClient } from 'react-query';
 import { useNavigate } from 'react-router-dom';
 
 import { Page, PageBottomBar, PageContent, PageTopBar } from '@/app/layout';
+import { useToastError } from '@/components';
 import { useDarkMode } from '@/hooks/useDarkMode';
 import { InferMutationInput, TQuery, trpc } from '@/utils/trpc';
 
@@ -14,6 +15,7 @@ export const PageIssueCreate = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { colorModeValue } = useDarkMode();
+  const toastError = useToastError();
 
   const queryClient = useQueryClient();
   const { mutate, isLoading } = trpc.useMutation('issue.create');
@@ -24,6 +26,11 @@ export const PageIssueCreate = () => {
         navigate(-1);
         const queryKey: TQuery = 'issue.all';
         return queryClient.invalidateQueries([queryKey]);
+      },
+      onError: () => {
+        toastError({
+          title: 'Failed to create issue',
+        });
       },
     });
   };

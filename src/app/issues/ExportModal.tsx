@@ -41,13 +41,16 @@ export const ExportModal = ({ onClose }) => {
         type: 'text/csv;charset=utf-8',
       });
       saveAs(file);
+      onClose();
     },
   });
 
-  const { mutate: exportToGithub, isLoading: isExportToGithubLoading }: TODO = {
-    mutate: () => {},
-    isLoading: false,
-  };
+  const { mutate: exportToGithub, isLoading: isExportToGithubLoading } =
+    trpc.useMutation('issue.export.github', {
+      onSuccess: () => {
+        onClose();
+      },
+    });
 
   const options: Array<FieldSelectScopeOptions> =
     scopes?.map((scope) => ({
