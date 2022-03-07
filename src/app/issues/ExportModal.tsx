@@ -11,32 +11,49 @@ import {
   Stack,
 } from '@chakra-ui/react';
 import { Formiz, useForm } from '@formiz/core';
+import { Scope } from '@prisma/client';
+import axios, { AxiosError, AxiosResponse } from 'axios';
+import { saveAs } from 'file-saver';
+import { useMutation } from 'react-query';
 
 import { FieldInput, FieldMultiSelect, FieldRadios } from '@/components';
+import { trpc } from '@/utils/trpc';
 
 import { FieldSelectScopeOptions } from './IssueForm';
 
 export const ExportModal = ({ onClose }) => {
   const form = useForm();
 
-  const { scopes, isLoading: isLoadingScopes }: TODO = {
-    scopes: [],
-    isLoading: false,
-  };
-  const { mutate: exportCSV, isLoading: isExportCSVLoading }: TODO = {
-    mutate: () => {},
-    isLoading: false,
-  };
+  const { data: scopes, isLoading: isLoadingScopes } = trpc.useQuery([
+    'scope.all',
+    {
+      search: '',
+    },
+  ]);
+
+  const { mutate: exportCSV, isLoading: isExportCSVLoading } = useMutation<
+    AxiosResponse<string>,
+    AxiosError,
+    { scopes: Scope['id'][] }
+  >(({ scopes }) => axios.post('/api/csv/issue', { scopes }), {
+    onSuccess: (response) => {
+      const file = new File([response.data], 'issues.csv', {
+        type: 'text/csv;charset=utf-8',
+      });
+      saveAs(file);
+    },
+  });
 
   const { mutate: exportToGithub, isLoading: isExportToGithubLoading }: TODO = {
     mutate: () => {},
     isLoading: false,
   };
 
-  const options: Array<FieldSelectScopeOptions> = scopes?.map((scope) => ({
-    label: scope.name,
-    value: scope.id,
-  }));
+  const options: Array<FieldSelectScopeOptions> =
+    scopes?.map((scope) => ({
+      label: scope.name,
+      value: scope.id,
+    })) ?? [];
 
   const isLoading = isExportCSVLoading || isExportToGithubLoading;
 
