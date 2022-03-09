@@ -1,8 +1,8 @@
 {
-  "name": "start-ui",
+  "name": "start-repo",
   "private": true,
   "version": "1.0.0",
-  "description": "Opinionated UI starter with ⚛️ React, ⚡️ Chakra UI, ⚛️ React Query & 🐜 Formiz — From the 🐻 BearStudio Team",
+  "description": "Web application to easily start a new repository with a bunch of default issues.",
   "engines": {
     "node": ">=14.17",
     "npm": "please-use-yarn",
@@ -114,23 +114,23 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/bearstudio/start-ui.git"
+    "url": "git+https://github.com/bearstudio/start-repo.git"
   },
   "author": {
-    "name": "Ivan Dalmet",
-    "email": "ivan@dalmet.fr",
-    "url": "https://github.com/ivan-dalmet"
+    "name": "Yoann Fleury",
+    "email": "yoannfleurydev@gmail.com",
+    "url": "https://github.com/yoannfleurydev"
   },
   "contributors": [
     {
-      "name": "Yoann Fleury",
-      "email": "yoannfleurydev@gmail.com",
-      "url": "https://github.com/yoannfleurydev"
+      "name": "Ivan Dalmet",
+      "email": "ivan@dalmet.fr",
+      "url": "https://github.com/ivan-dalmet"
     }
   ],
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/bearstudio/start-ui/issues"
+    "url": "https://github.com/bearstudio/start-repo/issues"
   },
-  "homepage": "https://github.com/bearstudio/start-ui#readme"
+  "homepage": "https://github.com/bearstudio/start-repo#readme"
 }
