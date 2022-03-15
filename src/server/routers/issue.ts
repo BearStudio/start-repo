@@ -65,6 +65,7 @@ export const issueRouter = createProtectedRouter()
       return issue;
     },
   })
+
   .mutation('create', {
     input: z.object({
       title: z.string().min(1),
@@ -136,6 +137,31 @@ export const issueRouter = createProtectedRouter()
       });
 
       return updatedIssue;
+    },
+  })
+  .mutation('addBulkScope', {
+    input: z.object({
+      ids: z.array(z.string().uuid()),
+      scopeId: z.string().uuid(),
+    }),
+    async resolve({ ctx, input }) {
+      const { ids, scopeId } = input;
+
+      const issues = await ctx.db.issue.findMany({
+        where: {
+          scopes: {
+            some: { scopeId },
+          },
+        },
+      });
+
+      await ctx.db.scopesOnIssues.createMany({
+        data: ids
+          .filter((id) => !issues.find((i) => i.id === id))
+          .map((id) => ({ scopeId, issueId: id })),
+      });
+
+      return;
     },
   })
   .mutation('export.github', {

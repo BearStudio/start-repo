@@ -1,8 +1,10 @@
-import { FC, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 
 import {
+  Box,
   Button,
   Center,
+  Checkbox,
   Grid,
   Heading,
   LinkBox,
@@ -37,6 +39,7 @@ import {
   DataListCell,
   DataListRow,
   Icon,
+  Select,
   useToastError,
   useToastSuccess,
 } from '@/components';
@@ -45,6 +48,7 @@ import { generateSwatch } from '@/utils/colors';
 import { TQuery, trpc } from '@/utils/trpc';
 
 import { ExportModal } from './ExportModal';
+import { FieldSelectScopeOptions } from './IssueForm';
 
 type IssueActionsProps = {
   issue: Issue;
@@ -110,6 +114,7 @@ const IssueActions: FC<IssueActionsProps> = ({ issue, ...rest }) => {
 
 export const PageIssues = () => {
   const [search, setSearch] = useState('');
+  const [selectedIssues, setSelectedIssues] = useState<string[]>([]);
 
   const brandColor = useToken('colors', 'brand.500');
   const { isOpen, onClose, onOpen } = useDisclosure();
@@ -118,7 +123,34 @@ export const PageIssues = () => {
     data: issues,
     isLoading,
     isLoading: isLoadingPage,
-  } = trpc.useQuery(['issue.all', { search }]);
+  } = trpc.useQuery(['issue.all', { search }], {});
+
+  const queryClient = useQueryClient();
+  const { mutate: addBulkScope, isLoading: isLoadingAddBulkScope } =
+    trpc.useMutation(['issue.addBulkScope'], {
+      onSuccess: async () => {
+        const queryKey: TQuery = 'issue.all';
+        await queryClient.invalidateQueries([queryKey]);
+        setSelectedIssues([]);
+        return;
+      },
+    });
+
+  const { data: scopes, isLoading: isLoadingScopes } = trpc.useQuery([
+    'scope.all',
+    { search: '' },
+  ]);
+
+  // Reset selected on search
+  useEffect(() => {
+    setSelectedIssues([]);
+  }, [search]);
+
+  const scopeOptions: Array<FieldSelectScopeOptions> =
+    scopes?.map((scope) => ({
+      label: scope.name,
+      value: scope.id,
+    })) ?? [];
 
   return (
     <Page containerSize="lg">
@@ -162,6 +194,37 @@ export const PageIssues = () => {
               value={search}
             />
           </Grid>
+          <Box>
+            <Checkbox
+              _before={{
+                content: '""',
+                position: 'absolute',
+                inset: '-1rem',
+              }}
+              isChecked={selectedIssues.length === issues?.length}
+              isIndeterminate={
+                selectedIssues.length > 0 &&
+                selectedIssues.length !== issues?.length
+              }
+              onChange={() =>
+                setSelectedIssues(
+                  selectedIssues.length !== issues?.length
+                    ? issues?.map(({ id }) => id) ?? []
+                    : []
+                )
+              }
+            />
+            {selectedIssues.length} Selected issues
+            <Select
+              options={scopeOptions}
+              value={null}
+              isLoading={isLoadingScopes || isLoadingAddBulkScope}
+              onChange={(opt) => {
+                addBulkScope({ scopeId: opt.value, ids: selectedIssues });
+              }}
+              isDisabled={selectedIssues.length < 1}
+            />
+          </Box>
           <DataList>
             {isLoading && (
               <Center flex="1">
@@ -181,6 +244,28 @@ export const PageIssues = () => {
             {!isLoading &&
               issues?.map((issue) => (
                 <DataListRow as={LinkBox} key={issue.id}>
+                  <DataListCell colWidth="1rem" position="relative" zIndex="2">
+                    <Checkbox
+                      _before={{
+                        content: '""',
+                        position: 'absolute',
+                        inset: '-1rem',
+                      }}
+                      isChecked={!!selectedIssues.find((id) => id === issue.id)}
+                      onChange={(e) =>
+                        setSelectedIssues((s) => {
+                          if (e.target.checked) {
+                            return [
+                              ...s.filter((id) => id !== issue.id),
+                              issue.id,
+                            ];
+                          } else {
+                            return s.filter((id) => id !== issue.id);
+                          }
+                        })
+                      }
+                    />
+                  </DataListCell>
                   <DataListCell colWidth="3rem" align="flex-end" p="0">
                     <Icon
                       icon={VscIssues}
