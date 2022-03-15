@@ -27,7 +27,10 @@ export const PageIssueUpdate = () => {
     data: issue,
     isFetching,
     isError,
-  } = trpc.useQuery(['issue.detail', { id: id ?? '' }]);
+  } = trpc.useQuery(['issue.detail', { id: id ?? '' }], {
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+  });
 
   const queryClient = useQueryClient();
   const { mutate, isLoading } = trpc.useMutation('issue.edit');

@@ -28,7 +28,10 @@ export const PageScopeUpdate = () => {
     data: scope,
     isFetching,
     isError,
-  } = trpc.useQuery(['scope.detail', { id: id ?? '' }]);
+  } = trpc.useQuery(['scope.detail', { id: id ?? '' }], {
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+  });
 
   const queryClient = useQueryClient();
   const { mutate, isLoading } = trpc.useMutation('scope.edit');
