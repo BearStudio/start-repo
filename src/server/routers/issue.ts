@@ -103,7 +103,7 @@ export const issueRouter = createProtectedRouter()
       id: z.string().uuid(),
       data: z.object({
         title: z.string().min(1),
-        description: z.string(),
+        description: z.string().nullish(),
         scopes: z.array(z.string().uuid()).min(1),
       }),
     }),
