@@ -1,13 +1,14 @@
-// We need to import the type definitions for NextAuth so it won't complain.
+import { Account } from '@prisma/client';
 // eslint-disable-next-line
-// import NextAuth from 'next-auth';
+import NextAuth from 'next-auth';
 
-// declare module 'next-auth' {
-//   interface Profile {
-//     id: string;
-//     name: string;
-//     email: string;
-//     image: string;
-//     // username: string;
-//   }
-// }
+declare module 'next-auth' {
+  /**
+   * Returned by `useSession`, `getSession` and received as a prop on the `SessionProvider` React Context
+   */
+  interface Session {
+    user: User & {
+      accounts: Account[];
+    };
+  }
+}

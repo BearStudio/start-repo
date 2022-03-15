@@ -75,6 +75,19 @@ export default NextAuth({
         return false;
       }
     },
+    async session({ session, user: u }) {
+      const user = await db.user.findFirst({
+        where: {
+          id: u.id,
+        },
+        include: {
+          accounts: true,
+        },
+      });
+
+      session.user = user;
+      return session;
+    },
   },
   secret: process.env.NEXTAUTH_SECRET,
 });

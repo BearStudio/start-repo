@@ -1,5 +1,6 @@
 import { TRPCError } from '@trpc/server';
 import axios from 'axios';
+import { getSession } from 'next-auth/react';
 import { z } from 'zod';
 
 import { createProtectedRouter } from '@/server/create-protected-router';
@@ -144,18 +145,7 @@ export const issueRouter = createProtectedRouter()
       repositoryName: z.string().min(1),
     }),
     async resolve({ ctx, input: { scopes, repositoryName } }) {
-      const session = await ctx.db.session.findUnique({
-        where: {
-          sessionToken: ctx.req.cookies['next-auth.session-token'],
-        },
-        include: {
-          user: {
-            include: {
-              accounts: true,
-            },
-          },
-        },
-      });
+      const session = await getSession({ ctx });
 
       if (!session) {
         throw new TRPCError({
