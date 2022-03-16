@@ -18,6 +18,7 @@ export interface FieldSelectProps<
   isClearable?: boolean;
   isSearchable?: boolean;
   selectProps?: SelectProps<Option, IsMulti, Group>;
+  autoFocus?: boolean;
 }
 
 export const FieldSelect = <
