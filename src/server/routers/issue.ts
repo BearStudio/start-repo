@@ -1,6 +1,5 @@
 import { TRPCError } from '@trpc/server';
 import axios from 'axios';
-import { getSession } from 'next-auth/react';
 import { z } from 'zod';
 
 import { createProtectedRouter } from '@/server/create-protected-router';
@@ -145,16 +144,14 @@ export const issueRouter = createProtectedRouter()
       repositoryName: z.string().min(1),
     }),
     async resolve({ ctx, input: { scopes, repositoryName } }) {
-      const session = await getSession({ ctx });
-
-      if (!session) {
+      if (!ctx.session) {
         throw new TRPCError({
           code: 'UNAUTHORIZED',
           message: 'You must be logged in',
         });
       }
 
-      const githubToken = session.user.accounts.find(
+      const githubToken = ctx.session.user.accounts.find(
         (account) => account.provider === 'github'
       )?.access_token;
 
