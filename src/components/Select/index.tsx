@@ -279,13 +279,14 @@ const SelectInner = <
   return (
     <BoxAny
       as={Element}
+      ref={ref}
       styles={selectStyle}
       menuPortalTarget={document.body}
       {...(loadingMessage ? { loadingMessage: () => loadingMessage } : {})}
       {...(formatCreateLabel ? { formatCreateLabel } : {})}
       placeholder={placeholder ? String(placeholder) : 'Select...'}
       menuPlacement="auto"
-      ref={ref}
+      blurInputOnSelect={false}
       {...asyncProps}
       {...otherProps}
     />
