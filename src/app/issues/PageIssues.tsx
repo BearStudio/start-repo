@@ -17,6 +17,7 @@ import {
   MenuList,
   MenuProps,
   Popover,
+  PopoverArrow,
   PopoverBody,
   PopoverContent,
   PopoverFooter,
@@ -43,6 +44,7 @@ import { Page, PageContent } from '@/app/layout';
 import {
   ActionsButton,
   ConfirmMenuItem,
+  ConfirmPopover,
   DataList,
   DataListCell,
   DataListRow,
@@ -121,6 +123,7 @@ const IssueActions: FC<IssueActionsProps> = ({ issue, ...rest }) => {
 };
 
 export const PageIssues = () => {
+  const { t } = useTranslation();
   const [search, setSearch] = useState('');
   const [selectedIssues, setSelectedIssues] = useState<string[]>([]);
 
@@ -132,6 +135,15 @@ export const PageIssues = () => {
   const queryClient = useQueryClient();
   const { mutate: addBulkScope, isLoading: isLoadingAddBulkScope } =
     trpc.useMutation(['issue.addBulkScope'], {
+      onSuccess: async () => {
+        const queryKey: TQuery = 'issue.all';
+        await queryClient.invalidateQueries([queryKey]);
+        setSelectedIssues([]);
+        return;
+      },
+    });
+  const { mutate: deleteMany, isLoading: isLoadingDeleteMany } =
+    trpc.useMutation(['issue.deleteMany'], {
       onSuccess: async () => {
         const queryKey: TQuery = 'issue.all';
         await queryClient.invalidateQueries([queryKey]);
@@ -256,62 +268,87 @@ export const PageIssues = () => {
                       aria-label="Clear selection"
                       onClick={() => setSelectedIssues([])}
                     />
-                    <Text flex="1" textAlign="right">
-                      {selectedIssues.length} selected issues
-                    </Text>
-                    <Popover isLazy>
-                      {({ onClose }) => (
-                        <>
-                          <PopoverTrigger>
-                            <Button variant="@primary" size="sm">
-                              Assign scope
-                            </Button>
-                          </PopoverTrigger>
+                    <Stack
+                      flex="1"
+                      direction={{ base: 'column', md: 'row' }}
+                      align={{ md: 'center' }}
+                    >
+                      <Text flex="1" textAlign="right">
+                        {selectedIssues.length} selected issues
+                      </Text>
+                      <HStack justify="end">
+                        <ConfirmPopover
+                          onConfirm={() => deleteMany(selectedIssues)}
+                          confirmText="Delete"
+                          confirmVariant="@danger"
+                          message={`You are about to delete ${selectedIssues.length} issues`}
+                        >
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            isLoading={isLoadingDeleteMany}
+                          >
+                            {t('actions.delete')}
+                          </Button>
+                        </ConfirmPopover>
+                        <Popover isLazy>
+                          {({ onClose }) => (
+                            <>
+                              <PopoverTrigger>
+                                <Button variant="@primary" size="sm">
+                                  Assign scope
+                                </Button>
+                              </PopoverTrigger>
 
-                          <PopoverContent>
-                            <Formiz
-                              autoForm
-                              onValidSubmit={(values: { scope: string }) => {
-                                addBulkScope({
-                                  scopeId: values.scope,
-                                  ids: selectedIssues,
-                                });
-                              }}
-                            >
-                              <PopoverBody>
-                                <FieldSelect
-                                  placeholder="Select scope..."
-                                  name="scope"
-                                  autoFocus
-                                  options={scopeOptions}
-                                  selectProps={{
-                                    isLoading: isLoadingScopes,
-                                    autoFocus: true,
-                                    menuPlacement: 'top',
+                              <PopoverContent>
+                                <Formiz
+                                  autoForm
+                                  onValidSubmit={(values: {
+                                    scope: string;
+                                  }) => {
+                                    addBulkScope({
+                                      scopeId: values.scope,
+                                      ids: selectedIssues,
+                                    });
                                   }}
-                                  required="Scope is required"
-                                />
-                              </PopoverBody>
-                              <PopoverFooter>
-                                <HStack justify="space-between">
-                                  <Button size="sm" onClick={onClose}>
-                                    Cancel
-                                  </Button>
-                                  <Button
-                                    variant="@primary"
-                                    size="sm"
-                                    type="submit"
-                                    isLoading={isLoadingAddBulkScope}
-                                  >
-                                    Assign
-                                  </Button>
-                                </HStack>
-                              </PopoverFooter>
-                            </Formiz>
-                          </PopoverContent>
-                        </>
-                      )}
-                    </Popover>
+                                >
+                                  <PopoverArrow />
+                                  <PopoverBody>
+                                    <FieldSelect
+                                      placeholder="Select scope..."
+                                      name="scope"
+                                      autoFocus
+                                      options={scopeOptions}
+                                      selectProps={{
+                                        isLoading: isLoadingScopes,
+                                        autoFocus: true,
+                                        menuPlacement: 'top',
+                                      }}
+                                      required="Scope is required"
+                                    />
+                                  </PopoverBody>
+                                  <PopoverFooter>
+                                    <HStack justify="space-between">
+                                      <Button size="sm" onClick={onClose}>
+                                        Cancel
+                                      </Button>
+                                      <Button
+                                        variant="@primary"
+                                        size="sm"
+                                        type="submit"
+                                        isLoading={isLoadingAddBulkScope}
+                                      >
+                                        Assign
+                                      </Button>
+                                    </HStack>
+                                  </PopoverFooter>
+                                </Formiz>
+                              </PopoverContent>
+                            </>
+                          )}
+                        </Popover>
+                      </HStack>
+                    </Stack>
                   </HStack>
                 </Slide>
               </Portal>

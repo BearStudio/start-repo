@@ -65,7 +65,18 @@ export const issueRouter = createProtectedRouter()
       return issue;
     },
   })
-
+  .mutation('deleteMany', {
+    input: z.array(z.string().uuid()).min(1),
+    async resolve({ input: ids, ctx }) {
+      await ctx.db.issue.deleteMany({
+        where: {
+          id: {
+            in: ids,
+          },
+        },
+      });
+    },
+  })
   .mutation('create', {
     input: z.object({
       title: z.string().min(1),
