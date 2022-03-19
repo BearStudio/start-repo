@@ -135,7 +135,6 @@ export const PageScopes = () => {
               gridColumnStart={{ base: 1, md: 2 }}
               gridColumnEnd={{ base: 1, sm: 3, md: 2 }}
               onChange={(value) => setSearch(value ?? '')}
-              isLoading={isLoading}
               value={search}
             />
           </Grid>
