@@ -1,6 +1,16 @@
 <h1 align="center"><img src="assets/start-repo.svg" alt="Start REPO" width="300" /></h1>
 
 🪲 Start REPO
+
+The purpose of Start REPO is to easily create default issues on a new GitHub or
+GitLab repository. It is a simple way to get started with your projects. We do
+have a lot of clients at BearStudio and we need to create a bunch of default
+issues when bootstrapping a new project. This is where Start REPO comes.
+
+Scopes are here to easily target the kind of project you are starting: `web`,
+`mobile`, `desktop`, `server`, `game`, are some example of scopes you can
+create.
+
 ## Installation
 
 ```bash
