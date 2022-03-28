@@ -5,6 +5,60 @@ import { z } from 'zod';
 import { createProtectedRouter } from '@/server/create-protected-router';
 
 export const issueRouter = createProtectedRouter()
+  .query('infinite', {
+    input: z.object({
+      search: z.string(),
+      limit: z.number().min(1).max(100).default(10),
+      cursor: z.string().uuid().nullish(),
+    }),
+    async resolve({ ctx, input: { search, limit, cursor } }) {
+      const issues = await ctx.db.issue.findMany({
+        take: limit + 1,
+        where: {
+          title: {
+            search: search !== '' ? search : undefined,
+          },
+          description: {
+            search: search !== '' ? search : undefined,
+          },
+        },
+        cursor: cursor ? { id: cursor } : undefined,
+        orderBy: {
+          createdAt: 'desc',
+        },
+        include: {
+          scopes: {
+            include: {
+              scope: true,
+            },
+          },
+        },
+      });
+
+      const totalCount = await ctx.db.issue.count({
+        where: {
+          title: {
+            search: search !== '' ? search : undefined,
+          },
+          description: {
+            search: search !== '' ? search : undefined,
+          },
+        },
+      });
+
+      let nextCursor: typeof cursor = null;
+      if (issues.length > limit) {
+        const nextItem = issues.pop();
+        nextCursor = nextItem!.id;
+      }
+
+      return {
+        issues,
+        nextCursor,
+        totalCount,
+      };
+    },
+  })
   .query('all', {
     input: z.object({
       search: z.string(),
