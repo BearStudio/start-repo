@@ -8,7 +8,7 @@ export const issueRouter = createProtectedRouter()
   .query('infinite', {
     input: z.object({
       search: z.string(),
-      limit: z.number().min(1).max(100).default(10),
+      limit: z.number().min(1).max(100).default(20),
       cursor: z.string().uuid().nullish(),
     }),
     async resolve({ ctx, input: { search, limit, cursor } }) {

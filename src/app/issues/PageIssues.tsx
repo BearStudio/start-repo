@@ -133,7 +133,7 @@ export const PageIssues = () => {
   const { isOpen, onClose, onOpen } = useDisclosure();
 
   const { data, isLoading, isFetching, fetchNextPage, hasNextPage } =
-    trpc.useInfiniteQuery(['issue.infinite', { search, limit: 10 }], {
+    trpc.useInfiniteQuery(['issue.infinite', { search, limit: 20 }], {
       getNextPageParam: (lastPage) => lastPage.nextCursor,
     });
 
@@ -470,30 +470,25 @@ export const PageIssues = () => {
                         </DataListCell>
                       </DataListRow>
                     ))}
-                  <DataListFooter justifyContent="center">
-                    {isFetching || hasNextPage ? (
-                      <Button
-                        size="sm"
-                        isLoading={isLoading || isFetching}
-                        onClick={() => fetchNextPage()}
-                      >
-                        Load more{' '}
-                        {totalCount &&
-                          issues?.length &&
-                          `(${totalCount - issues?.length} issues left)`}
-                      </Button>
-                    ) : (
-                      <Text>
-                        <Text as="span" fontWeight="bold">
-                          {issues?.length}
-                        </Text>{' '}
-                        out of{' '}
-                        <Text as="span" fontWeight="bold">
-                          {totalCount}
-                        </Text>{' '}
-                        issues
-                      </Text>
-                    )}
+                  <DataListFooter justifyContent="space-between" px="4">
+                    <Text>
+                      <Text as="span" fontWeight="bold">
+                        {issues?.length}
+                      </Text>{' '}
+                      out of{' '}
+                      <Text as="span" fontWeight="bold">
+                        {totalCount}
+                      </Text>{' '}
+                      issues
+                    </Text>
+                    <Button
+                      size="sm"
+                      isLoading={isLoading || isFetching}
+                      isDisabled={!hasNextPage}
+                      onClick={() => fetchNextPage()}
+                    >
+                      Load more issues
+                    </Button>
                   </DataListFooter>
                 </DataList>
               </Stack>
