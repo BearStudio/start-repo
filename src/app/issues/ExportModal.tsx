@@ -16,6 +16,7 @@ import axios, { AxiosError, AxiosResponse } from 'axios';
 import { saveAs } from 'file-saver';
 import { useMutation } from 'react-query';
 
+import { useFieldSelectScopeStyles } from '@/app/scopes/useFieldSelectScopeStyles';
 import { FieldInput, FieldMultiSelect, FieldRadios } from '@/components';
 import { trpc } from '@/utils/trpc';
 
@@ -56,7 +57,10 @@ export const ExportModal = ({ onClose }) => {
     scopes?.map((scope) => ({
       label: scope.name,
       value: scope.id,
+      color: scope.color,
     })) ?? [];
+
+  const styles = useFieldSelectScopeStyles();
 
   const isLoading = isExportCSVLoading || isExportToGithubLoading;
 
@@ -94,6 +98,7 @@ export const ExportModal = ({ onClose }) => {
                 name="scopes"
                 selectProps={{
                   isLoading: isLoadingScopes,
+                  styles,
                 }}
                 options={options}
                 required="Required"

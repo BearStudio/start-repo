@@ -1,12 +1,14 @@
 import { Stack } from '@chakra-ui/react';
 import { Scope } from '@prisma/client';
 
+import { useFieldSelectScopeStyles } from '@/app/scopes/useFieldSelectScopeStyles';
 import { FieldInput, FieldMarkdown, FieldMultiSelect } from '@/components';
 import { trpc } from '@/utils/trpc';
 
 export type FieldSelectScopeOptions = {
   label: Scope['name'];
   value: Scope['id'];
+  color: Scope['color'];
 };
 
 export const IssueForm = () => {
@@ -19,7 +21,10 @@ export const IssueForm = () => {
     scopes?.map((scope) => ({
       label: scope.name,
       value: scope.id,
+      color: scope.color,
     })) ?? [];
+
+  const styles = useFieldSelectScopeStyles();
 
   return (
     <Stack>
@@ -34,6 +39,7 @@ export const IssueForm = () => {
         name="scopes"
         selectProps={{
           isLoading: isLoadingScopes,
+          styles,
         }}
         required="Required"
         options={options}

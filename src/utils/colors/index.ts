@@ -27,7 +27,7 @@ export const generateSwatch = (userColor: string): Swatch => {
   const yellowHueMap = [0, 0, 0, 0, 0, 4, 8, 16, 24, 32];
 
   const colors = lightnessMap
-    .map((l) => chroma.hsl([colorHsl[0], colorHsl[1], l]))
+    .map((l) => chroma.hsl(colorHsl[0], colorHsl[1], l))
     .map((color, i) => {
       return color.saturate(saturationMap[i] * Math.sqrt(colorHsl[1]));
     })

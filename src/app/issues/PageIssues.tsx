@@ -42,6 +42,7 @@ import { Link } from 'react-router-dom';
 
 import { EmptyState } from '@/app/issues/EmptyState';
 import { Page, PageContent } from '@/app/layout';
+import { useFieldSelectScopeStyles } from '@/app/scopes/useFieldSelectScopeStyles';
 import {
   ActionsButton,
   ConfirmMenuItem,
@@ -181,7 +182,10 @@ export const PageIssues = () => {
     scopes?.map((scope) => ({
       label: scope.name,
       value: scope.id,
+      color: scope.color,
     })) ?? [];
+
+  const styles = useFieldSelectScopeStyles();
 
   return (
     <Page containerSize="lg" pb={!!selectedIssues.length ? 24 : undefined}>
@@ -354,6 +358,7 @@ export const PageIssues = () => {
                                             isLoading: isLoadingScopes,
                                             autoFocus: true,
                                             menuPlacement: 'top',
+                                            styles,
                                           }}
                                           required="Scope is required"
                                         />
