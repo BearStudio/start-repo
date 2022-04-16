@@ -3,6 +3,53 @@ import { z } from 'zod';
 import { createProtectedRouter } from '@/server/create-protected-router';
 
 export const scopeRouter = createProtectedRouter()
+  .query('infinite', {
+    input: z.object({
+      search: z.string(),
+      limit: z.number().min(1).max(100).default(20),
+      cursor: z.string().uuid().nullish(),
+    }),
+    async resolve({ ctx, input: { search, limit, cursor } }) {
+      const scopes = await ctx.db.scope.findMany({
+        take: limit + 1,
+        where: {
+          name: {
+            search: search !== '' ? search : undefined,
+          },
+          description: {
+            search: search !== '' ? search : undefined,
+          },
+        },
+        cursor: cursor ? { id: cursor } : undefined,
+        orderBy: {
+          createdAt: 'desc',
+        },
+      });
+
+      const totalCount = await ctx.db.scope.count({
+        where: {
+          name: {
+            search: search !== '' ? search : undefined,
+          },
+          description: {
+            search: search !== '' ? search : undefined,
+          },
+        },
+      });
+
+      let nextCursor: typeof cursor = null;
+      if (scopes.length > limit) {
+        const nextItem = scopes.pop();
+        nextCursor = nextItem!.id;
+      }
+
+      return {
+        scopes,
+        nextCursor,
+        totalCount,
+      };
+    },
+  })
   .query('all', {
     input: z.object({
       search: z.string(),

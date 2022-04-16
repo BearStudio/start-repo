@@ -30,6 +30,7 @@ import {
   ConfirmMenuItem,
   DataList,
   DataListCell,
+  DataListFooter,
   DataListRow,
   Icon,
   useToastError,
@@ -103,7 +104,21 @@ const ScopeActions: FC<ScopeActionsProps> = ({ scope, ...rest }) => {
 
 export const PageScopes = () => {
   const [search, setSearch] = useState('');
-  const { data: scopes, isLoading } = trpc.useQuery(['scope.all', { search }]);
+
+  const { data, isLoading, isFetching, fetchNextPage, hasNextPage } =
+    trpc.useInfiniteQuery(['scope.infinite', { search, limit: 20 }], {
+      getNextPageParam: (lastPage) => lastPage.nextCursor,
+    });
+
+  const scopes = data?.pages.reduce(
+    (previousValue: Scope[], currentValue) => [
+      ...previousValue,
+      ...currentValue.scopes,
+    ],
+    []
+  );
+
+  const totalCount = data?.pages[0]?.totalCount;
 
   return (
     <Page containerSize="lg">
@@ -190,6 +205,26 @@ export const PageScopes = () => {
                   </DataListCell>
                 </DataListRow>
               ))}
+            <DataListFooter justifyContent="space-between" px="4">
+              <Text>
+                <Text as="span" fontWeight="bold">
+                  {scopes?.length}
+                </Text>{' '}
+                out of{' '}
+                <Text as="span" fontWeight="bold">
+                  {totalCount}
+                </Text>{' '}
+                issues
+              </Text>
+              <Button
+                size="sm"
+                isLoading={isLoading || isFetching}
+                isDisabled={!hasNextPage}
+                onClick={() => fetchNextPage()}
+              >
+                Load more issues
+              </Button>
+            </DataListFooter>
           </DataList>
         </Stack>
       </PageContent>
