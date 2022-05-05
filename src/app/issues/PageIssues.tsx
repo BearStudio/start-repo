@@ -84,7 +84,7 @@ const IssueActions: FC<IssueActionsProps> = ({ issue, ...rest }) => {
           }),
         });
 
-        const queryKey: TQuery = 'issue.all';
+        const queryKey: TQuery = 'issue.infinite';
         return queryClient.invalidateQueries([queryKey]);
       },
       onError: () => {
@@ -152,7 +152,7 @@ export const PageIssues = () => {
   const { mutate: addBulkScope, isLoading: isLoadingAddBulkScope } =
     trpc.useMutation(['issue.addBulkScope'], {
       onSuccess: async () => {
-        const queryKey: TQuery = 'issue.all';
+        const queryKey: TQuery = 'issue.infinite';
         await queryClient.invalidateQueries([queryKey]);
         setSelectedIssues([]);
         return;
@@ -161,7 +161,7 @@ export const PageIssues = () => {
   const { mutate: deleteMany, isLoading: isLoadingDeleteMany } =
     trpc.useMutation(['issue.deleteMany'], {
       onSuccess: async () => {
-        const queryKey: TQuery = 'issue.all';
+        const queryKey: TQuery = 'issue.infinite';
         await queryClient.invalidateQueries([queryKey]);
         setSelectedIssues([]);
         return;
