@@ -1,6 +1,7 @@
 import { FC, useEffect, useState } from 'react';
 
 import {
+  Box,
   Button,
   Center,
   Checkbox,
@@ -51,6 +52,7 @@ import {
   DataListCell,
   DataListFooter,
   DataListRow,
+  FieldMultiSelect,
   FieldSelect,
   Icon,
   useToastError,
@@ -128,13 +130,14 @@ const IssueActions: FC<IssueActionsProps> = ({ issue, ...rest }) => {
 export const PageIssues = () => {
   const { t } = useTranslation();
   const [search, setSearch] = useState('');
+  const [filters, setFilters] = useState<{ scopes: string[] } | null>(null);
   const [selectedIssues, setSelectedIssues] = useState<string[]>([]);
 
   const brandColor = useToken('colors', 'brand.500');
   const { isOpen, onClose, onOpen } = useDisclosure();
 
   const { data, isLoading, isFetching, fetchNextPage, hasNextPage } =
-    trpc.useInfiniteQuery(['issue.infinite', { search, limit: 20 }], {
+    trpc.useInfiniteQuery(['issue.infinite', { search, limit: 20, filters }], {
       getNextPageParam: (lastPage) => lastPage.nextCursor,
     });
 
@@ -220,13 +223,83 @@ export const PageIssues = () => {
               </Button>
             </Stack>
 
-            <SearchInput
+            <HStack
               gridRowStart={{ base: 3, sm: 2, md: 1 }}
               gridColumnStart={{ base: 1, md: 2 }}
               gridColumnEnd={{ base: 1, sm: 3, md: 2 }}
-              onChange={(value) => setSearch(value ?? '')}
-              value={search}
-            />
+            >
+              <Popover isLazy>
+                {({ onClose }) => (
+                  <>
+                    <PopoverTrigger>
+                      <Button
+                        colorScheme={filters ? 'brand' : undefined}
+                        variant="link"
+                        d="flex"
+                        p="2"
+                        flex="none"
+                      >
+                        Filters
+                        <Box
+                          w="2"
+                          h="2"
+                          flex="none"
+                          borderRadius="full"
+                          bg={filters ? 'brand.600' : 'transparent'}
+                          ml="2"
+                        />
+                      </Button>
+                    </PopoverTrigger>
+
+                    <PopoverContent>
+                      <Formiz
+                        autoForm
+                        initialValues={filters ?? {}}
+                        onValidSubmit={(values: { scopes: string[] }) => {
+                          setFilters({ scopes: values.scopes ?? null });
+                          onClose();
+                        }}
+                      >
+                        <PopoverArrow />
+                        <PopoverBody>
+                          <FieldMultiSelect
+                            placeholder="Select scopes..."
+                            name="scopes"
+                            autoFocus
+                            options={scopeOptions}
+                            selectProps={{
+                              isLoading: isLoadingScopes,
+                              autoFocus: true,
+                              styles,
+                            }}
+                          />
+                        </PopoverBody>
+                        <PopoverFooter>
+                          <HStack justify="space-between">
+                            <Button
+                              size="sm"
+                              onClick={() => {
+                                setFilters(null);
+                                onClose();
+                              }}
+                            >
+                              Clear
+                            </Button>
+                            <Button variant="@primary" size="sm" type="submit">
+                              Filter
+                            </Button>
+                          </HStack>
+                        </PopoverFooter>
+                      </Formiz>
+                    </PopoverContent>
+                  </>
+                )}
+              </Popover>
+              <SearchInput
+                onChange={(value) => setSearch(value ?? '')}
+                value={search}
+              />
+            </HStack>
           </Grid>
           {isLoading && (
             <Center flex="1">
@@ -501,7 +574,7 @@ export const PageIssues = () => {
           )}
         </Stack>
 
-        {isOpen && <ExportModal onClose={onClose} />}
+        {isOpen && <ExportModal onClose={onClose} initialValues={filters} />}
       </PageContent>
     </Page>
   );

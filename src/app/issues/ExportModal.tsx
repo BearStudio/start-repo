@@ -22,7 +22,7 @@ import { trpc } from '@/utils/trpc';
 
 import { FieldSelectScopeOptions } from './IssueForm';
 
-export const ExportModal = ({ onClose }) => {
+export const ExportModal = ({ onClose, initialValues }) => {
   const form = useForm();
 
   const { data: scopes, isLoading: isLoadingScopes } = trpc.useQuery([
@@ -78,7 +78,12 @@ export const ExportModal = ({ onClose }) => {
 
   return (
     <Modal isOpen onClose={onClose}>
-      <Formiz autoForm onValidSubmit={handleSubmit} connect={form}>
+      <Formiz
+        autoForm
+        onValidSubmit={handleSubmit}
+        connect={form}
+        initialValues={initialValues ?? {}}
+      >
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>Export Issues</ModalHeader>

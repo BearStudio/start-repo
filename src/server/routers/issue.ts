@@ -10,8 +10,13 @@ export const issueRouter = createProtectedRouter()
       search: z.string(),
       limit: z.number().min(1).max(100).default(20),
       cursor: z.string().uuid().nullish(),
+      filters: z
+        .object({
+          scopes: z.array(z.string().uuid()).nullish(),
+        })
+        .nullish(),
     }),
-    async resolve({ ctx, input: { search, limit, cursor } }) {
+    async resolve({ ctx, input: { search, limit, cursor, filters } }) {
       const issues = await ctx.db.issue.findMany({
         take: limit + 1,
         where: {
@@ -21,6 +26,15 @@ export const issueRouter = createProtectedRouter()
           description: {
             search: search !== '' ? search : undefined,
           },
+          AND: (filters?.scopes ?? []).map((scope) => ({
+            scopes: {
+              some: {
+                scopeId: {
+                  in: [scope],
+                },
+              },
+            },
+          })),
         },
         cursor: cursor ? { id: cursor } : undefined,
         orderBy: {
