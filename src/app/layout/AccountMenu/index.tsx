@@ -15,7 +15,15 @@ import {
 } from '@chakra-ui/react';
 import { signOut, useSession } from 'next-auth/react';
 import { useTranslation } from 'react-i18next';
-import { FiCheck, FiCopy, FiLogOut, FiMoon, FiSun } from 'react-icons/fi';
+import {
+  FiCheck,
+  FiCopy,
+  FiLogOut,
+  FiMoon,
+  FiSun,
+  FiUser,
+} from 'react-icons/fi';
+import { Link } from 'react-router-dom';
 
 import appBuild from '@/../app-build.json';
 import { Icon } from '@/components';
@@ -107,6 +115,13 @@ export const AccountMenu = ({ ...rest }) => {
         maxW="12rem"
         overflow="hidden"
       >
+        <MenuItem
+          icon={<Icon fontSize="lg" color="gray.400" icon={FiUser} />}
+          as={Link}
+          to="/accounts"
+        >
+          {t('layout:accountMenu.accounts')}
+        </MenuItem>
         <MenuItem
           icon={
             <Icon

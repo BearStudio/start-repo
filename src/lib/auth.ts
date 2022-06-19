@@ -1,8 +1,10 @@
 import { PrismaAdapter } from '@next-auth/prisma-adapter';
-import axios from 'axios';
 import { NextAuthOptions } from 'next-auth';
 import GitHubProvider from 'next-auth/providers/github';
+import GitLabProvider from 'next-auth/providers/gitlab';
 
+import { linkGitHubAccount } from '@/lib/linkGitHubAccount';
+import { linkGitLabAccount } from '@/lib/linkGitLabAccount';
 import { db } from '@/utils/db';
 
 export const authOptions: NextAuthOptions = {
@@ -20,60 +22,21 @@ export const authOptions: NextAuthOptions = {
         },
       },
     }),
+    GitLabProvider({
+      clientId: process.env.GITLAB_CLIENT_ID,
+      clientSecret: process.env.GITLAB_CLIENT_SECRET,
+    }),
   ],
   pages: {
     signIn: '/app/login',
   },
   callbacks: {
-    async signIn({ account }) {
-      try {
-        // Create a new instance of axios so we are not bothered by the
-        // interceptors.
-        const instance = axios.create();
-        const response: TODO = await instance.get<Array<github.Organization>>(
-          'https://api.github.com/user/orgs',
-          {
-            headers: { Authorization: `token ${account.access_token}` },
-          }
-        );
-
-        const isAuthorized = response.data.some(
-          // Using the org id in case there is a rename.
-          (org) => process.env.GITHUB_ALLOWED_ORGANIZATIONS?.includes(org.login)
-        );
-
-        if (!isAuthorized) {
-          return false;
-        }
-
-        // This is to update the provider account on sign in. This does not
-        // exist in NextAuth yet.
-        const existingAccount = await db.account.findUnique({
-          where: {
-            provider_providerAccountId: {
-              provider: account.provider,
-              providerAccountId: account.providerAccountId,
-            },
-          },
-        });
-
-        if (!!existingAccount) {
-          await db.account.update({
-            where: {
-              provider_providerAccountId: {
-                provider: account.provider,
-                providerAccountId: account.providerAccountId,
-              },
-            },
-            data: account,
-          });
-        }
-
-        return isAuthorized;
-      } catch (err) {
-        console.error(err);
-        return false;
+    async signIn({ account, user, ...args }) {
+      if (account.provider === 'gitlab') {
+        return linkGitLabAccount(account);
       }
+
+      return linkGitHubAccount(account);
     },
     async session({ session, user: u }) {
       const user = await db.user.findFirst({
