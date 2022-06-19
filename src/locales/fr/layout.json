@@ -12,6 +12,7 @@
     "switchColorModeDark": "Passer en mode sombre",
     "switchColorModeLight": "Passer en mode clair",
     "myAccount": "Mon compte",
-    "logout": "Déconnexion"
+    "logout": "Déconnexion",
+    "accounts": "Mon compte"
   }
 }

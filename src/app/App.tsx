@@ -13,6 +13,9 @@ import { Error404, ErrorBoundary } from '@/errors';
 
 const IssuesRoutes = React.lazy(() => import('@/app/issues/IssuesRoutes'));
 const ScopesRoutes = React.lazy(() => import('@/app/scopes/ScopesRoutes'));
+const AccountsRoutes = React.lazy(
+  () => import('@/app/accounts/AccountsRoutes')
+);
 
 export const App = () => {
   return (
@@ -46,6 +49,15 @@ export const App = () => {
                 element={
                   <AuthenticatedRouteGuard>
                     <ScopesRoutes />
+                  </AuthenticatedRouteGuard>
+                }
+              />
+
+              <Route
+                path="accounts/*"
+                element={
+                  <AuthenticatedRouteGuard>
+                    <AccountsRoutes />
                   </AuthenticatedRouteGuard>
                 }
               />
