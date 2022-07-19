@@ -31,4 +31,3 @@ test:
     - echo "Checking types"
     - yarn tsc --noEmit
     - echo "Running unit tests"
-    - yarn jest --roots src --passWithNoTests
