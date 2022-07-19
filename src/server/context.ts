@@ -1,6 +1,6 @@
 import * as trpc from '@trpc/server';
 import * as trpcNext from '@trpc/server/adapters/next';
-import { getServerSession } from 'next-auth/next';
+import { unstable_getServerSession as getServerSession } from 'next-auth/next';
 
 import { authOptions } from '@/lib/auth';
 import { db } from '@/utils/db';
@@ -9,7 +9,7 @@ export const createContext = async ({
   req,
   res,
 }: trpcNext.CreateNextContextOptions) => {
-  const session = await getServerSession({ req, res }, authOptions);
+  const session = await getServerSession(req, res, authOptions);
 
   return {
     req,

@@ -11,8 +11,8 @@ export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(db),
   providers: [
     GitHubProvider({
-      clientId: process.env.GITHUB_CLIENT_ID,
-      clientSecret: process.env.GITHUB_CLIENT_SECRET,
+      clientId: process.env.GITHUB_CLIENT_ID ?? '',
+      clientSecret: process.env.GITHUB_CLIENT_SECRET ?? '',
       authorization: {
         url: 'https://github.com/login/oauth/authorize',
         params: {
@@ -23,8 +23,8 @@ export const authOptions: NextAuthOptions = {
       },
     }),
     GitLabProvider({
-      clientId: process.env.GITLAB_CLIENT_ID,
-      clientSecret: process.env.GITLAB_CLIENT_SECRET,
+      clientId: process.env.GITLAB_CLIENT_ID ?? '',
+      clientSecret: process.env.GITLAB_CLIENT_SECRET ?? '',
     }),
   ],
   pages: {
