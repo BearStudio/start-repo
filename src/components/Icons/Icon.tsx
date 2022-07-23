@@ -16,7 +16,7 @@ export const Icon: FC<IconProps> = ({ icon: IconEl, iconProps, ...rest }) => {
   return (
     <Box
       as="span"
-      d="inline-block"
+      display="inline-block"
       position="relative"
       w="1em"
       flex="none"

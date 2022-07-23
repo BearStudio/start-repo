@@ -60,7 +60,7 @@ const AppVersion = ({ ...rest }) => {
         {...rest}
       >
         <Flex
-          d={hasCopied ? 'flex' : 'none'}
+          display={hasCopied ? 'flex' : 'none'}
           position="absolute"
           align="center"
           top="0"
