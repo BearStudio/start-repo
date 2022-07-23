@@ -9,8 +9,6 @@ datasource db {
   referentialIntegrity = "prisma"
 }
 
-// Authentication
-
 model Account {
   id                       String  @id @default(cuid())
   userId                   String
@@ -29,8 +27,7 @@ model Account {
   oauth_token              String?
   refresh_token_expires_in Int?
   created_at               Int?
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user                     User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
 }
@@ -41,11 +38,6 @@ model Session {
   userId       String
   expires      DateTime
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-}
-
-enum Role {
-  USER
-  ADMIN
 }
 
 model User {
@@ -67,13 +59,11 @@ model VerificationToken {
   @@unique([identifier, token])
 }
 
-// Product
-
 model ScopesOnIssues {
   issue   Issue  @relation(fields: [issueId], references: [id], onUpdate: NoAction)
-  issueId String // relation scalar field (used in the `@relation` attribute above)
+  issueId String
   scope   Scope  @relation(fields: [scopeId], references: [id], onUpdate: NoAction)
-  scopeId String // relation scalar field (used in the `@relation` attribute above)
+  scopeId String
 
   @@id([issueId, scopeId])
   @@index([issueId, scopeId])
@@ -87,7 +77,6 @@ model Scope {
   createdAt   DateTime         @default(now())
   updatedAt   DateTime         @updatedAt
   issues      ScopesOnIssues[]
-
 
   @@fulltext([name])
   @@fulltext([description])
@@ -105,4 +94,9 @@ model Issue {
   @@fulltext([title])
   @@fulltext([description])
   @@fulltext([title, description])
+}
+
+enum Role {
+  USER
+  ADMIN
 }

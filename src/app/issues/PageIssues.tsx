@@ -235,7 +235,7 @@ export const PageIssues = () => {
                       <Button
                         colorScheme={filters ? 'brand' : undefined}
                         variant="link"
-                        d="flex"
+                        display="flex"
                         p="2"
                         flex="none"
                       >

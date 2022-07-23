@@ -242,7 +242,7 @@ export const Complete = () => {
             <HStack maxW="100%">
               <Avatar size="sm" name={item.name} mx="2" />
               <Box minW="0">
-                <Text isTruncated maxW="full" fontWeight="bold">
+                <Text noOfLines={1} maxW="full" fontWeight="bold">
                   {item.status !== 'Inactive' ? (
                     <LinkOverlay href="#">{item.name}</LinkOverlay>
                   ) : (
@@ -250,7 +250,7 @@ export const Complete = () => {
                   )}
                 </Text>
                 <Text
-                  isTruncated
+                  noOfLines={1}
                   maxW="full"
                   fontSize="sm"
                   color={colorModeValue('gray.600', 'gray.300')}
@@ -261,11 +261,11 @@ export const Complete = () => {
             </HStack>
           </DataListCell>
           <DataListCell colName="title" fontSize="sm">
-            <Text isTruncated maxW="full">
+            <Text noOfLines={1} maxW="full">
               {item.job}
             </Text>
             <Text
-              isTruncated
+              noOfLines={1}
               maxW="full"
               color={colorModeValue('gray.600', 'gray.300')}
             >
@@ -282,7 +282,7 @@ export const Complete = () => {
           </DataListCell>
           <DataListCell colName="role" fontSize="sm">
             <Text
-              isTruncated
+              noOfLines={1}
               maxW="full"
               color={colorModeValue('gray.600', 'gray.300')}
             >
@@ -396,11 +396,11 @@ export const CompleteWithCollapse = () => {
               <HStack maxW="100%">
                 <Avatar size="sm" name={item.name} mx="2" />
                 <Box minW="0">
-                  <Text isTruncated maxW="full" fontWeight="bold">
+                  <Text noOfLines={1} maxW="full" fontWeight="bold">
                     {item.name}
                   </Text>
                   <Text
-                    isTruncated
+                    noOfLines={1}
                     maxW="full"
                     fontSize="sm"
                     color={colorModeValue('gray.600', 'gray.300')}

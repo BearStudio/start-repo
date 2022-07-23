@@ -15,7 +15,7 @@ export const ActionsButton: FC<ActionsButtonProps> = forwardRef(
     return (
       <IconButton
         ref={ref}
-        d="inline-flex"
+        display="inline-flex"
         borderRadius="full"
         variant="ghost"
         color="inherit"

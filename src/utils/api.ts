@@ -26,8 +26,9 @@ export const notFound = (res: NextApiResponse) => {
 
 export const getPagination = (req: NextApiRequest) => {
   const skip =
-    parseInt(req.query.page?.toString()) * parseInt(req.query.size?.toString());
-  const take = parseInt(req.query.size?.toString());
+    parseInt(req.query.page?.toString() ?? '1') *
+    parseInt(req.query.size?.toString() ?? '10');
+  const take = parseInt(req.query.size?.toString() ?? '10');
 
   return {
     skip: isNaN(skip) ? undefined : skip,
