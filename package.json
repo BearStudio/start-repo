@@ -10,6 +10,7 @@
   },
   "scripts": {
     "prepare": "husky install && yarn prisma generate",
+    "postinstall": "yarn theme:generate-typing",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
@@ -20,6 +21,7 @@
     "storybook:build": "build-storybook && mv ./storybook-static ./public/storybook",
     "static:build": "yarn build && next export",
     "static:serve": "yarn static:build && npx servor out app.html 5000",
+    "theme:generate-typing": "chakra-cli tokens ./src/theme/theme.ts",
     "db:ui": "prisma studio",
     "db:push": "prisma db push"
   },
@@ -73,6 +75,7 @@
   "devDependencies": {
     "@babel/core": "7.18.9",
     "@babel/parser": "7.18.9",
+    "@chakra-ui/cli": "2.1.2",
     "@next/eslint-plugin-next": "12.2.3",
     "@storybook/addon-actions": "6.4.21",
     "@storybook/addon-essentials": "6.4.21",
