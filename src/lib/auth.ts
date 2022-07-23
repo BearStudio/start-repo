@@ -1,10 +1,10 @@
 import { PrismaAdapter } from '@next-auth/prisma-adapter';
 import { NextAuthOptions } from 'next-auth';
-import GitHubProvider from 'next-auth/providers/github';
-import GitLabProvider from 'next-auth/providers/gitlab';
+import GitHubProvider, { GithubProfile } from 'next-auth/providers/github';
+import GitLabProvider, { GitLabProfile } from 'next-auth/providers/gitlab';
 
-import { linkGitHubAccount } from '@/lib/linkGitHubAccount';
 import { linkGitLabAccount } from '@/lib/linkGitLabAccount';
+import { signInGitHubAccount } from '@/lib/signInGitHubAccount';
 import { db } from '@/utils/db';
 
 export const authOptions: NextAuthOptions = {
@@ -25,18 +25,36 @@ export const authOptions: NextAuthOptions = {
     GitLabProvider({
       clientId: process.env.GITLAB_CLIENT_ID ?? '',
       clientSecret: process.env.GITLAB_CLIENT_SECRET ?? '',
+      profile(profile: GitLabProfile) {
+        return {
+          id: profile.id.toString(),
+          email: profile.email,
+          image: profile.avatar_url,
+          name: profile.username,
+        };
+      },
     }),
   ],
   pages: {
     signIn: '/app/login',
   },
   callbacks: {
-    async signIn({ account, user, ...args }) {
-      if (account.provider === 'gitlab') {
-        return linkGitLabAccount(account);
+    async signIn({ account, profile }) {
+      if (account.provider === 'github') {
+        return signInGitHubAccount({
+          account,
+          profile: profile as GithubProfile,
+        });
       }
 
-      return linkGitHubAccount(account);
+      if (account.provider === 'gitlab') {
+        // TODO: will need to check for group / orgs when implementing complete
+        // sign in.
+        // https://github.com/BearStudio/start-repo/issues/19
+        return true;
+      }
+
+      return false;
     },
     async session({ session, user: u }) {
       const user = await db.user.findFirst({
@@ -50,6 +68,13 @@ export const authOptions: NextAuthOptions = {
 
       session.user = user;
       return session;
+    },
+  },
+  events: {
+    linkAccount: ({ account, profile }) => {
+      if (account.provider === 'gitlab') {
+        linkGitLabAccount({ account, profile });
+      }
     },
   },
   secret: process.env.NEXTAUTH_SECRET,

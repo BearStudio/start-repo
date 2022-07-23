@@ -41,7 +41,7 @@ export const PageAccounts = () => {
                 isDisabled={!!githubAccount}
                 isLoading={isLoading}
               >
-                {githubAccount ? 'Linked' : 'Link'}
+                {githubAccount ? githubAccount.username ?? 'Linked' : 'Link'}
               </Button>
             </Flex>
             <Stack>
@@ -53,7 +53,7 @@ export const PageAccounts = () => {
                   isLoading={isLoading}
                   onClick={() => signIn('gitlab')}
                 >
-                  {gitlabAccount ? `Linked` : 'Link'}
+                  {gitlabAccount ? gitlabAccount.username ?? 'Linked' : 'Link'}
                 </Button>
               </Flex>
               <Alert borderRadius="md" status="warning">
