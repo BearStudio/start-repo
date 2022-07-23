@@ -1,9 +1,16 @@
 import axios from 'axios';
 import { Account } from 'next-auth';
+import { GithubProfile } from 'next-auth/providers/github';
 
 import { db } from '@/utils/db';
 
-export const linkGitHubAccount = async (account: Account): Promise<boolean> => {
+export const signInGitHubAccount = async ({
+  account,
+  profile,
+}: {
+  account: Account;
+  profile: GithubProfile;
+}): Promise<boolean> => {
   try {
     // Create a new instance of axios so we are not bothered by the
     // interceptors.
@@ -43,7 +50,10 @@ export const linkGitHubAccount = async (account: Account): Promise<boolean> => {
             providerAccountId: account.providerAccountId,
           },
         },
-        data: account,
+        data: {
+          ...account,
+          username: profile.login,
+        },
       });
     }
 

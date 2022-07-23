@@ -1,8 +1,35 @@
-import { Account } from 'next-auth';
+import { Account, User } from 'next-auth';
 
-export const linkGitLabAccount = (account: Account): boolean => {
-  // At the moment, we are only linking GitLab accounts, so we return true to
-  // allow the currently connected GitHub user to link the GitLab account as we
-  // make sure that GitHub users are only from a given set of organizations.
-  return true;
+import { db } from '@/utils/db';
+
+export const linkGitLabAccount = async ({
+  account,
+  profile,
+}: {
+  account: Account;
+  profile: User;
+}): Promise<void> => {
+  const existingAccount = await db.account.findUnique({
+    where: {
+      provider_providerAccountId: {
+        provider: account.provider,
+        providerAccountId: account.providerAccountId,
+      },
+    },
+  });
+
+  if (!!existingAccount) {
+    await db.account.update({
+      where: {
+        provider_providerAccountId: {
+          provider: account.provider,
+          providerAccountId: account.providerAccountId,
+        },
+      },
+      data: {
+        ...account,
+        username: profile.name,
+      },
+    });
+  }
 };
