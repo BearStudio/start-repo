@@ -52,7 +52,7 @@
     "isomorphic-form-data": "2.0.0",
     "lodash": "4.17.21",
     "next": "12.2.3",
-    "next-auth": "4.10.2",
+    "next-auth": "4.10.3",
     "react": "18.2.0",
     "react-color-palette": "6.2.0",
     "react-currency-input-field": "3.6.4",
