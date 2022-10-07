@@ -1,7 +1,8 @@
-import { createProtectedRouter } from '@/server/create-protected-router';
+import { isAuthed } from '@/server/middleware';
+import { t } from '@/server/trpc';
 
-export const accountRouter = createProtectedRouter().query('me', {
-  async resolve({ ctx }) {
+export const accountRouter = t.router({
+  me: t.procedure.use(isAuthed).query(async ({ ctx }) => {
     const accounts = await ctx.db.account.findMany({
       where: {
         user: {
@@ -11,5 +12,5 @@ export const accountRouter = createProtectedRouter().query('me', {
     });
 
     return accounts;
-  },
+  }),
 });

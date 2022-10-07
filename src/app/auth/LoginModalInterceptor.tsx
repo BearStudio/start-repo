@@ -10,9 +10,9 @@ import {
   Text,
   useDisclosure,
 } from '@chakra-ui/react';
+import { useQueryClient } from '@tanstack/react-query';
 import Axios from 'axios';
 import { useTranslation } from 'react-i18next';
-import { useQueryClient } from 'react-query';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 import { useAuthContext } from '@/app/auth/AuthContext';

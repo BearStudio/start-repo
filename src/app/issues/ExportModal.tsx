@@ -12,9 +12,9 @@ import {
 } from '@chakra-ui/react';
 import { Formiz, useForm } from '@formiz/core';
 import { Scope } from '@prisma/client';
+import { useMutation } from '@tanstack/react-query';
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import { saveAs } from 'file-saver';
-import { useMutation } from 'react-query';
 
 import { useFieldSelectScopeStyles } from '@/app/scopes/useFieldSelectScopeStyles';
 import { FieldInput, FieldMultiSelect, FieldRadios } from '@/components';
@@ -25,12 +25,9 @@ import { FieldSelectScopeOptions } from './IssueForm';
 export const ExportModal = ({ onClose, initialValues }) => {
   const form = useForm();
 
-  const { data: scopes, isLoading: isLoadingScopes } = trpc.useQuery([
-    'scope.all',
-    {
-      search: '',
-    },
-  ]);
+  const { data: scopes, isLoading: isLoadingScopes } = trpc.scope.all.useQuery({
+    search: '',
+  });
 
   const { mutate: exportCSV, isLoading: isExportCSVLoading } = useMutation<
     AxiosResponse<string>,
@@ -47,7 +44,7 @@ export const ExportModal = ({ onClose, initialValues }) => {
   });
 
   const { mutate: exportToGithub, isLoading: isExportToGithubLoading } =
-    trpc.useMutation('issue.export.github', {
+    trpc.issue.export.github.useMutation({
       onSuccess: () => {
         onClose();
       },

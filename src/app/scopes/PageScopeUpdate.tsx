@@ -2,7 +2,6 @@ import { Box, Button, Flex, Heading } from '@chakra-ui/react';
 import { Formiz } from '@formiz/core';
 import { Scope } from '@prisma/client';
 import { useTranslation } from 'react-i18next';
-import { useQueryClient } from 'react-query';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import {
@@ -14,7 +13,7 @@ import {
 } from '@/app/layout';
 import { Error404 } from '@/errors';
 import { useDarkMode } from '@/hooks/useDarkMode';
-import { TQuery, trpc } from '@/utils/trpc';
+import { trpc } from '@/utils/trpc';
 
 import { ScopeForm } from './ScopeForm';
 
@@ -28,13 +27,16 @@ export const PageScopeUpdate = () => {
     data: scope,
     isFetching,
     isError,
-  } = trpc.useQuery(['scope.detail', { id: id ?? '' }], {
-    refetchOnWindowFocus: false,
-    refetchOnReconnect: false,
-  });
+  } = trpc.scope.detail.useQuery(
+    { id: id ?? '' },
+    {
+      refetchOnWindowFocus: false,
+      refetchOnReconnect: false,
+    }
+  );
 
-  const queryClient = useQueryClient();
-  const { mutate, isLoading } = trpc.useMutation('scope.edit');
+  const trpcContext = trpc.useContext();
+  const { mutate, isLoading } = trpc.scope.edit.useMutation();
 
   const handleOnValidSubmit = (
     values: Pick<Scope, 'name' | 'description' | 'color'>
@@ -45,8 +47,7 @@ export const PageScopeUpdate = () => {
         onSuccess: () => {
           navigate(-1);
 
-          const queryKey: TQuery = 'scope.all';
-          return queryClient.invalidateQueries([queryKey]);
+          return trpcContext.scope.all.invalidate();
         },
       }
     );

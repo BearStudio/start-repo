@@ -1,15 +1,19 @@
 import { z } from 'zod';
 
-import { createProtectedRouter } from '@/server/create-protected-router';
+import { isAuthed } from '@/server/middleware';
+import { t } from '@/server/trpc';
 
-export const scopeRouter = createProtectedRouter()
-  .query('infinite', {
-    input: z.object({
-      search: z.string(),
-      limit: z.number().min(1).max(100).default(20),
-      cursor: z.string().uuid().nullish(),
-    }),
-    async resolve({ ctx, input: { search, limit, cursor } }) {
+export const scopeRouter = t.router({
+  infinite: t.procedure
+    .use(isAuthed)
+    .input(
+      z.object({
+        search: z.string(),
+        limit: z.number().min(1).max(100).default(20),
+        cursor: z.string().uuid().nullish(),
+      })
+    )
+    .query(async ({ ctx, input: { search, limit, cursor } }) => {
       const scopes = await ctx.db.scope.findMany({
         take: limit + 1,
         where: {
@@ -48,13 +52,15 @@ export const scopeRouter = createProtectedRouter()
         nextCursor,
         totalCount,
       };
-    },
-  })
-  .query('all', {
-    input: z.object({
-      search: z.string(),
     }),
-    async resolve({ ctx, input: { search } }) {
+  all: t.procedure
+    .use(isAuthed)
+    .input(
+      z.object({
+        search: z.string(),
+      })
+    )
+    .query(async ({ ctx, input: { search } }) => {
       const scopes = await ctx.db.scope.findMany({
         where: {
           name: {
@@ -70,27 +76,31 @@ export const scopeRouter = createProtectedRouter()
       });
 
       return scopes;
-    },
-  })
-  .query('detail', {
-    input: z.object({
-      id: z.string().uuid(),
     }),
-    async resolve({ ctx, input: { id } }) {
+  detail: t.procedure
+    .use(isAuthed)
+    .input(
+      z.object({
+        id: z.string().uuid(),
+      })
+    )
+    .query(async ({ ctx, input: { id } }) => {
       const scope = await ctx.db.scope.findUnique({
         where: { id },
       });
 
       return scope;
-    },
-  })
-  .mutation('create', {
-    input: z.object({
-      name: z.string().min(1),
-      description: z.string().nullish(),
-      color: z.string().length(7).nullish(),
     }),
-    async resolve({ input: { name, description, color }, ctx }) {
+  create: t.procedure
+    .use(isAuthed)
+    .input(
+      z.object({
+        name: z.string().min(1),
+        description: z.string().nullish(),
+        color: z.string().length(7).nullish(),
+      })
+    )
+    .mutation(async ({ input: { name, description, color }, ctx }) => {
       const scope = await ctx.db.scope.create({
         data: {
           name,
@@ -100,11 +110,17 @@ export const scopeRouter = createProtectedRouter()
       });
 
       return scope;
-    },
-  })
-  .mutation('delete', {
-    input: z.string().uuid(),
-    async resolve({ ctx, input: id }) {
+    }),
+  delete: t.procedure
+    .use(isAuthed)
+    .input(z.string().uuid())
+    .mutation(async ({ ctx, input: id }) => {
+      await ctx.db.scopesOnIssues.deleteMany({
+        where: {
+          scopeId: id,
+        },
+      });
+
       const scope = await ctx.db.scope.delete({
         where: {
           id,
@@ -112,18 +128,20 @@ export const scopeRouter = createProtectedRouter()
       });
 
       return scope;
-    },
-  })
-  .mutation('edit', {
-    input: z.object({
-      id: z.string().uuid(),
-      data: z.object({
-        name: z.string().min(1),
-        description: z.string().nullish(),
-        color: z.string().length(7).nullish(),
-      }),
     }),
-    async resolve({ ctx, input }) {
+  edit: t.procedure
+    .use(isAuthed)
+    .input(
+      z.object({
+        id: z.string().uuid(),
+        data: z.object({
+          name: z.string().min(1),
+          description: z.string().nullish(),
+          color: z.string().length(7).nullish(),
+        }),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
       const { id, data } = input;
 
       const updatedScope = await ctx.db.scope.update({
@@ -136,5 +154,5 @@ export const scopeRouter = createProtectedRouter()
       });
 
       return updatedScope;
-    },
-  });
+    }),
+});

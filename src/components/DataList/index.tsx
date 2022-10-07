@@ -12,6 +12,7 @@ import {
   FlexProps,
   useBreakpointValue,
 } from '@chakra-ui/react';
+import { useAutoAnimate } from '@formkit/auto-animate/react';
 
 import { useDarkMode } from '@/hooks/useDarkMode';
 
@@ -237,6 +238,8 @@ export const DataList: FC<DataListProps> = ({
   ...rest
 }) => {
   const { colorModeValue } = useDarkMode();
+  const [listRef] = useAutoAnimate<HTMLDivElement>();
+
   const [columns, setColumns] = useState<DataListColumns>({});
   return (
     <DataListContext.Provider
@@ -258,6 +261,7 @@ export const DataList: FC<DataListProps> = ({
         minH="10rem"
         allowMultiple={allowMultiple && !allowToggle}
         allowToggle={allowToggle}
+        ref={listRef}
         {...rest}
       />
     </DataListContext.Provider>

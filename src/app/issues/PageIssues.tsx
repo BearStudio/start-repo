@@ -38,7 +38,6 @@ import { Issue, Scope, ScopesOnIssues } from '@prisma/client';
 import { useTranslation } from 'react-i18next';
 import { FiDownload, FiEdit, FiPlus, FiTrash2, FiX } from 'react-icons/fi';
 import { VscIssues } from 'react-icons/vsc';
-import { useQueryClient } from 'react-query';
 import { Link } from 'react-router-dom';
 
 import { EmptyState } from '@/app/issues/EmptyState';
@@ -56,11 +55,10 @@ import {
   FieldSelect,
   Icon,
   useToastError,
-  useToastSuccess,
 } from '@/components';
 import { SearchInput } from '@/components/SearchInput';
 import { generateSwatch } from '@/utils/colors';
-import { TQuery, trpc } from '@/utils/trpc';
+import { trpc } from '@/utils/trpc';
 
 import { ExportModal } from './ExportModal';
 import { FieldSelectScopeOptions } from './IssueForm';
@@ -71,24 +69,15 @@ type IssueActionsProps = {
 
 const IssueActions: FC<IssueActionsProps> = ({ issue, ...rest }) => {
   const { t } = useTranslation();
-  const toastSuccess = useToastSuccess();
   const toastError = useToastError();
 
-  const queryClient = useQueryClient();
-  const { mutate: issueRemove, ...issueRemoveData } = trpc.useMutation(
-    ['issue.delete'],
-    {
-      onSuccess: ({ title }) => {
-        toastSuccess({
-          title: t('issues:feedbacks.deleteIssueSuccess.title'),
-          description: t('issues:feedbacks.deleteIssueSuccess.description', {
-            title,
-          }),
-        });
-
-        const queryKey: TQuery = 'issue.infinite';
-        return queryClient.invalidateQueries([queryKey]);
+  const trpcContext = trpc.useContext();
+  const { mutate: issueRemove, ...issueRemoveData } =
+    trpc.issue.delete.useMutation({
+      onSuccess: () => {
+        return trpcContext.issue.infinite.invalidate();
       },
+
       onError: () => {
         toastError({
           title: t('issues:feedbacks.deleteIssueError.title'),
@@ -97,8 +86,7 @@ const IssueActions: FC<IssueActionsProps> = ({ issue, ...rest }) => {
           }),
         });
       },
-    }
-  );
+    });
   const removeIssue = () => issueRemove(issue.id);
   const isRemovalLoading = issueRemoveData.isLoading;
 
@@ -136,10 +124,15 @@ export const PageIssues = () => {
   const brandColor = useToken('colors', 'brand.500');
   const { isOpen, onClose, onOpen } = useDisclosure();
 
+  const trpcContext = trpc.useContext();
+
   const { data, isLoading, isFetching, fetchNextPage, hasNextPage } =
-    trpc.useInfiniteQuery(['issue.infinite', { search, limit: 20, filters }], {
-      getNextPageParam: (lastPage) => lastPage.nextCursor,
-    });
+    trpc.issue.infinite.useInfiniteQuery(
+      { search, limit: 20, filters },
+      {
+        getNextPageParam: (lastPage) => lastPage.nextCursor,
+      }
+    );
 
   const issues = data?.pages.reduce(
     (
@@ -151,30 +144,24 @@ export const PageIssues = () => {
 
   const totalCount = data?.pages[0]?.totalCount;
 
-  const queryClient = useQueryClient();
   const { mutate: addBulkScope, isLoading: isLoadingAddBulkScope } =
-    trpc.useMutation(['issue.addBulkScope'], {
+    trpc.issue.addBulkScope.useMutation({
       onSuccess: async () => {
-        const queryKey: TQuery = 'issue.infinite';
-        await queryClient.invalidateQueries([queryKey]);
+        trpcContext.issue.infinite.invalidate();
         setSelectedIssues([]);
-        return;
       },
     });
   const { mutate: deleteMany, isLoading: isLoadingDeleteMany } =
-    trpc.useMutation(['issue.deleteMany'], {
+    trpc.issue.deleteMany.useMutation({
       onSuccess: async () => {
-        const queryKey: TQuery = 'issue.infinite';
-        await queryClient.invalidateQueries([queryKey]);
+        trpcContext.issue.infinite.invalidate();
         setSelectedIssues([]);
-        return;
       },
     });
 
-  const { data: scopes, isLoading: isLoadingScopes } = trpc.useQuery([
-    'scope.all',
-    { search: '' },
-  ]);
+  const { data: scopes, isLoading: isLoadingScopes } = trpc.scope.all.useQuery({
+    search: '',
+  });
 
   // Reset selected on search
   useEffect(() => {
