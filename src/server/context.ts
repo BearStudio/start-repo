@@ -1,4 +1,4 @@
-import * as trpc from '@trpc/server';
+import { inferAsyncReturnType } from '@trpc/server';
 import * as trpcNext from '@trpc/server/adapters/next';
 import { unstable_getServerSession as getServerSession } from 'next-auth/next';
 
@@ -19,4 +19,4 @@ export const createContext = async ({
   };
 };
 
-export type Context = trpc.inferAsyncReturnType<typeof createContext>;
+export type Context = inferAsyncReturnType<typeof createContext>;

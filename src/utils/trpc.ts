@@ -1,73 +1,59 @@
-import { createReactQueryHooks } from '@trpc/react';
-import type {
-  inferProcedureInput,
-  inferProcedureOutput,
-  inferSubscriptionOutput,
-} from '@trpc/server';
+import { httpBatchLink, loggerLink } from '@trpc/client';
+import { createTRPCNext } from '@trpc/next';
+import { TRPCError } from '@trpc/server';
 import superjson from 'superjson';
 
 import type { AppRouter } from '@/server/routers/_app';
 
-export const trpc = createReactQueryHooks<AppRouter>();
+function getBaseUrl() {
+  if (typeof window !== 'undefined')
+    // browser should use relative path
+    return '';
+  if (process.env.VERCEL_URL)
+    // reference for vercel.com
+    return `https://${process.env.VERCEL_URL}`;
+  if (process.env.RENDER_INTERNAL_HOSTNAME)
+    // reference for render.com
+    return `http://${process.env.RENDER_INTERNAL_HOSTNAME}:${process.env.PORT}`;
 
-export const transformer = superjson;
+  // assume localhost
+  return `http://localhost:${process.env.PORT ?? 3000}`;
+}
 
-export type TQuery = keyof AppRouter['_def']['queries'];
-
-export type InferQueryOutput<TRouteKey extends TQuery> = inferProcedureOutput<
-  AppRouter['_def']['queries'][TRouteKey]
->;
-
-export type InferQueryInput<TRouteKey extends TQuery> = inferProcedureInput<
-  AppRouter['_def']['queries'][TRouteKey]
->;
-
-export type InferQueryPathAndInput<TRouteKey extends TQuery> = [
-  TRouteKey,
-  Exclude<InferQueryInput<TRouteKey>, void>
-];
-
-/**
- * Enum containing all api mutation paths
- */
-export type TMutation = keyof AppRouter['_def']['mutations'];
-
-/**
- * Enum containing all api subscription paths
- */
-export type TSubscription = keyof AppRouter['_def']['subscriptions'];
-
-/**
- * This is a helper method to infer the output of a mutation resolver
- * @example type HelloOutput = InferMutationOutput<'hello'>
- */
-export type InferMutationOutput<TRouteKey extends TMutation> =
-  inferProcedureOutput<AppRouter['_def']['mutations'][TRouteKey]>;
-
-/**
- * This is a helper method to infer the input of a mutation resolver
- * @example type HelloInput = InferMutationInput<'hello'>
- */
-export type InferMutationInput<TRouteKey extends TMutation> =
-  inferProcedureInput<AppRouter['_def']['mutations'][TRouteKey]>;
-
-/**
- * This is a helper method to infer the output of a subscription resolver
- * @example type HelloOutput = InferSubscriptionOutput<'hello'>
- */
-export type InferSubscriptionOutput<TRouteKey extends TSubscription> =
-  inferProcedureOutput<AppRouter['_def']['subscriptions'][TRouteKey]>;
-
-/**
- * This is a helper method to infer the asynchronous output of a subscription resolver
- * @example type HelloAsyncOutput = InferAsyncSubscriptionOutput<'hello'>
- */
-export type InferAsyncSubscriptionOutput<TRouteKey extends TSubscription> =
-  inferSubscriptionOutput<AppRouter, TRouteKey>;
-
-/**
- * This is a helper method to infer the input of a subscription resolver
- * @example type HelloInput = InferSubscriptionInput<'hello'>
- */
-export type InferSubscriptionInput<TRouteKey extends TSubscription> =
-  inferProcedureInput<AppRouter['_def']['subscriptions'][TRouteKey]>;
+export const trpc = createTRPCNext<AppRouter>({
+  config({ ctx }) {
+    return {
+      links: [
+        loggerLink({
+          enabled: (opts) =>
+            process.env.NODE_ENV === 'development' ||
+            (opts.direction === 'down' && opts.result instanceof Error),
+        }),
+        httpBatchLink({
+          url: `${getBaseUrl()}/api/trpc`,
+        }),
+      ],
+      transformer: superjson,
+      queryClientConfig: {
+        defaultOptions: {
+          queries: {
+            retry: (failureCount, error: any) => {
+              const trcpErrorCode = error?.data?.code as TRPCError['code'];
+              if (trcpErrorCode === 'NOT_FOUND') {
+                return false;
+              }
+              if (failureCount < 3) {
+                return true;
+              }
+              return false;
+            },
+          },
+        },
+      },
+    };
+  },
+  /**
+   * @link https://trpc.io/docs/ssr
+   */
+  ssr: false,
+});

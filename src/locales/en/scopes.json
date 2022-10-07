@@ -1,9 +1,5 @@
 {
   "feedbacks": {
-    "deleteScopeSuccess": {
-      "title": "Scope deleted",
-      "description": "Scope {{name}} successfully deleted"
-    },
     "deleteScopeError": {
       "title": "Deletion failed",
       "description": "Failed to remove {{name}} scope"

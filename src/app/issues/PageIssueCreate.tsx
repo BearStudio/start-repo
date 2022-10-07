@@ -1,13 +1,13 @@
 import { Box, Button, Flex, Heading } from '@chakra-ui/react';
 import { Formiz } from '@formiz/core';
 import { useTranslation } from 'react-i18next';
-import { useQueryClient } from 'react-query';
 import { useNavigate } from 'react-router-dom';
 
 import { Page, PageBottomBar, PageContent, PageTopBar } from '@/app/layout';
 import { useToastError } from '@/components';
 import { useDarkMode } from '@/hooks/useDarkMode';
-import { InferMutationInput, TQuery, trpc } from '@/utils/trpc';
+import { AppRouterTypes } from '@/server/routers/_app';
+import { trpc } from '@/utils/trpc';
 
 import { IssueForm } from './IssueForm';
 
@@ -17,15 +17,17 @@ export const PageIssueCreate = () => {
   const { colorModeValue } = useDarkMode();
   const toastError = useToastError();
 
-  const queryClient = useQueryClient();
-  const { mutate, isLoading } = trpc.useMutation('issue.create');
+  const trpcContext = trpc.useContext();
+  const { mutate, isLoading } = trpc.issue.create.useMutation();
 
-  const handleOnValidSubmit = (values: InferMutationInput<'issue.create'>) => {
+  type IssueCreate = AppRouterTypes['issue']['create'];
+
+  const handleOnValidSubmit = (values: IssueCreate['input']) => {
     mutate(values, {
       onSuccess: () => {
         navigate(-1);
-        const queryKey: TQuery = 'issue.all';
-        return queryClient.invalidateQueries([queryKey]);
+
+        return trpcContext.issue.all.invalidate();
       },
       onError: () => {
         toastError({

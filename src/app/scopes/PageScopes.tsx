@@ -21,7 +21,6 @@ import {
 import { Scope } from '@prisma/client';
 import { useTranslation } from 'react-i18next';
 import { FiEdit, FiPlus, FiTag, FiTrash2 } from 'react-icons/fi';
-import { useQueryClient } from 'react-query';
 import { Link } from 'react-router-dom';
 
 import { Page, PageContent } from '@/app/layout';
@@ -34,11 +33,10 @@ import {
   DataListRow,
   Icon,
   useToastError,
-  useToastSuccess,
 } from '@/components';
 import { SearchInput } from '@/components/SearchInput';
 import { generateSwatch } from '@/utils/colors';
-import { TQuery, trpc } from '@/utils/trpc';
+import { trpc } from '@/utils/trpc';
 
 type ScopeActionsProps = {
   scope: Scope;
@@ -46,22 +44,13 @@ type ScopeActionsProps = {
 
 const ScopeActions: FC<ScopeActionsProps> = ({ scope, ...rest }) => {
   const { t } = useTranslation();
-  const toastSuccess = useToastSuccess();
   const toastError = useToastError();
 
-  const queryClient = useQueryClient();
-  const { mutate: scopeRemove, ...scopeRemoveData } = trpc.useMutation(
-    'scope.delete',
-    {
-      onSuccess: ({ name }) => {
-        toastSuccess({
-          title: t('scopes:feedbacks.deleteScopeSuccess.title'),
-          description: t('scopes:feedbacks.deleteScopeSuccess.description', {
-            name,
-          }),
-        });
-        const queryKey: TQuery = 'scope.all';
-        return queryClient.invalidateQueries([queryKey]);
+  const trpcContext = trpc.useContext();
+  const { mutate: scopeRemove, ...scopeRemoveData } =
+    trpc.scope.delete.useMutation({
+      onSuccess: () => {
+        return trpcContext.scope.infinite.invalidate();
       },
       onError: () => {
         toastError({
@@ -71,8 +60,7 @@ const ScopeActions: FC<ScopeActionsProps> = ({ scope, ...rest }) => {
           }),
         });
       },
-    }
-  );
+    });
 
   const removeScope = () => scopeRemove(scope.id);
   const isRemovalLoading = scopeRemoveData.isLoading;
@@ -106,9 +94,12 @@ export const PageScopes = () => {
   const [search, setSearch] = useState('');
 
   const { data, isLoading, isFetching, fetchNextPage, hasNextPage } =
-    trpc.useInfiniteQuery(['scope.infinite', { search, limit: 20 }], {
-      getNextPageParam: (lastPage) => lastPage.nextCursor,
-    });
+    trpc.scope.infinite.useInfiniteQuery(
+      { search, limit: 20 },
+      {
+        getNextPageParam: (lastPage) => lastPage.nextCursor,
+      }
+    );
 
   const scopes = data?.pages.reduce(
     (previousValue: Scope[], currentValue) => [

@@ -2,13 +2,12 @@ import { Box, Button, Flex, Heading } from '@chakra-ui/react';
 import { Formiz } from '@formiz/core';
 import { Scope } from '@prisma/client';
 import { useTranslation } from 'react-i18next';
-import { useQueryClient } from 'react-query';
 import { useNavigate } from 'react-router-dom';
 
 import { Page, PageBottomBar, PageContent, PageTopBar } from '@/app/layout';
 import { useToastError } from '@/components';
 import { useDarkMode } from '@/hooks/useDarkMode';
-import { TQuery, trpc } from '@/utils/trpc';
+import { trpc } from '@/utils/trpc';
 
 import { ScopeForm } from './ScopeForm';
 
@@ -21,8 +20,8 @@ export const PageScopeCreate = () => {
 
   const toastError = useToastError();
 
-  const queryClient = useQueryClient();
-  const { mutate, isLoading } = trpc.useMutation('scope.create');
+  const trpcContext = trpc.useContext();
+  const { mutate, isLoading } = trpc.scope.create.useMutation();
 
   const handleOnValidSubmit = (
     values: Pick<Scope, 'name' | 'description' | 'color'>
@@ -30,8 +29,8 @@ export const PageScopeCreate = () => {
     mutate(values, {
       onSuccess: () => {
         navigate(-1);
-        const queryKey: TQuery = 'scope.all';
-        return queryClient.invalidateQueries([queryKey]);
+
+        return trpcContext.scope.all.invalidate();
       },
       onError: (error) => {
         toastError({

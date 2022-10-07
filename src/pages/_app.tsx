@@ -1,18 +1,10 @@
-import React from 'react';
-
 import { Box, Text, useTheme } from '@chakra-ui/react';
-import { httpBatchLink } from '@trpc/client/links/httpBatchLink';
-import { loggerLink } from '@trpc/client/links/loggerLink';
-import { withTRPC } from '@trpc/next';
-import { TRPCError } from '@trpc/server';
 import Head from 'next/head';
 
 import { Providers } from '@/Providers';
 import { Viewport } from '@/components';
 import { ErrorBoundary } from '@/errors';
-import { AppRouter } from '@/server/routers/_app';
-import { isBrowser } from '@/utils/ssr';
-import { transformer } from '@/utils/trpc';
+import { trpc } from '@/utils/trpc';
 
 const AppDevHint = () => {
   const envName =
@@ -118,52 +110,4 @@ const App = ({ Component, pageProps }) => {
   );
 };
 
-function getBaseUrl() {
-  if (isBrowser) {
-    return '';
-  }
-
-  if (process.env.VERCEL_URL) {
-    return `https://${process.env.VERCEL_URL}`;
-  }
-
-  return `http://localhost:${process.env.PORT ?? 3000}`;
-}
-
-export default withTRPC<AppRouter>({
-  config({ ctx }) {
-    return {
-      links: [
-        loggerLink({
-          enabled: (opts) =>
-            process.env.NODE_ENV === 'development' ||
-            (opts.direction === 'down' && opts.result instanceof Error),
-        }),
-        httpBatchLink({
-          url: `${getBaseUrl()}/api/trpc`,
-        }),
-      ],
-      transformer,
-      queryClientConfig: {
-        defaultOptions: {
-          queries: {
-            retry: (failureCount, error: any) => {
-              const trcpErrorCode = error?.data?.code as TRPCError['code'];
-              if (trcpErrorCode === 'NOT_FOUND') {
-                return false;
-              }
-              if (failureCount < 3) {
-                return true;
-              }
-              return false;
-            },
-          },
-        },
-      },
-    };
-  },
-  /**
-   * @link https://trpc.io/docs/ssr
-   */
-  ssr: false,
-})(App);
+export default trpc.withTRPC(App);

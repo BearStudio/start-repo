@@ -1,7 +1,6 @@
 import { Box, Button, Flex, Heading } from '@chakra-ui/react';
 import { Formiz } from '@formiz/core';
 import { useTranslation } from 'react-i18next';
-import { useQueryClient } from 'react-query';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import {
@@ -13,7 +12,7 @@ import {
 } from '@/app/layout';
 import { Error404 } from '@/errors';
 import { useDarkMode } from '@/hooks/useDarkMode';
-import { TQuery, trpc } from '@/utils/trpc';
+import { trpc } from '@/utils/trpc';
 
 import { IssueForm } from './IssueForm';
 
@@ -27,13 +26,16 @@ export const PageIssueUpdate = () => {
     data: issue,
     isFetching,
     isError,
-  } = trpc.useQuery(['issue.detail', { id: id ?? '' }], {
-    refetchOnWindowFocus: false,
-    refetchOnReconnect: false,
-  });
+  } = trpc.issue.detail.useQuery(
+    { id: id ?? '' },
+    {
+      refetchOnWindowFocus: false,
+      refetchOnReconnect: false,
+    }
+  );
 
-  const queryClient = useQueryClient();
-  const { mutate, isLoading } = trpc.useMutation('issue.edit');
+  const trpcContext = trpc.useContext();
+  const { mutate, isLoading } = trpc.issue.edit.useMutation();
 
   const handleOnValidSubmit = (data: {
     title: string;
@@ -45,8 +47,8 @@ export const PageIssueUpdate = () => {
       {
         onSuccess: () => {
           navigate(-1);
-          const queryKey: TQuery = 'issue.all';
-          return queryClient.invalidateQueries([queryKey]);
+
+          return trpcContext.issue.all.invalidate();
         },
       }
     );

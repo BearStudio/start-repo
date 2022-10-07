@@ -2,21 +2,25 @@ import { TRPCError } from '@trpc/server';
 import axios from 'axios';
 import { z } from 'zod';
 
-import { createProtectedRouter } from '@/server/create-protected-router';
+import { isAuthed } from '@/server/middleware';
+import { t } from '@/server/trpc';
 
-export const issueRouter = createProtectedRouter()
-  .query('infinite', {
-    input: z.object({
-      search: z.string(),
-      limit: z.number().min(1).max(100).default(20),
-      cursor: z.string().uuid().nullish(),
-      filters: z
-        .object({
-          scopes: z.array(z.string().uuid()).nullish(),
-        })
-        .nullish(),
-    }),
-    async resolve({ ctx, input: { search, limit, cursor, filters } }) {
+export const issueRouter = t.router({
+  infinite: t.procedure
+    .use(isAuthed)
+    .input(
+      z.object({
+        search: z.string(),
+        limit: z.number().min(1).max(100).default(20),
+        cursor: z.string().uuid().nullish(),
+        filters: z
+          .object({
+            scopes: z.array(z.string().uuid()).nullish(),
+          })
+          .nullish(),
+      })
+    )
+    .query(async ({ ctx, input: { search, limit, cursor, filters } }) => {
       const issues = await ctx.db.issue.findMany({
         take: limit + 1,
         where: {
@@ -71,13 +75,15 @@ export const issueRouter = createProtectedRouter()
         nextCursor,
         totalCount,
       };
-    },
-  })
-  .query('all', {
-    input: z.object({
-      search: z.string(),
     }),
-    async resolve({ ctx, input: { search } }) {
+  all: t.procedure
+    .use(isAuthed)
+    .input(
+      z.object({
+        search: z.string(),
+      })
+    )
+    .query(async ({ ctx, input: { search } }) => {
       const issues = await ctx.db.issue.findMany({
         where: {
           title: {
@@ -100,13 +106,15 @@ export const issueRouter = createProtectedRouter()
       });
 
       return issues;
-    },
-  })
-  .query('detail', {
-    input: z.object({
-      id: z.string().uuid(),
     }),
-    async resolve({ ctx, input: { id } }) {
+  detail: t.procedure
+    .use(isAuthed)
+    .input(
+      z.object({
+        id: z.string().uuid(),
+      })
+    )
+    .query(async ({ ctx, input: { id } }) => {
       const issue = await ctx.db.issue.findUnique({
         where: { id },
         include: {
@@ -119,11 +127,11 @@ export const issueRouter = createProtectedRouter()
       });
 
       return issue;
-    },
-  })
-  .mutation('delete', {
-    input: z.string().uuid(),
-    async resolve({ input: id, ctx }) {
+    }),
+  delete: t.procedure
+    .use(isAuthed)
+    .input(z.string().uuid())
+    .mutation(async ({ input: id, ctx }) => {
       const issue = await ctx.db.issue.delete({
         where: {
           id,
@@ -131,11 +139,11 @@ export const issueRouter = createProtectedRouter()
       });
 
       return issue;
-    },
-  })
-  .mutation('deleteMany', {
-    input: z.array(z.string().uuid()).min(1),
-    async resolve({ input: ids, ctx }) {
+    }),
+  deleteMany: t.procedure
+    .use(isAuthed)
+    .input(z.array(z.string().uuid()).min(1))
+    .mutation(async ({ input: ids, ctx }) => {
       await ctx.db.issue.deleteMany({
         where: {
           id: {
@@ -143,15 +151,17 @@ export const issueRouter = createProtectedRouter()
           },
         },
       });
-    },
-  })
-  .mutation('create', {
-    input: z.object({
-      title: z.string().min(1),
-      description: z.string().nullish(),
-      scopes: z.array(z.string().uuid()).min(1),
     }),
-    async resolve({ input, ctx }) {
+  create: t.procedure
+    .use(isAuthed)
+    .input(
+      z.object({
+        title: z.string().min(1),
+        description: z.string().nullish(),
+        scopes: z.array(z.string().uuid()).min(1),
+      })
+    )
+    .mutation(async ({ input, ctx }) => {
       const issue = await ctx.db.issue.create({
         data: {
           title: input.title,
@@ -176,18 +186,20 @@ export const issueRouter = createProtectedRouter()
       });
 
       return issue;
-    },
-  })
-  .mutation('edit', {
-    input: z.object({
-      id: z.string().uuid(),
-      data: z.object({
-        title: z.string().min(1),
-        description: z.string().nullish(),
-        scopes: z.array(z.string().uuid()).min(1),
-      }),
     }),
-    async resolve({ ctx, input }) {
+  edit: t.procedure
+    .use(isAuthed)
+    .input(
+      z.object({
+        id: z.string().uuid(),
+        data: z.object({
+          title: z.string().min(1),
+          description: z.string().nullish(),
+          scopes: z.array(z.string().uuid()).min(1),
+        }),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
       const { id, data } = input;
 
       const updatedIssue = await ctx.db.issue.update({
@@ -216,14 +228,16 @@ export const issueRouter = createProtectedRouter()
       });
 
       return updatedIssue;
-    },
-  })
-  .mutation('addBulkScope', {
-    input: z.object({
-      ids: z.array(z.string().uuid()),
-      scopeId: z.string().uuid(),
     }),
-    async resolve({ ctx, input }) {
+  addBulkScope: t.procedure
+    .use(isAuthed)
+    .input(
+      z.object({
+        ids: z.array(z.string().uuid()),
+        scopeId: z.string().uuid(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
       const { ids, scopeId } = input;
 
       const issues = await ctx.db.issue.findMany({
@@ -241,61 +255,65 @@ export const issueRouter = createProtectedRouter()
       });
 
       return;
-    },
-  })
-  .mutation('export.github', {
-    input: z.object({
-      scopes: z.array(z.string().uuid()).min(1),
-      repositoryName: z.string().min(1),
     }),
-    async resolve({ ctx, input: { scopes, repositoryName } }) {
-      if (!ctx.session) {
-        throw new TRPCError({
-          code: 'UNAUTHORIZED',
-          message: 'You must be logged in',
+  export: t.router({
+    github: t.procedure
+      .use(isAuthed)
+      .input(
+        z.object({
+          scopes: z.array(z.string().uuid()).min(1),
+          repositoryName: z.string().min(1),
+        })
+      )
+      .mutation(async ({ ctx, input: { scopes, repositoryName } }) => {
+        if (!ctx.session) {
+          throw new TRPCError({
+            code: 'UNAUTHORIZED',
+            message: 'You must be logged in',
+          });
+        }
+
+        const githubToken = ctx.session.user.accounts.find(
+          (account) => account.provider === 'github'
+        )?.access_token;
+
+        const issues = await ctx.db.issue.findMany({
+          where: {
+            scopes: {
+              some: {
+                scopeId: { in: scopes },
+              },
+            },
+          },
+          include: {
+            scopes: {
+              include: {
+                scope: true,
+              },
+            },
+          },
         });
-      }
 
-      const githubToken = ctx.session.user.accounts.find(
-        (account) => account.provider === 'github'
-      )?.access_token;
-
-      const issues = await ctx.db.issue.findMany({
-        where: {
-          scopes: {
-            some: {
-              scopeId: { in: scopes },
+        for (const issue of issues) {
+          await axios.post(
+            `https://api.github.com/repos/${repositoryName}/issues`,
+            {
+              title: issue.title,
+              body: issue.description,
             },
-          },
-        },
-        include: {
-          scopes: {
-            include: {
-              scope: true,
-            },
-          },
-        },
-      });
+            {
+              headers: {
+                Accept: 'application/vnd.github.v3+json',
+                'Content-Type': 'application/json',
+                Authorization: `token ${githubToken}`,
+              },
+            }
+          );
 
-      for (const issue of issues) {
-        await axios.post(
-          `https://api.github.com/repos/${repositoryName}/issues`,
-          {
-            title: issue.title,
-            body: issue.description,
-          },
-          {
-            headers: {
-              Accept: 'application/vnd.github.v3+json',
-              'Content-Type': 'application/json',
-              Authorization: `token ${githubToken}`,
-            },
-          }
-        );
+          await new Promise((resolve) => setTimeout(resolve, 1000));
+        }
 
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-      }
-
-      return undefined;
-    },
-  });
+        return undefined;
+      }),
+  }),
+});
