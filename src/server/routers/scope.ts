@@ -1,3 +1,4 @@
+import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
 
 import { isAuthed } from '@/server/middleware';
@@ -101,6 +102,19 @@ export const scopeRouter = t.router({
       })
     )
     .mutation(async ({ input: { name, description, color }, ctx }) => {
+      const scopeDoesExist = await ctx.db.scope.findFirst({
+        where: {
+          name,
+        },
+      });
+
+      if (scopeDoesExist) {
+        throw new TRPCError({
+          code: 'CONFLICT',
+          message: `A scope with the name "${name}" already exists`,
+        });
+      }
+
       const scope = await ctx.db.scope.create({
         data: {
           name,
