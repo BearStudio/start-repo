@@ -40,14 +40,14 @@ export const authOptions: NextAuthOptions = {
   },
   callbacks: {
     async signIn({ account, profile }) {
-      if (account.provider === 'github') {
+      if (account?.provider === 'github') {
         return signInGitHubAccount({
           account,
           profile: profile as GithubProfile,
         });
       }
 
-      if (account.provider === 'gitlab') {
+      if (account?.provider === 'gitlab') {
         // TODO: will need to check for group / orgs when implementing complete
         // sign in.
         // https://github.com/BearStudio/start-repo/issues/19

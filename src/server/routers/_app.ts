@@ -1,4 +1,4 @@
-import { GetInferenceHelpers } from '@trpc/server';
+import { inferRouterInputs, inferRouterOutputs } from '@trpc/server';
 
 import { accountRouter } from '@/server/routers/account';
 import { issueRouter } from '@/server/routers/issue';
@@ -13,4 +13,5 @@ export const appRouter = t.router({
 
 export type AppRouter = typeof appRouter;
 
-export type AppRouterTypes = GetInferenceHelpers<AppRouter>;
+export type RouterInput = inferRouterInputs<AppRouter>;
+export type RouterOutput = inferRouterOutputs<AppRouter>;

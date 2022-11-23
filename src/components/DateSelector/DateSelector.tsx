@@ -1,4 +1,4 @@
-import { FC, createContext, useContext } from 'react';
+import { FC, PropsWithChildren, createContext, useContext } from 'react';
 
 import { Flex, useDisclosure } from '@chakra-ui/react';
 import dayjs, { Dayjs } from 'dayjs';
@@ -25,7 +25,7 @@ interface DateSelectorProps {
   onChange: (date: Dayjs) => void;
 }
 
-export const DateSelector: FC<DateSelectorProps> = ({
+export const DateSelector: FC<PropsWithChildren<DateSelectorProps>> = ({
   date,
   onChange,
   ...rest

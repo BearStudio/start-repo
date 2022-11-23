@@ -34,11 +34,15 @@ const NavContext = React.createContext<NavContextValue>({
 });
 const useNavContext = () => React.useContext(NavContext);
 
-interface NavProps extends MenuProps {
-  breakpoint?: string;
-}
+type NavProps = Overwrite<
+  MenuProps,
+  {
+    breakpoint?: string;
+    children: React.ReactNode;
+  }
+>;
 
-export const Nav = ({ children, breakpoint = 'lg', ...rest }: NavProps) => {
+export const Nav: FC<NavProps> = ({ children, breakpoint = 'lg', ...rest }) => {
   const isMenu = useBreakpointValue({
     base: true,
     [breakpoint]: false,

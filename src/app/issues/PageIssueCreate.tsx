@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { Page, PageBottomBar, PageContent, PageTopBar } from '@/app/layout';
 import { useToastError } from '@/components';
 import { useDarkMode } from '@/hooks/useDarkMode';
-import { AppRouterTypes } from '@/server/routers/_app';
+import { RouterInput } from '@/server/routers/_app';
 import { trpc } from '@/utils/trpc';
 
 import { IssueForm } from './IssueForm';
@@ -20,9 +20,9 @@ export const PageIssueCreate = () => {
   const trpcContext = trpc.useContext();
   const { mutate, isLoading } = trpc.issue.create.useMutation();
 
-  type IssueCreate = AppRouterTypes['issue']['create'];
+  type IssueCreateInput = RouterInput['issue']['create'];
 
-  const handleOnValidSubmit = (values: IssueCreate['input']) => {
+  const handleOnValidSubmit = (values: IssueCreateInput) => {
     mutate(values, {
       onSuccess: () => {
         navigate(-1);
