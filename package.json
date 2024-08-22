@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "description": "Web application to easily start a new repository with a bunch of default issues.",
   "engines": {
-    "node": ">=14.17  <=18",
+    "node": ">=14.17",
     "npm": "please-use-yarn",
     "yarn": ">=1.22"
   },
@@ -55,7 +55,7 @@
     "isomorphic-form-data": "2.0.0",
     "lodash": "4.17.21",
     "next": "12.3.1",
-    "next-auth": "4.17.0",
+    "next-auth": "4.24.7",
     "react": "18.2.0",
     "react-color-palette": "6.2.0",
     "react-currency-input-field": "3.6.5",
