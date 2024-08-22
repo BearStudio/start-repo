@@ -1,12 +1,11 @@
 generator client {
   provider        = "prisma-client-js"
-  previewFeatures = ["referentialIntegrity", "fullTextSearch", "fullTextIndex"]
+  previewFeatures = ["fullTextSearch"]
 }
 
 datasource db {
-  provider             = "mysql"
+  provider             = "postgresql"
   url                  = env("DATABASE_URL")
-  referentialIntegrity = "prisma"
 }
 
 model Account {
@@ -29,7 +28,7 @@ model Account {
   created_at               Int?
   user                     User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@unique([provider, providerAccountId])
+   @@unique([provider, providerAccountId])
 }
 
 model Session {
@@ -60,9 +59,9 @@ model VerificationToken {
 }
 
 model ScopesOnIssues {
-  issue   Issue  @relation(fields: [issueId], references: [id], onUpdate: NoAction)
+  issue   Issue  @relation(fields: [issueId], references: [id], onUpdate:Restrict)
   issueId String
-  scope   Scope  @relation(fields: [scopeId], references: [id], onUpdate: NoAction)
+  scope   Scope  @relation(fields: [scopeId], references: [id], onUpdate: Restrict)
   scopeId String
 
   @@id([issueId, scopeId])
@@ -78,9 +77,9 @@ model Scope {
   updatedAt   DateTime         @updatedAt
   issues      ScopesOnIssues[]
 
-  @@fulltext([name])
-  @@fulltext([description])
-  @@fulltext([name, description])
+@@index([name])
+@@index([description])
+
 }
 
 model Issue {
@@ -91,9 +90,9 @@ model Issue {
   createdAt   DateTime         @default(now())
   updatedAt   DateTime         @updatedAt
 
-  @@fulltext([title])
-  @@fulltext([description])
-  @@fulltext([title, description])
+@@index([title])
+@@index([description])
+
 }
 
 enum Role {
