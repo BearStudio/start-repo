@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "description": "Web application to easily start a new repository with a bunch of default issues.",
   "engines": {
-    "node": ">=14.17",
+    "node": ">=14.17 <=18.18.0",
     "npm": "please-use-yarn",
     "yarn": ">=1.22"
   },
