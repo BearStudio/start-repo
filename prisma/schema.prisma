@@ -1,12 +1,11 @@
 generator client {
   provider        = "prisma-client-js"
-  previewFeatures = ["referentialIntegrity", "fullTextSearch", "fullTextIndex"]
+  previewFeatures = ["fullTextSearch"]
 }
 
 datasource db {
-  provider             = "mysql"
-  url                  = env("DATABASE_URL")
-  referentialIntegrity = "prisma"
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 model Account {
@@ -78,9 +77,8 @@ model Scope {
   updatedAt   DateTime         @updatedAt
   issues      ScopesOnIssues[]
 
-  @@fulltext([name])
-  @@fulltext([description])
-  @@fulltext([name, description])
+  @@index([name])
+  @@index([description])
 }
 
 model Issue {
@@ -91,9 +89,8 @@ model Issue {
   createdAt   DateTime         @default(now())
   updatedAt   DateTime         @updatedAt
 
-  @@fulltext([title])
-  @@fulltext([description])
-  @@fulltext([title, description])
+  @@index([title])
+  @@index([description])
 }
 
 enum Role {
