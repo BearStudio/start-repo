@@ -4,8 +4,8 @@ generator client {
 }
 
 datasource db {
-  provider             = "postgresql"
-  url                  = env("DATABASE_URL")
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 model Account {
@@ -28,7 +28,7 @@ model Account {
   created_at               Int?
   user                     User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-   @@unique([provider, providerAccountId])
+  @@unique([provider, providerAccountId])
 }
 
 model Session {
@@ -59,9 +59,9 @@ model VerificationToken {
 }
 
 model ScopesOnIssues {
-  issue   Issue  @relation(fields: [issueId], references: [id], onUpdate:Restrict)
+  issue   Issue  @relation(fields: [issueId], references: [id], onUpdate: NoAction)
   issueId String
-  scope   Scope  @relation(fields: [scopeId], references: [id], onUpdate: Restrict)
+  scope   Scope  @relation(fields: [scopeId], references: [id], onUpdate: NoAction)
   scopeId String
 
   @@id([issueId, scopeId])
@@ -77,9 +77,8 @@ model Scope {
   updatedAt   DateTime         @updatedAt
   issues      ScopesOnIssues[]
 
-@@index([name])
-@@index([description])
-
+  @@index([name])
+  @@index([description])
 }
 
 model Issue {
@@ -90,9 +89,8 @@ model Issue {
   createdAt   DateTime         @default(now())
   updatedAt   DateTime         @updatedAt
 
-@@index([title])
-@@index([description])
-
+  @@index([title])
+  @@index([description])
 }
 
 enum Role {
