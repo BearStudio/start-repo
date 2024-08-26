@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Box } from '@chakra-ui/react';
+import { Box, Link } from '@chakra-ui/react';
 import { useQueryClient } from '@tanstack/react-query';
 
 import { LoginForm } from '@/app/auth/LoginForm';
@@ -8,11 +8,13 @@ import { useRedirectFromUrl } from '@/app/router';
 import { Logo, SlideIn } from '@/components';
 
 export const PageLogin = () => {
+  const bearstudioLink = "http://bearstudio.fr/team"
+  const repositoryLink = "https://github.com/BearStudio/start-repo"
   const redirect = useRedirectFromUrl();
   const queryCache = useQueryClient();
   const onLogin = () => {
-    queryCache.clear();
-    redirect();
+   queryCache.clear();
+   redirect();
   };
   return (
     <SlideIn>
@@ -20,6 +22,26 @@ export const PageLogin = () => {
         <Logo h="3rem" mb="8" mx="auto" />
         <Box p="6" borderRadius="md">
           <LoginForm onSuccess={onLogin} />
+        </Box>
+        <Box>
+        Discover {' '}
+          <Link
+            color="violet"
+            href={bearstudioLink}
+            isExternal
+          >
+            who we are !
+          </Link>
+        </Box>
+        <Box>
+        Look at this project {' '}
+          <Link
+            color="violet"
+            href={repositoryLink}
+            isExternal
+          >
+            gitHub repository !
+          </Link>
         </Box>
       </Box>
     </SlideIn>
