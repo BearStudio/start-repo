@@ -13,8 +13,8 @@ export const PageLogin = () => {
   const redirect = useRedirectFromUrl();
   const queryCache = useQueryClient();
   const onLogin = () => {
-   queryCache.clear();
-   redirect();
+    queryCache.clear();
+    redirect();
   };
   return (
     <SlideIn>
