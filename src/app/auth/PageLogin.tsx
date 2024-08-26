@@ -6,10 +6,11 @@ import { useQueryClient } from '@tanstack/react-query';
 import { LoginForm } from '@/app/auth/LoginForm';
 import { useRedirectFromUrl } from '@/app/router';
 import { Logo, SlideIn } from '@/components';
+import { CREDITS } from '@/constants/credits';
 
 export const PageLogin = () => {
-  const bearstudioLink = "http://bearstudio.fr/team"
-  const repositoryLink = "https://github.com/BearStudio/start-repo"
+  const bearstudio = CREDITS.find(({key}) => key === "BearStudio");
+  const repository = CREDITS.find(({key}) => key === "GitHub");
   const redirect = useRedirectFromUrl();
   const queryCache = useQueryClient();
   const onLogin = () => {
@@ -17,33 +18,32 @@ export const PageLogin = () => {
     redirect();
   };
   return (
-    <SlideIn>
-      <Box px="2" py="4rem" w="22rem" maxW="full" m="auto">
-        <Logo h="3rem" mb="8" mx="auto" />
-        <Box p="6" borderRadius="md">
-          <LoginForm onSuccess={onLogin} />
+    <>
+      <SlideIn>
+        <Box px="2" py="4rem" w="22rem" maxW="full" m="auto">
+          <Logo h="3rem" mb="8" mx="auto" />
+          <Box p="6" borderRadius="md">
+            <LoginForm onSuccess={onLogin} />
+          </Box>
         </Box>
-        <Box>
-        Discover {' '}
-          <Link
-            color="violet"
-            href={bearstudioLink}
-            isExternal
-          >
-            who we are !
-          </Link>
-        </Box>
-        <Box>
-        Look at this project {' '}
-          <Link
-            color="violet"
-            href={repositoryLink}
-            isExternal
-          >
-            gitHub repository !
-          </Link>
-        </Box>
-      </Box>
-    </SlideIn>
+      </SlideIn>
+      <footer>
+        <Link
+          color="brand.300"
+          href={bearstudio?.url}
+          isExternal
+        >
+          bearstudio.fr
+        </Link>
+        {' '}·{' '}
+        <Link
+          color="brand.300"
+          href={repository?.url}
+          isExternal
+        >
+          Source code
+        </Link>
+      </footer>
+    </>
   );
 };
