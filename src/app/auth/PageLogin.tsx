@@ -6,11 +6,9 @@ import { useQueryClient } from '@tanstack/react-query';
 import { LoginForm } from '@/app/auth/LoginForm';
 import { useRedirectFromUrl } from '@/app/router';
 import { Logo, SlideIn } from '@/components';
-import { CREDITS } from '@/constants/credits';
+import { BEARSTUDIO_LINK, GITHUB_LINK } from '@/constants/credits';
 
 export const PageLogin = () => {
-  const bearstudio = CREDITS.find(({key}) => key === "BearStudio");
-  const repository = CREDITS.find(({key}) => key === "GitHub");
   const redirect = useRedirectFromUrl();
   const queryCache = useQueryClient();
   const onLogin = () => {
@@ -30,7 +28,7 @@ export const PageLogin = () => {
       <footer>
         <Link
           color="brand.300"
-          href={bearstudio?.url}
+          href={BEARSTUDIO_LINK}
           isExternal
         >
           bearstudio.fr
@@ -38,7 +36,7 @@ export const PageLogin = () => {
         {' '}·{' '}
         <Link
           color="brand.300"
-          href={repository?.url}
+          href={GITHUB_LINK}
           isExternal
         >
           Source code

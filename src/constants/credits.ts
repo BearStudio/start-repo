@@ -1,15 +1,4 @@
-type Credits = {
-    key: string,
-    url: string,
-}
+export const BEARSTUDIO_LINK = "http://bearstudio.fr";
 
-export const CREDITS: Credits[] = [
-    {
-        key: "BearStudio",
-        url: "http://bearstudio.fr",
-    },
-    {
-        key: "GitHub",
-        url: "https://github.com/BearStudio/start-repo",
-    },
-]
+export const GITHUB_LINK = "https://github.com/BearStudio/start-repo";
+
