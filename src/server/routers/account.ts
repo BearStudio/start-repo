@@ -10,7 +10,34 @@ export const accountRouter = t.router({
         },
       },
     });
+    return accounts
+  })
+})
 
+export const isGithubRouter = t.router({
+  me: t.procedure.use(isAuthed).query(async ({ ctx }) => {
+    const accounts = await ctx.db.account.findFirst({
+      where: {
+        user: {
+          id: ctx.session?.user.id,
+        },
+        provider: 'github',
+      }
+    })
     return accounts;
-  }),
-});
+  })
+})
+
+export const isGitlabRouter = t.router({
+  me: t.procedure.use(isAuthed).query(async ({ ctx }) => {
+    const accounts = await ctx.db.account.findFirst({
+      where: {
+        user: {
+          id: ctx.session?.user.id,
+        },
+        provider: 'gitlab',
+      }
+    })
+    return accounts;
+  })
+})
