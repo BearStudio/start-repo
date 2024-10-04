@@ -22,6 +22,9 @@
     "static:build": "yarn build && next export",
     "static:serve": "yarn static:build && npx servor out app.html 5000",
     "theme:generate-typing": "chakra-cli tokens ./src/theme/theme.ts",
+    "dk:init": "docker compose up -d && sleep 10 && yarn db:push",
+    "dk:start": "docker compose start",
+    "dk:stop": "docker compose stop",
     "db:ui": "prisma studio",
     "db:push": "prisma db push"
   },
