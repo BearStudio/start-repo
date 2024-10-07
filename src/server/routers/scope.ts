@@ -18,12 +18,20 @@ export const scopeRouter = t.router({
       const scopes = await ctx.db.scope.findMany({
         take: limit + 1,
         where: {
-          name: {
-            search: search !== '' ? search : undefined,
-          },
-          description: {
-            search: search !== '' ? search : undefined,
-          },
+          OR: [
+            {
+              name: {
+                contains: search,
+                mode: 'insensitive',
+              },
+            },
+            {
+              description: {
+                contains: search,
+                mode: 'insensitive',
+              },
+            },
+          ],
         },
         cursor: cursor ? { id: cursor } : undefined,
         orderBy: {
