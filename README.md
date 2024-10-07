@@ -18,6 +18,19 @@ yarn install
 yarn build
 ```
 
+## Project Setup
+
+- Duplicate and rename your `.env.example` into `.env`.
+- Go to your github [developper settings](https://github.com/settings/developers). Create a new OAuth app and a new client secret.
+- Now, you can fill the `GITHUB_CLIENT_ID` and `GITHUB_CLIENT_SECRET` into `.env`.
+
+
+> [!NOTE]
+> **Normally, you don’t have to do anything, but just in case :**
+>
+> **If you need to request access to your organization**
+> - You can approve it in the OAuth policies page when logged in as an administrator of your organization.
+
 ## Development
 
 ```bash
