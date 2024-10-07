@@ -240,7 +240,7 @@ export const PageIssues = () => {
                           h="2"
                           flex="none"
                           borderRadius="full"
-                          bg={filters ? 'brand.300' : 'transparent'}
+                          bg={filters ? 'brand.50' : 'transparent'}
                           ml="2"
                         />
                       </Button>

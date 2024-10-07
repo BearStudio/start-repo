@@ -20,7 +20,7 @@ export const PageIssueCreate = () => {
 
   const trpcContext = trpc.useContext();
   const { mutate, isLoading } = trpc.issue.create.useMutation();
-  const [scope] = useQueryState('scope', { defaultValue: '' });
+  const [scope] = useQueryState('scope');
 
   type IssueCreateInput = RouterInput['issue']['create'];
 
@@ -53,7 +53,7 @@ export const PageIssueCreate = () => {
             p="4"
             py="6"
           >
-            <IssueForm defaultScopeId={scope} />
+            <IssueForm defaultScopeId={scope ?? undefined} />
           </Box>
         </PageContent>
         <PageBottomBar>

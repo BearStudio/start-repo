@@ -5,9 +5,9 @@ import { useFieldSelectScopeStyles } from '@/app/scopes/useFieldSelectScopeStyle
 import { FieldInput, FieldMarkdown, FieldMultiSelect } from '@/components';
 import { trpc } from '@/utils/trpc';
 
-export interface IssueFormProps {
+export type IssueFormProps = {
   defaultScopeId?: string;
-}
+};
 
 export type FieldSelectScopeOptions = {
   label: Scope['name'];
@@ -26,12 +26,6 @@ export const IssueForm = (props: IssueFormProps) => {
       value: scope.id,
       color: scope.color,
     })) ?? [];
-
-  console.log({ options });
-  console.log({
-    props,
-    value: options.filter((option) => option.value === props?.defaultScopeId),
-  });
 
   const styles = useFieldSelectScopeStyles();
   const defaultScope = options.find(

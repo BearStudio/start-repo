@@ -8,7 +8,6 @@ import {
   Stack,
   Text,
   VStack,
-  textDecoration,
 } from '@chakra-ui/react';
 import { Formiz } from '@formiz/core';
 import { Issue, Scope } from '@prisma/client';
@@ -68,8 +67,6 @@ export const PageScopeUpdate = () => {
     );
   };
 
-  console.log({ issues });
-
   return (
     <Page containerSize="lg" isFocusMode>
       <PageTopBar showBack onBack={() => navigate(-1)}>
@@ -106,47 +103,44 @@ export const PageScopeUpdate = () => {
                     justifyContent="center"
                     spacing={0}
                   >
-                    <Text>No issue was found with this scope.</Text>
+                    <Text>No issue assigned to this scope.</Text>
                     <Link to={`/issues/create/?scope=${scope?.id}`}>
-                      Go and create one !
+                      Create the first one !
                     </Link>
                   </VStack>
                 ) : undefined}
-                {issues !== undefined &&
-                  issues.length > 0 &&
-                  issues?.map((issue: Issue) => (
-                    <DataListRow as={LinkBox} key={issue.id}>
-                      <DataListCell colWidth="3rem" align="flex-end" p="0">
-                        <Icon
-                          icon={VscIssues}
-                          fontSize="1.5rem"
-                          color="brand.500"
-                        />
-                      </DataListCell>
-                      <DataListCell colWidth="auto">
-                        <Stack spacing="0">
-                          <Text fontWeight="bold">
-                            <LinkOverlay as={Link} to={`/issues/${issue.id}`}>
-                              <Text
-                                textDecoration="underline"
-                                style={{ textDecoration: 'underline' }}
-                              >
-                                {issue.title}
-                              </Text>
-                            </LinkOverlay>
-                          </Text>
-                          <Text
-                            fontSize="sm"
-                            color="gray.500"
-                            _dark={{ color: 'gray.400' }}
-                            noOfLines={2}
+                {issues?.map((issue) => (
+                  <DataListRow as={LinkBox} key={issue.id}>
+                    <DataListCell colWidth="3rem" align="flex-end" p="0">
+                      <Icon
+                        icon={VscIssues}
+                        fontSize="1.5rem"
+                        color="brand.500"
+                      />
+                    </DataListCell>
+                    <DataListCell colWidth="auto">
+                      <Stack spacing="0">
+                        <Text fontWeight="bold">
+                          <LinkOverlay
+                            as={Link}
+                            to={`/issues/${issue.id}`}
+                            textDecoration="underline"
                           >
-                            {issue.description}
-                          </Text>
-                        </Stack>
-                      </DataListCell>
-                    </DataListRow>
-                  ))}
+                            {issue.title}
+                          </LinkOverlay>
+                        </Text>
+                        <Text
+                          fontSize="sm"
+                          color="gray.500"
+                          _dark={{ color: 'gray.400' }}
+                          noOfLines={2}
+                        >
+                          {issue.description}
+                        </Text>
+                      </Stack>
+                    </DataListCell>
+                  </DataListRow>
+                ))}
               </DataList>
             </Box>
           </PageContent>

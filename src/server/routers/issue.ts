@@ -125,7 +125,7 @@ export const issueRouter = t.router({
       })
     )
     .query(async ({ ctx, input: { id } }) => {
-      const issues = await ctx.db.issue.findMany({
+      return await ctx.db.issue.findMany({
         where: {
           scopes: {
             some: {
@@ -141,8 +141,6 @@ export const issueRouter = t.router({
           },
         },
       });
-
-      return issues;
     }),
 
   detail: t.procedure
