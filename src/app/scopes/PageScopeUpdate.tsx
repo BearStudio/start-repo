@@ -1,7 +1,19 @@
-import { Box, Button, Flex, Heading } from '@chakra-ui/react';
+import {
+  Box,
+  Button,
+  Flex,
+  Heading,
+  Link,
+  LinkBox,
+  LinkOverlay,
+  Stack,
+  Text,
+  VStack,
+} from '@chakra-ui/react';
 import { Formiz } from '@formiz/core';
-import { Scope } from '@prisma/client';
+import { Issue, Scope } from '@prisma/client';
 import { useTranslation } from 'react-i18next';
+import { VscIssues } from 'react-icons/vsc';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import {
@@ -11,6 +23,7 @@ import {
   PageContent,
   PageTopBar,
 } from '@/app/layout';
+import { DataList, DataListCell, DataListRow, Icon } from '@/components';
 import { Error404 } from '@/errors';
 import { useDarkMode } from '@/hooks/useDarkMode';
 import { trpc } from '@/utils/trpc';
@@ -22,6 +35,12 @@ export const PageScopeUpdate = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const { colorModeValue } = useDarkMode();
+
+  const {
+    data: issues,
+    isFetching: issuesFetching,
+    isError: issuesError,
+  } = trpc.issue.getByScopeId.useQuery({ id: id ?? '' });
 
   const {
     data: scope,
@@ -53,6 +72,8 @@ export const PageScopeUpdate = () => {
     );
   };
 
+  console.log({ issues });
+
   return (
     <Page containerSize="lg" isFocusMode>
       <PageTopBar showBack onBack={() => navigate(-1)}>
@@ -77,6 +98,59 @@ export const PageScopeUpdate = () => {
               py="6"
             >
               <ScopeForm />
+
+              <Text mt={3} mb={1}>
+                Issues
+              </Text>
+              <DataList>
+                {issues === undefined || issues.length === 0 ? (
+                  <VStack
+                    flexGrow={1}
+                    alignItems="center"
+                    justifyContent="center"
+                    spacing={0}
+                  >
+                    <Text>No issue was found with this scope.</Text>
+                    <Link href="/app/issues/create" textDecoration="underline">
+                      Go and create one !
+                    </Link>
+                  </VStack>
+                ) : undefined}
+                {issues !== undefined &&
+                  issues.length > 0 &&
+                  issues?.map((issue: Issue) => (
+                    <DataListRow as={LinkBox} key={issue.id}>
+                      <DataListCell colWidth="3rem" align="flex-end" p="0">
+                        <Icon
+                          icon={VscIssues}
+                          fontSize="1.5rem"
+                          color="brand.500"
+                        />
+                      </DataListCell>
+                      <DataListCell colWidth="auto">
+                        <Stack spacing="0">
+                          <Text fontWeight="bold">
+                            <LinkOverlay
+                              as={Link}
+                              to={issue.id}
+                              href={`/app/issues/${issue.id}`}
+                            >
+                              {issue.title}
+                            </LinkOverlay>
+                          </Text>
+                          <Text
+                            fontSize="sm"
+                            color="gray.500"
+                            _dark={{ color: 'gray.400' }}
+                            noOfLines={2}
+                          >
+                            {issue.description}
+                          </Text>
+                        </Stack>
+                      </DataListCell>
+                    </DataListRow>
+                  ))}
+              </DataList>
             </Box>
           </PageContent>
           <PageBottomBar>
