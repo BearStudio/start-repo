@@ -5,13 +5,17 @@ import { useFieldSelectScopeStyles } from '@/app/scopes/useFieldSelectScopeStyle
 import { FieldInput, FieldMarkdown, FieldMultiSelect } from '@/components';
 import { trpc } from '@/utils/trpc';
 
+export interface IssueFormProps {
+  defaultScopeId?: string;
+}
+
 export type FieldSelectScopeOptions = {
   label: Scope['name'];
   value: Scope['id'];
   color: Scope['color'];
 };
 
-export const IssueForm = () => {
+export const IssueForm = (props: IssueFormProps) => {
   const { data: scopes, isLoading: isLoadingScopes } = trpc.scope.all.useQuery({
     search: '',
   });
@@ -23,9 +27,18 @@ export const IssueForm = () => {
       color: scope.color,
     })) ?? [];
 
-  const styles = useFieldSelectScopeStyles();
+  console.log({ options });
+  console.log({
+    props,
+    value: options.filter((option) => option.value === props?.defaultScopeId),
+  });
 
-  return (
+  const styles = useFieldSelectScopeStyles();
+  const defaultScope = options.find(
+    (option) => option.value === props?.defaultScopeId
+  )?.value;
+
+  return !isLoadingScopes ? (
     <Stack>
       <FieldInput
         name="title"
@@ -40,6 +53,7 @@ export const IssueForm = () => {
           isLoading: isLoadingScopes,
           styles,
         }}
+        defaultValue={defaultScope ? [defaultScope] : undefined}
         required="Required"
         options={options}
       />
@@ -49,5 +63,7 @@ export const IssueForm = () => {
         helper="Markdown allowed"
       />
     </Stack>
+  ) : (
+    <></>
   );
 };

@@ -59,9 +59,9 @@ model VerificationToken {
 }
 
 model ScopesOnIssues {
-  issue   Issue  @relation(fields: [issueId], references: [id], onUpdate: NoAction)
+  issue   Issue  @relation(fields: [issueId], references: [id], onUpdate: NoAction, onDelete: Cascade)
   issueId String
-  scope   Scope  @relation(fields: [scopeId], references: [id], onUpdate: NoAction)
+  scope   Scope  @relation(fields: [scopeId], references: [id], onUpdate: NoAction, onDelete: Cascade)
   scopeId String
 
   @@id([issueId, scopeId])

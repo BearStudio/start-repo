@@ -1,5 +1,6 @@
 import { Box, Button, Flex, Heading } from '@chakra-ui/react';
 import { Formiz } from '@formiz/core';
+import { useQueryState } from 'next-usequerystate';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
@@ -19,6 +20,7 @@ export const PageIssueCreate = () => {
 
   const trpcContext = trpc.useContext();
   const { mutate, isLoading } = trpc.issue.create.useMutation();
+  const [scope] = useQueryState('scope', { defaultValue: '' });
 
   type IssueCreateInput = RouterInput['issue']['create'];
 
@@ -51,7 +53,7 @@ export const PageIssueCreate = () => {
             p="4"
             py="6"
           >
-            <IssueForm />
+            <IssueForm defaultScopeId={scope} />
           </Box>
         </PageContent>
         <PageBottomBar>

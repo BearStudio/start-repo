@@ -3,18 +3,18 @@ import {
   Button,
   Flex,
   Heading,
-  Link,
   LinkBox,
   LinkOverlay,
   Stack,
   Text,
   VStack,
+  textDecoration,
 } from '@chakra-ui/react';
 import { Formiz } from '@formiz/core';
 import { Issue, Scope } from '@prisma/client';
 import { useTranslation } from 'react-i18next';
 import { VscIssues } from 'react-icons/vsc';
-import { useNavigate, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 
 import {
   Loader,
@@ -36,11 +36,7 @@ export const PageScopeUpdate = () => {
   const { id } = useParams();
   const { colorModeValue } = useDarkMode();
 
-  const {
-    data: issues,
-    isFetching: issuesFetching,
-    isError: issuesError,
-  } = trpc.issue.getByScopeId.useQuery({ id: id ?? '' });
+  const { data: issues } = trpc.issue.getByScopeId.useQuery({ id: id ?? '' });
 
   const {
     data: scope,
@@ -111,7 +107,7 @@ export const PageScopeUpdate = () => {
                     spacing={0}
                   >
                     <Text>No issue was found with this scope.</Text>
-                    <Link href="/app/issues/create" textDecoration="underline">
+                    <Link to={`/issues/create/?scope=${scope?.id}`}>
                       Go and create one !
                     </Link>
                   </VStack>
@@ -130,12 +126,13 @@ export const PageScopeUpdate = () => {
                       <DataListCell colWidth="auto">
                         <Stack spacing="0">
                           <Text fontWeight="bold">
-                            <LinkOverlay
-                              as={Link}
-                              to={issue.id}
-                              href={`/app/issues/${issue.id}`}
-                            >
-                              {issue.title}
+                            <LinkOverlay as={Link} to={`/issues/${issue.id}`}>
+                              <Text
+                                textDecoration="underline"
+                                style={{ textDecoration: 'underline' }}
+                              >
+                                {issue.title}
+                              </Text>
                             </LinkOverlay>
                           </Text>
                           <Text
