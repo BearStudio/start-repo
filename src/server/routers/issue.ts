@@ -24,12 +24,20 @@ export const issueRouter = t.router({
       const issues = await ctx.db.issue.findMany({
         take: limit + 1,
         where: {
-          title: {
-            search: search !== '' ? search : undefined,
-          },
-          description: {
-            search: search !== '' ? search : undefined,
-          },
+          OR: [
+            {
+              title: {
+                contains: search,
+                mode: 'insensitive',
+              },
+            },
+            {
+              description: {
+                contains: search,
+                mode: 'insensitive',
+              },
+            },
+          ],
           AND: (filters?.scopes ?? []).map((scope) => ({
             scopes: {
               some: {
@@ -76,6 +84,7 @@ export const issueRouter = t.router({
         totalCount,
       };
     }),
+
   all: t.procedure
     .use(isAuthed)
     .input(
@@ -107,6 +116,7 @@ export const issueRouter = t.router({
 
       return issues;
     }),
+
   detail: t.procedure
     .use(isAuthed)
     .input(
@@ -128,6 +138,7 @@ export const issueRouter = t.router({
 
       return issue;
     }),
+
   delete: t.procedure
     .use(isAuthed)
     .input(z.string().uuid())
@@ -140,6 +151,7 @@ export const issueRouter = t.router({
 
       return issue;
     }),
+
   deleteMany: t.procedure
     .use(isAuthed)
     .input(z.array(z.string().uuid()).min(1))
@@ -152,6 +164,7 @@ export const issueRouter = t.router({
         },
       });
     }),
+
   create: t.procedure
     .use(isAuthed)
     .input(
@@ -187,6 +200,7 @@ export const issueRouter = t.router({
 
       return issue;
     }),
+
   edit: t.procedure
     .use(isAuthed)
     .input(
@@ -229,6 +243,7 @@ export const issueRouter = t.router({
 
       return updatedIssue;
     }),
+
   addBulkScope: t.procedure
     .use(isAuthed)
     .input(
@@ -256,6 +271,7 @@ export const issueRouter = t.router({
 
       return;
     }),
+
   export: t.router({
     github: t.procedure
       .use(isAuthed)
