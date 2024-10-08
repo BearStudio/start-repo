@@ -30,7 +30,6 @@ import {
   Tag,
   Text,
   Tooltip,
-  VStack,
   Wrap,
   useBreakpointValue,
   useDisclosure,
@@ -63,6 +62,7 @@ import { SearchInput } from '@/components/SearchInput';
 import { generateSwatch } from '@/utils/colors';
 import { trpc } from '@/utils/trpc';
 
+import { ScopeTag } from '../scopes/ScopeTag';
 import { ExportModal } from './ExportModal';
 import { FieldSelectScopeOptions } from './IssueForm';
 
@@ -179,7 +179,7 @@ export const PageIssues = () => {
     })) ?? [];
 
   const styles = useFieldSelectScopeStyles();
-  const phoneDisplay =
+  const isMobile =
     useBreakpointValue({
       base: true,
       md: false,
@@ -496,9 +496,9 @@ export const PageIssues = () => {
                             color="brand.500"
                           />
                         </DataListCell>
-                        {phoneDisplay ? (
+                        {isMobile ? (
                           <DataListCell colWidth={2}>
-                            <VStack spacing="1">
+                            <Stack spacing="1">
                               <Text fontWeight="bold">
                                 <LinkOverlay as={Link} to={issue.id}>
                                   {issue.title}
@@ -514,29 +514,7 @@ export const PageIssues = () => {
                               </Text>
                               <Wrap>
                                 {issue.scopes?.slice(0, 1).map(({ scope }) => (
-                                  <Tag
-                                    key={scope.id}
-                                    color={
-                                      generateSwatch(
-                                        scope.color ?? brandColor
-                                      )[700]
-                                    }
-                                    bg={
-                                      generateSwatch(
-                                        scope.color ?? brandColor
-                                      )[100]
-                                    }
-                                    _dark={{
-                                      color: generateSwatch(
-                                        scope.color ?? brandColor
-                                      )[50],
-                                      bg: generateSwatch(
-                                        scope.color ?? brandColor
-                                      )[700],
-                                    }}
-                                  >
-                                    {scope.name}
-                                  </Tag>
+                                  <ScopeTag scope={scope} />
                                 ))}
 
                                 {issue.scopes.length > 1 ? (
@@ -551,40 +529,18 @@ export const PageIssues = () => {
                                         {issue.scopes
                                           ?.slice(1, issue.scopes.length)
                                           .map(({ scope }) => (
-                                            <Tag
-                                              key={scope.id}
-                                              color={
-                                                generateSwatch(
-                                                  scope.color ?? brandColor
-                                                )[700]
-                                              }
-                                              bg={
-                                                generateSwatch(
-                                                  scope.color ?? brandColor
-                                                )[100]
-                                              }
-                                              _dark={{
-                                                color: generateSwatch(
-                                                  scope.color ?? brandColor
-                                                )[50],
-                                                bg: generateSwatch(
-                                                  scope.color ?? brandColor
-                                                )[700],
-                                              }}
-                                            >
-                                              {scope.name}
-                                            </Tag>
+                                            <ScopeTag scope={scope} />
                                           ))}
                                       </Wrap>
                                     }
                                   >
-                                    <Tag style={{ zIndex: 9999 }}>{`+${
-                                      issue.scopes.length - 1
-                                    }`}</Tag>
+                                    <Tag zIndex="popover">
+                                      {'+' + (issue.scopes.length - 1)}
+                                    </Tag>
                                   </Tooltip>
                                 ) : undefined}
                               </Wrap>
-                            </VStack>
+                            </Stack>
                           </DataListCell>
                         ) : (
                           <DataListCell colWidth={2}>
@@ -605,33 +561,11 @@ export const PageIssues = () => {
                             </Stack>
                           </DataListCell>
                         )}
-                        {!phoneDisplay ? (
+                        {!isMobile ? (
                           <DataListCell>
                             <Wrap>
-                              {issue.scopes?.slice(0, 5).map(({ scope }) => (
-                                <Tag
-                                  key={scope.id}
-                                  color={
-                                    generateSwatch(
-                                      scope.color ?? brandColor
-                                    )[700]
-                                  }
-                                  bg={
-                                    generateSwatch(
-                                      scope.color ?? brandColor
-                                    )[100]
-                                  }
-                                  _dark={{
-                                    color: generateSwatch(
-                                      scope.color ?? brandColor
-                                    )[50],
-                                    bg: generateSwatch(
-                                      scope.color ?? brandColor
-                                    )[700],
-                                  }}
-                                >
-                                  {scope.name}
-                                </Tag>
+                              {issue.scopes?.slice(0, 5).map((scope) => (
+                                <ScopeTag scope={scope.scope} />
                               ))}
 
                               {issue.scopes.length > 5 ? (
@@ -639,41 +573,22 @@ export const PageIssues = () => {
                                   hasArrow
                                   p={2}
                                   borderRadius={8}
-                                  bg="gray.800"
+                                  bg="gray.50"
+                                  _dark={{
+                                    bg: 'gray.800',
+                                  }}
                                   placement="bottom"
                                   label={
                                     <Wrap>
                                       {issue.scopes
                                         ?.slice(5, issue.scopes.length)
                                         .map(({ scope }) => (
-                                          <Tag
-                                            key={scope.id}
-                                            color={
-                                              generateSwatch(
-                                                scope.color ?? brandColor
-                                              )[700]
-                                            }
-                                            bg={
-                                              generateSwatch(
-                                                scope.color ?? brandColor
-                                              )[100]
-                                            }
-                                            _dark={{
-                                              color: generateSwatch(
-                                                scope.color ?? brandColor
-                                              )[50],
-                                              bg: generateSwatch(
-                                                scope.color ?? brandColor
-                                              )[700],
-                                            }}
-                                          >
-                                            {scope.name}
-                                          </Tag>
+                                          <ScopeTag scope={scope} />
                                         ))}
                                     </Wrap>
                                   }
                                 >
-                                  <Tag style={{ zIndex: 9999 }}>{`+${
+                                  <Tag zIndex="popover">{`+${
                                     issue.scopes.length - 5
                                   }`}</Tag>
                                 </Tooltip>
