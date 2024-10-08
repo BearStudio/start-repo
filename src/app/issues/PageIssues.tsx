@@ -126,10 +126,16 @@ export const PageIssues = () => {
   const { t } = useTranslation();
   const [search, setSearch] = useState('');
   const [filters, setFilters] = useState<{ scopes: string[] } | null>(null);
+  const [lastFilters, setLastFilters] = useState<string[] | null>([]);
   const [selectedIssues, setSelectedIssues] = useState<string[]>([]);
 
   const brandColor = useToken('colors', 'brand.500');
   const { isOpen, onClose, onOpen } = useDisclosure();
+
+  const onCloseExport = (scopes: string[] | undefined) => {
+    onClose();
+    setLastFilters(scopes ?? []);
+  };
 
   const trpcContext = trpc.useContext();
 
@@ -569,7 +575,12 @@ export const PageIssues = () => {
           )}
         </Stack>
 
-        {isOpen && <ExportModal onClose={onClose} initialValues={filters} />}
+        {isOpen && (
+          <ExportModal
+            onClose={onCloseExport}
+            initialValues={filters?.scopes ?? lastFilters}
+          />
+        )}
       </PageContent>
     </Page>
   );
