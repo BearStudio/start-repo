@@ -36,7 +36,14 @@ import {
 import { Formiz } from '@formiz/core';
 import { Issue, Scope, ScopesOnIssues } from '@prisma/client';
 import { useTranslation } from 'react-i18next';
-import { FiDownload, FiEdit, FiPlus, FiTrash2, FiX } from 'react-icons/fi';
+import {
+  FiDownload,
+  FiEdit,
+  FiFilter,
+  FiPlus,
+  FiTrash2,
+  FiX,
+} from 'react-icons/fi';
 import { VscIssues } from 'react-icons/vsc';
 import { Link } from 'react-router-dom';
 
@@ -221,7 +228,8 @@ export const PageIssues = () => {
                     <PopoverTrigger>
                       <Button
                         colorScheme={filters ? 'brand' : undefined}
-                        variant="link"
+                        variant="@secondary"
+                        leftIcon={<FiFilter />}
                         display="flex"
                         p="2"
                         flex="none"
@@ -232,7 +240,7 @@ export const PageIssues = () => {
                           h="2"
                           flex="none"
                           borderRadius="full"
-                          bg={filters ? 'brand.600' : 'transparent'}
+                          bg={filters ? 'brand.50' : 'transparent'}
                           ml="2"
                         />
                       </Button>
