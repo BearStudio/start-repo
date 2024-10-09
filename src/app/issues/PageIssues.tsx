@@ -507,12 +507,13 @@ export const PageIssues = () => {
                         {isMobile ? (
                           <DataListCell colWidth={2}>
                             <Stack spacing="1">
-                              <Text fontWeight="bold">
+                              <Text fontWeight="bold" align="left">
                                 <LinkOverlay as={Link} to={issue.id}>
                                   {issue.title}
                                 </LinkOverlay>
                               </Text>
                               <Text
+                                align="left"
                                 fontSize="sm"
                                 color="gray.500"
                                 _dark={{ color: 'gray.400' }}
@@ -520,7 +521,7 @@ export const PageIssues = () => {
                               >
                                 {issue.description}
                               </Text>
-                              <Wrap>
+                              <Wrap justify="left">
                                 {issue.scopes?.slice(0, 1).map(({ scope }) => (
                                   <ScopeTag scope={scope} />
                                 ))}
