@@ -1,3 +1,4 @@
+import { Prisma } from '@prisma/client';
 import { TRPCError } from '@trpc/server';
 import axios from 'axios';
 import { z } from 'zod';
@@ -24,29 +25,37 @@ export const issueRouter = t.router({
       const issues = await ctx.db.issue.findMany({
         take: limit + 1,
         where: {
-          OR: [
+          AND: [
             {
-              title: {
-                contains: search,
-                mode: 'insensitive',
-              },
-            },
-            {
-              description: {
-                contains: search,
-                mode: 'insensitive',
-              },
-            },
-          ],
-          AND: (filters?.scopes ?? []).map((scope) => ({
-            scopes: {
-              some: {
-                scopeId: {
-                  in: [scope],
+              OR: [
+                {
+                  title: {
+                    contains: search,
+                    mode: 'insensitive',
+                  },
                 },
-              },
+                {
+                  description: {
+                    contains: search,
+                    mode: 'insensitive',
+                  },
+                },
+              ],
             },
-          })),
+            ...(filters?.scopes && filters?.scopes?.length > 0
+              ? [
+                  {
+                    scopes: {
+                      some: {
+                        scopeId: {
+                          in: filters?.scopes as string[],
+                        },
+                      },
+                    },
+                  },
+                ]
+              : []),
+          ],
         },
         cursor: cursor ? { id: cursor } : undefined,
         orderBy: {
