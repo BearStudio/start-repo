@@ -1,5 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { getSession } from 'next-auth/react';
+import { getServerSession } from 'next-auth/next';
+
+import { authOptions } from '@/lib/auth';
 
 type HttpVerbs = 'GET' | 'POST' | 'DELETE' | 'PATCH' | 'PUT';
 type Methods = {
@@ -46,7 +48,10 @@ export const apiMethods =
     }
 
     if (!method.isPublic) {
-      const session = await getSession({ req });
+      // getSession is now deprecated and is way slower than getServerSession because
+      // it does an extra fetch out over the internet to confirm data from itself
+      const session = await getServerSession(req, res, authOptions);
+
       if (!session) {
         return notSignedIn(res);
       }
