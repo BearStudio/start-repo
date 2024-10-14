@@ -4,11 +4,16 @@ const toPath = (_path) => path.join(process.cwd(), _path);
 
 module.exports = {
   stories: ['../src/**/*.stories.@(js|jsx|ts|tsx|mdx)'],
+  framework: {
+    name: '@storybook/nextjs',
+    options: {},
+  },
   addons: [
     '@storybook/addon-links',
     '@storybook/addon-essentials',
     'storybook-dark-mode/register',
   ],
+  presets: ['@storybook/nextjs/preset'],
   staticDir: ['../public'],
   typescript: {
     reactDocgen: false,
