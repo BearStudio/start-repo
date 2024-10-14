@@ -132,7 +132,6 @@ export const DayPicker: FC<DayPickerProps> = ({
         formatDate={formatDate}
         format={FORMAT}
         parseDate={parseDate}
-        placeholder={placeholder}
         value={value ?? undefined}
         dayPickerProps={{
           dir: theme.direction,
@@ -151,6 +150,7 @@ export const DayPicker: FC<DayPickerProps> = ({
         }}
         inputProps={{
           readOnly: isSmartphoneFormat,
+          placeholder: placeholder,
           ...inputProps,
         }}
         overlayComponent={CustomDayPickerOverlay}
