@@ -87,7 +87,7 @@ export const NavItem: ChakraComponent<'span', NavItemProps> = ({
   const { colorModeValue } = useDarkMode();
 
   const { setActive, isMenu } = useNavContext();
-  const Item = isMenu ? MenuItem : Flex;
+  const Item: ExplicitAny = isMenu ? MenuItem : Flex;
 
   const itemContent = useMemo(
     () => (
