@@ -1,5 +1,3 @@
-import React, { useEffect } from 'react';
-
 import { Box, Button, Stack, Text } from '@chakra-ui/react';
 import { signIn } from 'next-auth/react';
 import { useTranslation } from 'react-i18next';
@@ -9,15 +7,10 @@ import { Icon } from '@/components';
 
 export const LoginForm = ({
   onSuccess = () => undefined,
-  provider,
+  provider = 'github',
   ...rest
 }: TODO) => {
   const { t } = useTranslation();
-  useEffect(() => {
-    if (provider === undefined) {
-      provider = 'github';
-    }
-  }, []);
 
   return (
     <>
