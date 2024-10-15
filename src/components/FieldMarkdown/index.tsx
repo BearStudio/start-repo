@@ -13,7 +13,6 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 
 import { FormGroup, FormGroupProps, TextareaAutosize } from '@/components';
-
 import { components } from './components';
 
 export interface FieldMarkdownProps extends FieldProps, FormGroupProps {

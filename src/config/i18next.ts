@@ -3,12 +3,16 @@ import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 
 import { AVAILABLE_LANGUAGES, DEFAULT_LANGUAGE_KEY } from '@/constants/i18n';
-import * as locales from '@/locales';
+import locales from '@/locales';
 import { isBrowser } from '@/utils/ssr';
+import { keys } from 'remeda';
+
+console.log({ locales });
+console.log({ DEFAULT_LANGUAGE_KEY });
 
 i18n.use(initReactI18next).init({
   defaultNS: 'common',
-  ns: Object.keys(locales[DEFAULT_LANGUAGE_KEY]),
+  ns: keys(locales[DEFAULT_LANGUAGE_KEY]),
   resources: locales,
   lng: DEFAULT_LANGUAGE_KEY,
   fallbackLng: DEFAULT_LANGUAGE_KEY,
