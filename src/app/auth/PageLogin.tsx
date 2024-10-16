@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Box, Link } from '@chakra-ui/react';
+import { Box, Link, Text } from '@chakra-ui/react';
 import { useQueryClient } from '@tanstack/react-query';
 
 import { LoginForm } from '@/app/auth/LoginForm';
@@ -26,19 +26,12 @@ export const PageLogin = () => {
         </Box>
       </SlideIn>
       <footer>
-        <Link
-          color="brand.300"
-          href={BEARSTUDIO_LINK}
-          isExternal
-        >
-          bearstudio.fr
-        </Link>
-        {' '}·{' '}
-        <Link
-          color="brand.300"
-          href={GITHUB_LINK}
-          isExternal
-        >
+        <Text color="brand.300"> Made with love by the </Text>
+        <Link color="brand.300" href={BEARSTUDIO_LINK} isExternal>
+          bearstudio team
+        </Link>{' '}
+        ·{' '}
+        <Link color="brand.300" href={GITHUB_LINK} isExternal>
           Source code
         </Link>
       </footer>
