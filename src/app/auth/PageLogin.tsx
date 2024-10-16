@@ -26,7 +26,7 @@ export const PageLogin = () => {
         </Box>
       </SlideIn>
       <footer>
-        <Text color="brand.300"> Made with love by the </Text>
+        <Text color="brand.300"> Made with love and hard work by the </Text>
         <Link color="brand.300" href={BEARSTUDIO_LINK} isExternal>
           bearstudio team
         </Link>{' '}
