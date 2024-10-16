@@ -4,6 +4,24 @@ import { z } from 'zod';
 
 import { isAuthed } from '@/server/middleware';
 import { t } from '@/server/trpc';
+import { Scope } from '@prisma/client';
+
+export type GithubLabel = {
+  id: number;
+  node_id: string;
+  url: string;
+  name: string;
+  description: string;
+  color: string;
+  default: boolean;
+};
+
+export type GithubIssue = {
+  id: number;
+  number: number;
+  title: string;
+  body: string;
+};
 
 export const issueRouter = t.router({
   infinite: t.procedure
@@ -336,12 +354,116 @@ export const issueRouter = t.router({
           },
         });
 
+        // Labels
+        const allScopes: Scope[] = [];
         for (const issue of issues) {
-          await axios.post(
+          for (const scope of issue.scopes) {
+            if (
+              !allScopes.some(
+                (x) => x.name.toLowerCase() === scope.scope.name.toLowerCase()
+              )
+            ) {
+              allScopes.push(scope.scope);
+            }
+          }
+        }
+
+        // Gets existing labels of selected repo in order to avoid labels duplicates
+        const result = await axios.get(
+          `https://api.github.com/repos/${repositoryName}/labels`,
+          {
+            headers: {
+              Accept: 'application/vnd.github.v3+json',
+              Authorization: `token ${githubToken}`,
+            },
+          }
+        );
+
+        const existingLabels: GithubLabel[] = result.data ?? [];
+        const addedLabels: GithubLabel[] = [];
+
+        // Adding new labels to the repo
+        for (const scope of allScopes) {
+          // We don't want to duplicate existing labels
+          if (
+            addedLabels.map((x) => x.id.toString()).includes(scope.id) ||
+            existingLabels
+              .map((x: GithubLabel) => x.name.toLowerCase())
+              .includes(scope.name.toLowerCase())
+          ) {
+            continue;
+          }
+
+          const result = await axios.post(
+            `https://api.github.com/repos/${repositoryName}/labels`,
+            {
+              name: scope.name,
+              color: scope.color?.replace('#', ''),
+            },
+            {
+              headers: {
+                Accept: 'application/vnd.github.v3+json',
+                'Content-Type': 'application/json',
+                Authorization: `token ${githubToken}`,
+              },
+            }
+          );
+
+          if (result.data != null) {
+            addedLabels.push(result.data);
+          }
+
+          await new Promise((resolve) => setTimeout(resolve, 1000));
+        }
+
+        // Issues
+        const addedIssues: GithubIssue[] = [];
+
+        // Creating issues
+        for (const issue of issues) {
+          const result = await axios.post(
             `https://api.github.com/repos/${repositoryName}/issues`,
             {
               title: issue.title,
               body: issue.description,
+            },
+            {
+              headers: {
+                Accept: 'application/vnd.github.v3+json',
+                'Content-Type': 'application/json',
+                Authorization: `token ${githubToken}`,
+              },
+            }
+          );
+
+          if (result.data != null) {
+            addedIssues.push(result.data);
+          }
+
+          await new Promise((resolve) => setTimeout(resolve, 1000));
+        }
+
+        // To avoid sending another GET all labels request we merge the previously fetched labels and the ones we added to the repo
+        const allLabels: GithubLabel[] = [
+          ...addedLabels,
+          ...existingLabels,
+        ].reduce((acc: GithubLabel[], label: GithubLabel) => {
+          if (!acc.some((existingLabel) => existingLabel.id === label.id)) {
+            acc.push(label);
+          }
+          return acc;
+        }, []);
+
+        // Assigning labels to issues
+        for (const issue of addedIssues) {
+          const relatedIssue = issues.find((x) => x.title === issue.title);
+          const relatedLabels = allLabels.filter((x) =>
+            relatedIssue?.scopes.map((x) => x.scope.name).includes(x.name)
+          );
+          await axios.post(
+            `https://api.github.com/repos/${repositoryName}/issues/${issue.number}/labels`,
+            {
+              labels: relatedLabels.map((x) => x.name),
             },
             {
               headers: {
