@@ -25,16 +25,16 @@ export const PageLogin = () => {
           </Box>
         </Box>
       </SlideIn>
-      <footer>
-        <Text color="brand.300"> Made with love and hard work by the </Text>
-        <Link color="brand.300" href={BEARSTUDIO_LINK} isExternal>
+      <Box as="footer" color="brand.700" _dark={{ color: 'brand.300' }} p="4">
+        <Text>Made with love and hard work by the </Text>
+        <Link href={BEARSTUDIO_LINK} isExternal>
           bearstudio team
         </Link>{' '}
         ·{' '}
-        <Link color="brand.300" href={GITHUB_LINK} isExternal>
+        <Link href={GITHUB_LINK} isExternal>
           Source code
         </Link>
-      </footer>
+      </Box>
     </>
   );
 };
