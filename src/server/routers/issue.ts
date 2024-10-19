@@ -1,4 +1,3 @@
-import { Prisma } from '@prisma/client';
 import { TRPCError } from '@trpc/server';
 import axios from 'axios';
 import { z } from 'zod';

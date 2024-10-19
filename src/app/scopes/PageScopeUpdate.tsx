@@ -10,7 +10,7 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import { Formiz } from '@formiz/core';
-import { Issue, Scope } from '@prisma/client';
+import { Scope } from '@prisma/client';
 import { useTranslation } from 'react-i18next';
 import { VscIssues } from 'react-icons/vsc';
 import { Link, useNavigate, useParams } from 'react-router-dom';
