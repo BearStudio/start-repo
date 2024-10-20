@@ -532,7 +532,6 @@ export const PageIssues = () => {
                                     hasArrow
                                     p={2}
                                     borderRadius={8}
-                                    bg="gray.800"
                                     placement="bottom"
                                     label={
                                       <Wrap>
@@ -568,10 +567,6 @@ export const PageIssues = () => {
                                   hasArrow
                                   p={2}
                                   borderRadius={8}
-                                  bg="gray.50"
-                                  _dark={{
-                                    bg: 'gray.800',
-                                  }}
                                   placement="bottom"
                                   label={
                                     <Wrap>
