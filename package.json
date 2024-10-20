@@ -80,7 +80,7 @@
     "remark-gfm": "3.0.1",
     "remeda": "2.5.0",
     "superjson": "1.10.0",
-    "webpack": "5.90.0",
+    "webpack": "5.94.0",
     "zod": "3.19.1",
     "zod-i18n-map": "2.27.0",
     "zustand": "3.7.2"
