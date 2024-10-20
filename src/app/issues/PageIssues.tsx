@@ -33,7 +33,6 @@ import {
   Wrap,
   useBreakpointValue,
   useDisclosure,
-  useToken,
 } from '@chakra-ui/react';
 import { Formiz } from '@formiz/core';
 import { Issue, Scope, ScopesOnIssues } from '@prisma/client';
@@ -66,7 +65,6 @@ import {
   useToastError,
 } from '@/components';
 import { SearchInput } from '@/components/SearchInput';
-import { generateSwatch } from '@/utils/colors';
 import { trpc } from '@/utils/trpc';
 
 import { ScopeTag } from '../scopes/ScopeTag';
@@ -131,7 +129,6 @@ export const PageIssues = () => {
   const [filters, setFilters] = useState<{ scopes: string[] } | null>(null);
   const [selectedIssues, setSelectedIssues] = useState<string[]>([]);
 
-  const brandColor = useToken('colors', 'brand.500');
   const { isOpen, onClose, onOpen } = useDisclosure();
 
   const trpcContext = trpc.useContext();
