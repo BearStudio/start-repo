@@ -9,7 +9,7 @@ import { FieldSelectProps, FormGroup, Select } from '@/components';
 export interface FieldMultiSelectProps<
   Option,
   IsMulti extends boolean = true,
-  Group extends GroupBase<Option> = GroupBase<Option>
+  Group extends GroupBase<Option> = GroupBase<Option>,
 > extends FieldSelectProps<Option, IsMulti, Group> {
   isNotClearable?: boolean;
 }
@@ -17,7 +17,7 @@ export interface FieldMultiSelectProps<
 export const FieldMultiSelect = <
   Option,
   IsMulti extends boolean = true,
-  Group extends GroupBase<Option> = GroupBase<Option>
+  Group extends GroupBase<Option> = GroupBase<Option>,
 >(
   props: FieldMultiSelectProps<Option, IsMulti, Group>
 ) => {
