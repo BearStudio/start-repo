@@ -2,7 +2,8 @@ import { Stack } from '@chakra-ui/react';
 import { Scope } from '@prisma/client';
 
 import { useFieldSelectScopeStyles } from '@/app/scopes/useFieldSelectScopeStyles';
-import { FieldInput, FieldMarkdown, FieldMultiSelect } from '@/components';
+import { FieldInput, FieldMultiSelect } from '@/components';
+import { FieldMarkdown } from '@/components/FieldMarkdown';
 import { trpc } from '@/utils/trpc';
 
 export type IssueFormProps = {
