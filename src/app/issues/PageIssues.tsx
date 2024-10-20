@@ -523,9 +523,11 @@ export const PageIssues = () => {
                             </Text>
                             {isMobile && (
                               <Wrap justify="left">
-                                {issue.scopes?.slice(0, 1).map(({ scope }) => (
-                                  <ScopeTag scope={scope} />
-                                ))}
+                                {issue.scopes
+                                  ?.slice(0, 1)
+                                  .map(({ scope }) => (
+                                    <ScopeTag scope={scope} />
+                                  ))}
 
                                 {issue.scopes.length > 1 && (
                                   <Tooltip
@@ -558,9 +560,11 @@ export const PageIssues = () => {
                         {!isMobile && (
                           <DataListCell>
                             <Wrap>
-                              {issue.scopes?.slice(0, 5).map((scope) => (
-                                <ScopeTag scope={scope.scope} />
-                              ))}
+                              {issue.scopes
+                                ?.slice(0, 5)
+                                .map((scope) => (
+                                  <ScopeTag scope={scope.scope} />
+                                ))}
 
                               {issue.scopes.length > 5 && (
                                 <Tooltip

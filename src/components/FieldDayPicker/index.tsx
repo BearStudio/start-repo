@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { DayPicker, FormGroup, FormGroupProps } from '@/components';
 
 export interface FieldDayPickerProps extends FieldProps, FormGroupProps {
-  placeholder: string,
+  placeholder: string;
   invalidMessage?: string;
 }
 
