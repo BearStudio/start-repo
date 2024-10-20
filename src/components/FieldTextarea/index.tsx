@@ -6,6 +6,7 @@ import { FieldProps, useField } from '@formiz/core';
 import { FormGroup, FormGroupProps } from '@/components';
 
 export interface FieldTextareaProps extends FieldProps, FormGroupProps {
+  placeholder?: TextareaProps['placeholder'];
   textareaProps?: Omit<
     TextareaProps,
     | 'id'
