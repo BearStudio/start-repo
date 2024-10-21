@@ -21,6 +21,8 @@ yarn build
 ## Project Setup
 
 - Duplicate and rename your `.env.example` into `.env`.
+
+### GitHub
 - Go to your github [developper settings](https://github.com/settings/developers). Create a new OAuth app and a new client secret.
 - Fill your `GITHUB_CLIENT_ID` and `GITHUB_CLIENT_SECRET` env variable with your client id and client secret.
 
@@ -28,6 +30,12 @@ yarn build
 > [!NOTE]
 > **If you need to request access to your organization :**
 > - You can approve it in the OAuth policies page when logged in as an administrator of your organization.
+
+### GitLab
+- Go to your gitlab [applications](https://gitlab.com/-/user_settings/applications). Create a new OAuth app with `http://localhost:3000/api/auth/callback/gitlab` as the callback url as you are in development mode.
+- Check the `read_user` scope as it is needed for authentication.
+- Fill your `GITLAB_CLIENT_ID` and `GITLAB_CLIENT_SECRET` env variable with your application id and application secret.
+
 
 ## Development
 
