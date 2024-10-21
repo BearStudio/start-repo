@@ -151,6 +151,32 @@ export const issueRouter = t.router({
       });
     }),
 
+  getManyByScopeId: t.procedure
+    .use(isAuthed)
+    .input(
+      z.object({
+        scopes: z.array(z.string().uuid().min(1)),
+      })
+    )
+    .query(async ({ ctx, input: { scopes } }) => {
+      return await ctx.db.issue.findMany({
+        where: {
+          scopes: {
+            some: {
+              scopeId: { in: scopes },
+            },
+          },
+        },
+        include: {
+          scopes: {
+            include: {
+              scope: true,
+            },
+          },
+        },
+      });
+    }),
+
   detail: t.procedure
     .use(isAuthed)
     .input(
