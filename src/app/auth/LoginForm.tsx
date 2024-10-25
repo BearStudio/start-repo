@@ -5,11 +5,17 @@ import { FiGithub, FiGitlab, FiInfo } from 'react-icons/fi';
 
 import { Icon } from '@/components';
 
+export type LoginFormProps = {
+  onSuccess: () => void;
+  provider?: string;
+  [key: string]: any;
+};
+
 export const LoginForm = ({
   onSuccess = () => undefined,
   provider = 'github',
   ...rest
-}: TODO) => {
+}: LoginFormProps) => {
   const { t } = useTranslation();
 
   return (
