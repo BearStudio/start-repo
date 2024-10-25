@@ -30,7 +30,7 @@ declare module 'react' {
 export type SelectProps<
   Option,
   IsMulti extends boolean = false,
-  Group extends GroupBase<Option> = GroupBase<Option>
+  Group extends GroupBase<Option> = GroupBase<Option>,
 > = {
   isAsync?: boolean;
   isCreatable?: boolean;
@@ -46,7 +46,7 @@ export type SelectProps<
 const SelectInner = <
   Option,
   IsMulti extends boolean = false,
-  Group extends GroupBase<Option> = GroupBase<Option>
+  Group extends GroupBase<Option> = GroupBase<Option>,
 >(
   props: SelectProps<Option, IsMulti, Group>,
   ref: React.ForwardedRef<HTMLElement>

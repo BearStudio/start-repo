@@ -3,7 +3,6 @@ export * from './ConfirmMenuItem';
 export * from './ConfirmPopover';
 export * from './DataList';
 export * from './DateAgo';
-export * from './DateSelector';
 export * from './DayPicker';
 export * from './FieldBooleanCheckbox';
 export * from './FieldCheckboxes';

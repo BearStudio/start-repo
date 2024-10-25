@@ -9,7 +9,7 @@ import { Select, SelectProps } from '@/components/Select';
 export interface FieldSelectProps<
   Option,
   IsMulti extends boolean = false,
-  Group extends GroupBase<Option> = GroupBase<Option>
+  Group extends GroupBase<Option> = GroupBase<Option>,
 > extends FieldProps,
     FormGroupProps {
   placeholder?: string;
@@ -24,7 +24,7 @@ export interface FieldSelectProps<
 export const FieldSelect = <
   Option,
   IsMulti extends boolean = false,
-  Group extends GroupBase<Option> = GroupBase<Option>
+  Group extends GroupBase<Option> = GroupBase<Option>,
 >(
   props: FieldSelectProps<Option, IsMulti, Group>
 ) => {
