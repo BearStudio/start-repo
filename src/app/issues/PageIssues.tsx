@@ -29,9 +29,10 @@ import {
   Stack,
   Tag,
   Text,
+  Tooltip,
   Wrap,
+  useBreakpointValue,
   useDisclosure,
-  useToken,
 } from '@chakra-ui/react';
 import { Formiz } from '@formiz/core';
 import { Issue, Scope, ScopesOnIssues } from '@prisma/client';
@@ -49,6 +50,7 @@ import { Link } from 'react-router-dom';
 
 import { EmptyState } from '@/app/issues/EmptyState';
 import { Page, PageContent } from '@/app/layout';
+import { ScopeTag } from '@/app/scopes/ScopeTag';
 import { useFieldSelectScopeStyles } from '@/app/scopes/useFieldSelectScopeStyles';
 import {
   ActionsButton,
@@ -64,7 +66,6 @@ import {
   useToastError,
 } from '@/components';
 import { SearchInput } from '@/components/SearchInput';
-import { generateSwatch } from '@/utils/colors';
 import { trpc } from '@/utils/trpc';
 
 import { ExportModal } from './ExportModal';
@@ -129,7 +130,6 @@ export const PageIssues = () => {
   const [lastFilters, setLastFilters] = useState<string[] | null>([]);
   const [selectedIssues, setSelectedIssues] = useState<string[]>([]);
 
-  const brandColor = useToken('colors', 'brand.500');
   const { isOpen, onClose, onOpen } = useDisclosure();
 
   const onCloseExport = (scopes: string[] | undefined) => {
@@ -189,6 +189,11 @@ export const PageIssues = () => {
     })) ?? [];
 
   const styles = useFieldSelectScopeStyles();
+  const isMobile =
+    useBreakpointValue({
+      base: true,
+      md: false,
+    }) ?? false;
 
   return (
     <Page containerSize="lg" pb={!!selectedIssues.length ? 24 : undefined}>
@@ -502,14 +507,19 @@ export const PageIssues = () => {
                             color="brand.500"
                           />
                         </DataListCell>
+
                         <DataListCell colWidth={2}>
-                          <Stack spacing="0">
-                            <Text fontWeight="bold">
+                          <Stack spacing={{ base: '1', md: '0' }}>
+                            <Text
+                              fontWeight="bold"
+                              align={{ base: 'left', md: undefined }}
+                            >
                               <LinkOverlay as={Link} to={issue.id}>
                                 {issue.title}
                               </LinkOverlay>
                             </Text>
                             <Text
+                              align={{ base: 'left', md: undefined }}
                               fontSize="sm"
                               color="gray.500"
                               _dark={{ color: 'gray.400' }}
@@ -517,33 +527,75 @@ export const PageIssues = () => {
                             >
                               {issue.description}
                             </Text>
+                            {isMobile && (
+                              <Wrap justify="left">
+                                {issue.scopes
+                                  ?.slice(0, 1)
+                                  .map(({ scope }) => (
+                                    <ScopeTag scope={scope} />
+                                  ))}
+
+                                {issue.scopes.length > 1 && (
+                                  <Tooltip
+                                    hasArrow
+                                    p={2}
+                                    borderRadius={8}
+                                    placement="bottom"
+                                    label={
+                                      <Wrap>
+                                        {issue.scopes
+                                          ?.slice(1, issue.scopes.length)
+                                          .map(({ scope }) => (
+                                            <ScopeTag
+                                              key={scope.id}
+                                              scope={scope}
+                                            />
+                                          ))}
+                                      </Wrap>
+                                    }
+                                  >
+                                    <Tag zIndex="popover">
+                                      +{issue.scopes.length - 1}
+                                    </Tag>
+                                  </Tooltip>
+                                )}
+                              </Wrap>
+                            )}
                           </Stack>
                         </DataListCell>
-                        <DataListCell>
-                          <Wrap>
-                            {issue.scopes?.map(({ scope }) => (
-                              <Tag
-                                key={scope.id}
-                                color={
-                                  generateSwatch(scope.color ?? brandColor)[700]
-                                }
-                                bg={
-                                  generateSwatch(scope.color ?? brandColor)[100]
-                                }
-                                _dark={{
-                                  color: generateSwatch(
-                                    scope.color ?? brandColor
-                                  )[50],
-                                  bg: generateSwatch(
-                                    scope.color ?? brandColor
-                                  )[700],
-                                }}
-                              >
-                                {scope.name}
-                              </Tag>
-                            ))}
-                          </Wrap>
-                        </DataListCell>
+                        {!isMobile && (
+                          <DataListCell>
+                            <Wrap>
+                              {issue.scopes
+                                ?.slice(0, 5)
+                                .map((scope) => (
+                                  <ScopeTag scope={scope.scope} />
+                                ))}
+
+                              {issue.scopes.length > 5 && (
+                                <Tooltip
+                                  hasArrow
+                                  p={2}
+                                  borderRadius={8}
+                                  placement="bottom"
+                                  label={
+                                    <Wrap>
+                                      {issue.scopes
+                                        ?.slice(5, issue.scopes.length)
+                                        .map(({ scope }) => (
+                                          <ScopeTag scope={scope} />
+                                        ))}
+                                    </Wrap>
+                                  }
+                                >
+                                  <Tag zIndex="popover">
+                                    +{issue.scopes.length - 5}
+                                  </Tag>
+                                </Tooltip>
+                              )}
+                            </Wrap>
+                          </DataListCell>
+                        )}
                         <DataListCell align="flex-end" colWidth="4rem">
                           <IssueActions issue={issue} />
                         </DataListCell>

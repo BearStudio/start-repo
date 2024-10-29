@@ -12,6 +12,7 @@ export default {
       return {
         field: {
           bg: mode('blackAlpha.50', 'whiteAlpha.50')(props),
+          borderRadius: `0.375rem`,
           borderColor: mode('blackAlpha.100', 'whiteAlpha.100')(props),
           _focus: {
             borderColor: focusBorderColor,

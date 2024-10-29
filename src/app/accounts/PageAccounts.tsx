@@ -19,12 +19,12 @@ import { trpc } from '@/utils/trpc';
 export const PageAccounts = () => {
   const { t } = useTranslation('account');
 
-  const { data, isLoading: areAccountsLoading } = trpc.account.me.useQuery();
+  const { data: githubAccount, isLoading: isGithubLoading } =
+    trpc.account.me.useQuery({ provider: 'github' });
+  const { data: gitlabAccount, isLoading: isGitlabLoading } =
+    trpc.account.me.useQuery({ provider: 'gitlab' });
 
-  const githubAccount = data?.find((account) => account.provider === 'github');
-  const gitlabAccount = data?.find((account) => account.provider === 'gitlab');
-
-  const isLoading = areAccountsLoading;
+  const isLoading = isGithubLoading || isGitlabLoading;
 
   return (
     <Page containerSize="lg">

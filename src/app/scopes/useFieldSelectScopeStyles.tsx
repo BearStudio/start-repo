@@ -22,17 +22,17 @@ export const useFieldSelectScopeStyles = (): StylesConfig<
         backgroundColor: isDisabled
           ? undefined
           : isSelected
-          ? swatch[500]
-          : isFocused
-          ? color.alpha(0.2).css()
-          : undefined,
+            ? swatch[500]
+            : isFocused
+              ? color.alpha(0.2).css()
+              : undefined,
         color: isDisabled
           ? '#ccc'
           : isSelected
-          ? chroma.contrast(color, 'white') > 2
-            ? 'white'
-            : 'black'
-          : swatch[colorMode === 'light' ? 700 : 400],
+            ? chroma.contrast(color, 'white') > 2
+              ? 'white'
+              : 'black'
+            : swatch[colorMode === 'light' ? 700 : 400],
         cursor: isDisabled ? 'not-allowed' : 'default',
 
         ':active': {
