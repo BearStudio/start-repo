@@ -18,9 +18,10 @@ export const badRequest = (res: NextApiResponse) => {
   return res.status(400).end();
 };
 
-export const notSignedIn = (res: NextApiResponse, url?: string) => {
-  if (url && (url as string).endsWith('api/csv/issue')) {
-    return res.status(401).json({ provider: 'gitlab' });
+export const notSignedIn = (res: NextApiResponse, req: NextApiRequest) => {
+  const provider = req.body.provider;
+  if (provider !== undefined) {
+    return res.status(401).json({ provider: provider });
   }
 
   return res.status(401).end();
@@ -54,10 +55,13 @@ export const apiMethods =
     if (!method.isPublic) {
       // getSession is now deprecated and is way slower than getServerSession because
       // it does an extra fetch out over the internet to confirm data from itself
-
       const session = await getServerSession(req, res, authOptions);
-      if (!session) {
-        return notSignedIn(res, req.url);
+      const provider = req.body.provider;
+      if (
+        !session ||
+        session.user.accounts.find((x) => x.provider === provider) === undefined // If the user doesn't have an account logged in with the given provider.
+      ) {
+        return notSignedIn(res, req);
       }
     }
 
