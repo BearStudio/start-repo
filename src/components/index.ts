@@ -11,6 +11,7 @@ export * from './FieldCurrency';
 export * from './FieldDayPicker';
 export * from './FieldHidden';
 export * from './FieldInput';
+export * from './FieldMarkDown';
 export * from './FieldMultiSelect';
 export * from './FieldRadios';
 export * from './FieldSelect';
