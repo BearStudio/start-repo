@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 import {
   Heading,
@@ -28,6 +28,8 @@ export const LoginModalInterceptor = () => {
   const pathnameRef = useRef(pathname);
   pathnameRef.current = pathname;
 
+  const [provider, setProvider] = useState<string>('github');
+
   useEffect(() => {
     const interceptor = Axios.interceptors.response.use(
       (r) => r,
@@ -36,6 +38,10 @@ export const LoginModalInterceptor = () => {
           error?.response?.status === 401 &&
           pathnameRef.current !== '/login'
         ) {
+          if (error.response.data && error.response.data.provider) {
+            setProvider(error.response.data.provider);
+          }
+
           queryCache.cancelQueries();
           onOpen();
         }
@@ -76,7 +82,7 @@ export const LoginModalInterceptor = () => {
         <ModalBody p="6">
           <Heading size="lg">{t('auth:interceptor.title')}</Heading>
           <Text mb="2">{t('auth:interceptor.description')}</Text>
-          <LoginForm onSuccess={handleLogin} />
+          <LoginForm onSuccess={handleLogin} provider={provider} />
         </ModalBody>
       </ModalContent>
     </Modal>

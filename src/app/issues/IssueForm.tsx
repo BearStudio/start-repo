@@ -3,7 +3,7 @@ import { Scope } from '@prisma/client';
 
 import { useFieldSelectScopeStyles } from '@/app/scopes/useFieldSelectScopeStyles';
 import { FieldInput, FieldMultiSelect } from '@/components';
-import { FieldMarkdown } from '@/components/FieldMarkdown';
+import { FieldMarkdown } from '@/components/FieldMarkDown';
 import { trpc } from '@/utils/trpc';
 
 export type IssueFormProps = {
