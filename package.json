@@ -61,7 +61,7 @@
     "i18next-browser-languagedetector": "8.0.0",
     "isomorphic-form-data": "2.0.0",
     "lodash": "4.17.21",
-    "next": "14.2.4",
+    "next": "14.2.15",
     "next-auth": "4.24.7",
     "next-usequerystate": "1.7.3",
     "react": "18.3.1",
