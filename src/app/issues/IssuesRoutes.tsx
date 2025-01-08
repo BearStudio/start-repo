@@ -12,7 +12,7 @@ const IssuesRoutes = () => {
     <Routes>
       <Route path="/" element={<PageIssues />} />
       <Route path="create" element={<PageIssueCreate />} />
-      <Route path="defaults" element={<PageDefaultIssues />} />
+      <Route path="onboarding" element={<PageDefaultIssues />} />
       <Route path=":id" element={<PageIssueUpdate />} />
       <Route path="*" element={<Error404 />} />
     </Routes>
