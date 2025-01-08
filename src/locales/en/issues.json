@@ -10,5 +10,8 @@
   },
   "update": {
     "title": "Update Issue"
+  },
+  "defaults": {
+    "title": "Select default issues"
   }
 }

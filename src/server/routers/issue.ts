@@ -235,6 +235,41 @@ export const issueRouter = t.router({
       return issue;
     }),
 
+  createMany: t.procedure
+    .use(isAuthed)
+    .input(
+      z.array(
+        z.object({
+          id: z.string().uuid(),
+          title: z.string().min(1),
+          description: z.string().nullish(),
+          scopes: z.array(z.string().uuid()).min(1),
+        })
+      )
+    )
+    .mutation(async ({ input, ctx }) => {
+      await ctx.db.issue.createMany({
+        data: input.map((issue) => ({
+          id: issue.id,
+          title: issue.title,
+          description: issue.description,
+        })),
+      });
+
+      await Promise.all(
+        input.map(async (issue) => {
+          await ctx.db.scopesOnIssues.createMany({
+            data: issue.scopes.map((scope) => ({
+              scopeId: scope,
+              issueId: issue.id,
+            })),
+          });
+        })
+      );
+
+      return;
+    }),
+
   edit: t.procedure
     .use(isAuthed)
     .input(

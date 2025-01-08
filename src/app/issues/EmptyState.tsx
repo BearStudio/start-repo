@@ -2,6 +2,7 @@ import { VFC } from 'react';
 
 import { Button, Stack, StackProps, Text } from '@chakra-ui/react';
 import { FiPlus } from 'react-icons/fi';
+import { LuListChecks } from 'react-icons/lu';
 import { VscIssues } from 'react-icons/vsc';
 import { Link } from 'react-router-dom';
 
@@ -19,6 +20,16 @@ export const EmptyState: VFC<StackProps> = (props) => (
       colorScheme="brand"
     >
       Create a new issue
+    </Button>
+    <Text color="brand">or</Text>
+    <Button
+      leftIcon={<Icon icon={LuListChecks} />}
+      as={Link}
+      to="defaults"
+      variant="link"
+      colorScheme="brand"
+    >
+      Choose from the default issues
     </Button>
   </Stack>
 );

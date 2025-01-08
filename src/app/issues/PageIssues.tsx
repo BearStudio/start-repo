@@ -25,6 +25,7 @@ import {
   PopoverTrigger,
   Portal,
   Slide,
+  Spacer,
   Spinner,
   Stack,
   Tag,
