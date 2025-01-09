@@ -25,7 +25,7 @@ export const EmptyState: VFC<StackProps> = (props) => (
     <Button
       leftIcon={<Icon icon={LuListChecks} />}
       as={Link}
-      to="defaults"
+      to="onboarding"
       variant="link"
       colorScheme="brand"
     >

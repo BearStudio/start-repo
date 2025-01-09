@@ -10,7 +10,7 @@ export type SuggestedIssue = {
   description: string;
 };
 
-export const suggestedIssues: SuggestedScope[] = [
+export const suggestedScopes: SuggestedScope[] = [
   {
     name: 'SEO',
     color: '#00ff94',
@@ -34,11 +34,6 @@ export const suggestedIssues: SuggestedScope[] = [
       {
         name: 'Does the application need translations? (i18n)',
         description: '',
-      },
-      {
-        name: 'Add meta & Open Graph tags',
-        description:
-          'Test the Open Graph tags through [https://www.opengraph.xyz/](https://www.opengraph.xyz/).\n\nFor NextJS you can use [next-seo](https://github.com/garmeeh/next-seo)',
       },
     ],
   },
@@ -89,11 +84,6 @@ export const suggestedIssues: SuggestedScope[] = [
         name: 'Setup the branding',
         description:
           'Using the mockups, setup:\n\n- [ ] colors\n- [ ] fonts\n- [ ] shadows\n- [ ] components default theme',
-      },
-      {
-        name: 'Add meta & Open Graph tags',
-        description:
-          'Test the Open Graph tags through [https://www.opengraph.xyz/](https://www.opengraph.xyz/).\n\nFor NextJS you can use [next-seo](https://github.com/garmeeh/next-seo)',
       },
       {
         name: 'Add favicon and manifest',
@@ -147,11 +137,6 @@ export const suggestedIssues: SuggestedScope[] = [
       {
         name: 'Setup prod environment',
         description: '',
-      },
-      {
-        name: 'Create Slack hook',
-        description:
-          'Create a Slack hook to have messages when issues are created',
       },
       {
         name: 'Credit BearStudio',
@@ -304,11 +289,6 @@ export const suggestedIssues: SuggestedScope[] = [
         name: 'Setup the branding',
         description:
           'Using the mockups, setup:\n\n- [ ] colors\n- [ ] fonts\n- [ ] shadows\n- [ ] components default theme',
-      },
-      {
-        name: 'Add meta & Open Graph tags',
-        description:
-          'Test the Open Graph tags through [https://www.opengraph.xyz/](https://www.opengraph.xyz/).\n\nFor NextJS you can use [next-seo](https://github.com/garmeeh/next-seo)',
       },
       {
         name: 'Add favicon and manifest',
