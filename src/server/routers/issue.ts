@@ -1,9 +1,18 @@
+import { Scope } from '@prisma/client';
 import { TRPCError } from '@trpc/server';
 import axios from 'axios';
 import { z } from 'zod';
 
 import { isAuthed } from '@/server/middleware';
 import { t } from '@/server/trpc';
+
+export type Issue = {
+  id: string;
+  title: string;
+  description: string | null;
+  createdAt: Date;
+  updatedAt: Date;
+};
 
 export const issueRouter = t.router({
   infinite: t.procedure
@@ -235,37 +244,70 @@ export const issueRouter = t.router({
       return issue;
     }),
 
-  createMany: t.procedure
+  createFromSuggested: t.procedure
     .use(isAuthed)
     .input(
       z.array(
         z.object({
-          id: z.string().uuid(),
-          title: z.string().min(1),
+          name: z.string(),
+          color: z.string().nullish(),
           description: z.string().nullish(),
-          scopes: z.array(z.string().uuid()).min(1),
+          issues: z.array(
+            z.object({
+              name: z.string(),
+              description: z.string(),
+            })
+          ),
         })
       )
     )
     .mutation(async ({ input, ctx }) => {
-      await ctx.db.issue.createMany({
-        data: input.map((issue) => ({
-          id: issue.id,
-          title: issue.title,
-          description: issue.description,
-        })),
-      });
+      const [newScopes] = await ctx.db.$transaction([
+        ctx.db.scope.createManyAndReturn({
+          data: input.map((scope) => ({
+            name: scope.name,
+            color: scope.color,
+            description: scope.description,
+          })),
+        }),
+      ]);
 
-      await Promise.all(
-        input.map(async (issue) => {
-          await ctx.db.scopesOnIssues.createMany({
-            data: issue.scopes.map((scope) => ({
-              scopeId: scope,
-              issueId: issue.id,
-            })),
-          });
+      const issueTransactions = await Promise.all(
+        input.map(async (scope) => {
+          const [newIssues] = await ctx.db.$transaction([
+            ctx.db.issue.createManyAndReturn({
+              data: scope.issues.map((issue) => ({
+                title: issue.name,
+                description: issue.description,
+              })),
+            }),
+          ]);
+
+          return newIssues;
         })
       );
+
+      const scopes: Scope[] = newScopes.flat();
+      const issues: Issue[] = issueTransactions.flat();
+
+      input.forEach(async (scope) => {
+        scope.issues.forEach(async (issue) => {
+          const scopeId = scopes.find(
+            (_scope) => _scope.name === scope.name
+          )?.id;
+          const issueId = issues.find(
+            (_issue) => _issue.title === issue.name
+          )?.id;
+          if (!!scopeId && !!issueId) {
+            await ctx.db.scopesOnIssues.create({
+              data: {
+                scopeId: scopeId,
+                issueId: issueId,
+              },
+            });
+          }
+        });
+      });
 
       return;
     }),

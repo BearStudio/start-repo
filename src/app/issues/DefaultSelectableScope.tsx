@@ -6,10 +6,10 @@ import {
   Stack,
   Text,
 } from '@chakra-ui/react';
-import { Form } from '@formiz/core';
 import { FiTag } from 'react-icons/fi';
 import { VscIssues } from 'react-icons/vsc';
 
+import { removeBrackets } from '@/app/issues/PageDefaultIssues';
 import { SuggestedScope } from '@/app/issues/defaultData';
 import {
   DataListCell,
@@ -23,14 +23,12 @@ import { generateSwatch } from '@/utils/colors';
 
 export const DefaultSelectableScope = ({
   scope,
-  form,
 }: {
   scope: SuggestedScope;
-  form: Form;
 }) => {
   return (
     <AccordionItem border="none">
-      <FieldCheckboxes name={scope.name}>
+      <FieldCheckboxes name={removeBrackets(scope.name)}>
         <DataListRow>
           <DataListCell colWidth="3rem">
             <FieldCheckboxesCheckAll />
@@ -68,7 +66,7 @@ export const DefaultSelectableScope = ({
             <DataListRow key={scope.name + issue.name}>
               <DataListCell colWidth="1rem" position="relative" zIndex="2">
                 <FieldCheckboxesItem
-                  name={`${scope.name}.${issue.name}`}
+                  name={removeBrackets(`${scope.name} ${issue.name}`)}
                   value={issue}
                   _before={{
                     content: '""',
