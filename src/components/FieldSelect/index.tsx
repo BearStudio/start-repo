@@ -7,7 +7,7 @@ import { FormGroup, FormGroupProps } from '@/components/FormGroup';
 import { Select, SelectProps } from '@/components/Select';
 
 export interface FieldSelectProps<
-  Option,
+  Option extends { label: string; value: unknown },
   IsMulti extends boolean = false,
   Group extends GroupBase<Option> = GroupBase<Option>,
 > extends FieldProps,
@@ -22,7 +22,7 @@ export interface FieldSelectProps<
 }
 
 export const FieldSelect = <
-  Option,
+  Option extends { label: string; value: unknown },
   IsMulti extends boolean = false,
   Group extends GroupBase<Option> = GroupBase<Option>,
 >(
@@ -73,7 +73,7 @@ export const FieldSelect = <
     <FormGroup {...formGroupProps}>
       <Select
         id={id}
-        value={options?.find((option) => option.value === value) || ''}
+        value={options?.find((option) => option.value === value) || undefined}
         onBlur={() => setIsTouched(true)}
         placeholder={placeholder || 'Select...'}
         onChange={(fieldValue) =>

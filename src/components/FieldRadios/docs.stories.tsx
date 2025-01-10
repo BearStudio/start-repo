@@ -1,4 +1,4 @@
-import { Formiz } from '@formiz/core';
+import { Formiz, useForm } from '@formiz/core';
 
 import { FieldRadios } from './index';
 
@@ -7,8 +7,9 @@ export default {
 };
 export const Default = () => {
   const options = [{ value: 'One' }, { value: 'Two' }, { value: 'Three' }];
+  const form = useForm();
   return (
-    <Formiz>
+    <Formiz connect={form}>
       <FieldRadios
         name="FieldRadios"
         label="Label"

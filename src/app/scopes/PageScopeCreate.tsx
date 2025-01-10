@@ -1,5 +1,5 @@
 import { Box, Button, Flex, Heading } from '@chakra-ui/react';
-import { Formiz } from '@formiz/core';
+import { Formiz, useForm } from '@formiz/core';
 import { Scope } from '@prisma/client';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
@@ -40,12 +40,14 @@ export const PageScopeCreate = () => {
     });
   };
 
+  const form = useForm({ onValidSubmit: handleOnValidSubmit });
+
   return (
     <Page containerSize="lg" isFocusMode>
       <PageTopBar showBack onBack={() => navigate(-1)}>
         <Heading size="md">{t('scopes:create.title')}</Heading>
       </PageTopBar>
-      <Formiz autoForm onValidSubmit={handleOnValidSubmit}>
+      <Formiz autoForm connect={form}>
         <PageContent>
           <Box
             bg={colorModeValue('white', 'gray.900')}

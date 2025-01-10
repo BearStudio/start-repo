@@ -1,11 +1,11 @@
-import React from 'react';
-
 import { FieldProps, useField, useForm } from '@formiz/core';
 import { useTranslation } from 'react-i18next';
 
 import { DayPicker, FormGroup, FormGroupProps } from '@/components';
 
-export interface FieldDayPickerProps extends FieldProps, FormGroupProps {
+export interface FieldDayPickerProps
+  extends FieldProps<string | Date | null | undefined>,
+    FormGroupProps {
   placeholder: string;
   invalidMessage?: string;
 }
@@ -13,7 +13,7 @@ export interface FieldDayPickerProps extends FieldProps, FormGroupProps {
 export const FieldDayPicker = (props: FieldDayPickerProps) => {
   const { t } = useTranslation();
   const { invalidMessage, ...fieldProps } = props;
-  const { invalidateFields } = useForm({ subscribe: false });
+  const { setErrors } = useForm();
   const {
     errorMessage,
     id,
@@ -26,8 +26,7 @@ export const FieldDayPicker = (props: FieldDayPickerProps) => {
     debounce: 0,
     ...fieldProps,
   });
-  const { children, label, type, placeholder, helper, size, ...rest } =
-    otherProps;
+  const { children, label, placeholder, helper, size, ...rest } = otherProps;
   const { required } = props;
   const showError = !isValid && isSubmitted;
 
@@ -44,7 +43,7 @@ export const FieldDayPicker = (props: FieldDayPickerProps) => {
   const handleChange = (date, isValidDate) => {
     setValue(date);
     if (!isValidDate) {
-      invalidateFields({
+      setErrors({
         [props.name]:
           invalidMessage ?? t('components:fieldDayPicker.invalidMessage'),
       });

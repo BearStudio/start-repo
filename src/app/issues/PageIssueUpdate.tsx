@@ -1,5 +1,5 @@
 import { Box, Button, Flex, Heading } from '@chakra-ui/react';
-import { Formiz } from '@formiz/core';
+import { Formiz, useForm } from '@formiz/core';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
 
@@ -56,6 +56,14 @@ export const PageIssueUpdate = () => {
 
   const scopes = issue?.scopes?.map(({ scope }) => scope.id);
 
+  const form = useForm({
+    onValidSubmit: handleOnValidSubmit,
+    initialValues: {
+      ...issue,
+      scopes,
+    },
+  });
+
   return (
     <Page containerSize="lg" isFocusMode>
       <PageTopBar showBack onBack={() => navigate(-1)}>
@@ -64,14 +72,7 @@ export const PageIssueUpdate = () => {
       {isFetching && <Loader />}
       {isError && !isFetching && <Error404 />}
       {!isError && !isFetching && (
-        <Formiz
-          autoForm
-          onValidSubmit={handleOnValidSubmit}
-          initialValues={{
-            ...issue,
-            scopes,
-          }}
-        >
+        <Formiz autoForm connect={form}>
           <PageContent>
             <Box
               bg={colorModeValue('white', 'gray.900')}

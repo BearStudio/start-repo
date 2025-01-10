@@ -34,7 +34,7 @@ import {
   useBreakpointValue,
   useDisclosure,
 } from '@chakra-ui/react';
-import { Formiz } from '@formiz/core';
+import { Formiz, useForm } from '@formiz/core';
 import { Issue, Scope, ScopesOnIssues } from '@prisma/client';
 import { useTranslation } from 'react-i18next';
 import {
@@ -189,6 +189,23 @@ export const PageIssues = () => {
       md: false,
     }) ?? false;
 
+  const scopeForm = useForm({
+    onValidSubmit: (values: { scopes: string[] }) => {
+      setFilters({ scopes: values.scopes ?? null });
+      onClose();
+    },
+    initialValues: filters ?? {},
+  });
+
+  const assignScopeForm = useForm({
+    onValidSubmit: (values: { scope: string }) => {
+      addBulkScope({
+        scopeId: values.scope,
+        ids: selectedIssues,
+      });
+    },
+  });
+
   return (
     <Page containerSize="lg" pb={!!selectedIssues.length ? 24 : undefined}>
       <PageContent>
@@ -252,14 +269,7 @@ export const PageIssues = () => {
                     </PopoverTrigger>
 
                     <PopoverContent>
-                      <Formiz
-                        autoForm
-                        initialValues={filters ?? {}}
-                        onValidSubmit={(values: { scopes: string[] }) => {
-                          setFilters({ scopes: values.scopes ?? null });
-                          onClose();
-                        }}
-                      >
+                      <Formiz autoForm connect={scopeForm}>
                         <PopoverArrow />
                         <PopoverBody>
                           <FieldMultiSelect
@@ -409,17 +419,7 @@ export const PageIssues = () => {
                                   </PopoverTrigger>
 
                                   <PopoverContent>
-                                    <Formiz
-                                      autoForm
-                                      onValidSubmit={(values: {
-                                        scope: string;
-                                      }) => {
-                                        addBulkScope({
-                                          scopeId: values.scope,
-                                          ids: selectedIssues,
-                                        });
-                                      }}
-                                    >
+                                    <Formiz autoForm connect={assignScopeForm}>
                                       <PopoverArrow />
                                       <PopoverBody>
                                         <FieldSelect

@@ -15,7 +15,7 @@ import { RiEyeCloseLine, RiEyeLine } from 'react-icons/ri';
 import { FormGroup, FormGroupProps } from '@/components/FormGroup';
 
 export interface FieldInputProps
-  extends FieldProps,
+  extends FieldProps<string | number | readonly string[] | undefined>,
     Omit<FormGroupProps, 'placeholder'>,
     Pick<InputProps, 'type' | 'placeholder'> {
   size?: 'sm' | 'md' | 'lg';

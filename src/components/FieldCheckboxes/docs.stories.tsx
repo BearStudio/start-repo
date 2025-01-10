@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
 import { Button, Divider, Flex, Stack } from '@chakra-ui/react';
-import { Formiz } from '@formiz/core';
+import { Formiz, useForm } from '@formiz/core';
 
 import {
   FieldCheckboxes,
@@ -20,8 +20,10 @@ export const Default = () => {
     { label: 'Blue', value: 'blue' },
   ];
 
+  const form = useForm();
+
   return (
-    <Formiz onChange={console.log} autoForm>
+    <Formiz connect={form} autoForm>
       <FieldCheckboxes
         name="colors"
         label="Colors"
@@ -36,8 +38,10 @@ export const Default = () => {
 export const IsDisabled = () => {
   const options = [{ value: 'Red' }, { value: 'Green' }, { value: 'Blue' }];
 
+  const form = useForm();
+
   return (
-    <Formiz>
+    <Formiz connect={form}>
       <FieldCheckboxes
         name="colors"
         label="Colors"
@@ -55,8 +59,10 @@ export const WithDefaultValues = () => {
     { label: 'Blue', value: 'blue' },
   ];
 
+  const form = useForm({ onValuesChange: console.log });
+
   return (
-    <Formiz onChange={console.log}>
+    <Formiz connect={form}>
       <FieldCheckboxes
         name="colors"
         label="Colors"
@@ -68,8 +74,9 @@ export const WithDefaultValues = () => {
 };
 
 export const WithCustomRender = () => {
+  const form = useForm({ onValuesChange: console.log });
   return (
-    <Formiz onChange={console.log}>
+    <Formiz connect={form}>
       <FieldCheckboxes
         name="colors"
         label="Colors"
@@ -96,8 +103,10 @@ export const WithItemKey = () => {
     { id: 3, color: 'Blue' },
   ];
 
+  const form = useForm({ onValuesChange: console.log });
+
   return (
-    <Formiz onChange={console.log}>
+    <Formiz connect={form}>
       <FieldCheckboxes itemKey="id" name="colors" label="Colors">
         <Stack>
           <FieldCheckboxesCheckAll>All colors</FieldCheckboxesCheckAll>
@@ -116,8 +125,10 @@ export const WithItemKey = () => {
 export const MountingFields = () => {
   const [isMounted, setIsMounted] = useState<boolean>(true);
 
+  const form = useForm({ onValuesChange: console.log });
+
   return (
-    <Formiz onChange={console.log}>
+    <Formiz connect={form}>
       <FieldCheckboxes name="colors">
         <Stack>
           <FieldCheckboxesCheckAll>All</FieldCheckboxesCheckAll>
@@ -138,8 +149,9 @@ export const MountingFields = () => {
 };
 
 export const WithNestedCheckboxGroup = () => {
+  const form = useForm({ onValuesChange: console.log });
   return (
-    <Formiz onChange={console.log}>
+    <Formiz connect={form}>
       <FieldCheckboxes name="numbers" label="Numbers" colorScheme="brand">
         <Flex direction="column">
           <FieldCheckboxesCheckAll groups="main">
@@ -179,8 +191,10 @@ export const LargeTest = () => {
     value: index + 1,
   }));
 
+  const form = useForm({ onValuesChange: console.log });
+
   return (
-    <Formiz onChange={console.log}>
+    <Formiz connect={form}>
       <FieldCheckboxes name="colors" label="Colors">
         <Stack>
           <FieldCheckboxesCheckAll>All</FieldCheckboxesCheckAll>

@@ -58,7 +58,7 @@ export const FieldTextarea = (props: FieldTextareaProps) => {
     <FormGroup {...formGroupProps}>
       <Textarea
         id={id}
-        value={value ?? ''}
+        value={(value as string | number | undefined) ?? ''}
         onChange={(e) => setValue(e.target.value)}
         onBlur={() => setIsTouched(true)}
         placeholder={placeholder}

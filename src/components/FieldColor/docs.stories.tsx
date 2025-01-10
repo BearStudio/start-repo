@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { Button } from '@chakra-ui/react';
-import { Formiz } from '@formiz/core';
+import { Formiz, useForm } from '@formiz/core';
 
 import { FieldColor } from '.';
 
@@ -10,8 +10,10 @@ export default {
 };
 
 export const Default = () => {
+  const form = useForm({ onValuesChange: console.log });
+
   return (
-    <Formiz onChange={console.log} autoForm>
+    <Formiz connect={form} autoForm>
       <FieldColor name="color" label="Color" />
       <Button type="submit">Submit</Button>
     </Formiz>
