@@ -1,5 +1,3 @@
-import React, { useEffect, useState } from 'react';
-
 import { FieldProps, useField } from '@formiz/core';
 import { GroupBase } from 'react-select';
 
@@ -31,14 +29,13 @@ export const FieldSelect = <
   const {
     errorMessage,
     id,
-    isValid,
-    isSubmitted,
-    resetKey,
-    setValue,
+    isRequired,
+    shouldDisplayError,
+    setIsTouched,
     value,
+    setValue,
     otherProps,
   } = useField(props);
-  const { required } = props;
   const {
     children,
     label,
@@ -52,20 +49,14 @@ export const FieldSelect = <
     selectProps,
     ...rest
   } = otherProps;
-  const [isTouched, setIsTouched] = useState(false);
-  const showError = !isValid && (isTouched || isSubmitted);
-
-  useEffect(() => {
-    setIsTouched(false);
-  }, [resetKey]);
 
   const formGroupProps = {
     errorMessage,
     helper,
     id,
-    isRequired: !!required,
+    isRequired,
     label,
-    showError,
+    shouldDisplayError,
     ...rest,
   };
 
@@ -84,7 +75,7 @@ export const FieldSelect = <
         isDisabled={isDisabled}
         isClearable={isClearable}
         isSearchable={isSearchable}
-        isError={showError}
+        isError={shouldDisplayError}
         {...selectProps}
       />
       {children}

@@ -29,10 +29,13 @@ export const FieldInput = (props: FieldInputProps) => {
     isValid,
     isSubmitted,
     isValidating,
-    resetKey,
+    isRequired,
+    isTouched,
+    setIsTouched,
     setValue,
     value,
     otherProps,
+    shouldDisplayError,
   } = useField(props);
   const {
     children,
@@ -44,22 +47,16 @@ export const FieldInput = (props: FieldInputProps) => {
     autoFocus,
     ...rest
   } = otherProps;
-  const { required } = props;
-  const [isTouched, setIsTouched] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
-  const showError = !isValid && (isTouched || isSubmitted);
 
-  useEffect(() => {
-    setIsTouched(false);
-  }, [resetKey]);
+  const [showPassword, setShowPassword] = useState(false);
 
   const formGroupProps = {
     errorMessage,
     helper,
     id,
-    isRequired: !!required,
+    isRequired,
     label,
-    showError,
+    shouldDisplayError,
     ...rest,
   };
 

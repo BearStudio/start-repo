@@ -189,8 +189,8 @@ export const PageIssues = () => {
       md: false,
     }) ?? false;
 
-  const scopeForm = useForm({
-    onValidSubmit: (values: { scopes: string[] }) => {
+  const scopeForm = useForm<{ scopes: Array<string> }>({
+    onValidSubmit: (values) => {
       setFilters({ scopes: values.scopes ?? null });
       onClose();
     },

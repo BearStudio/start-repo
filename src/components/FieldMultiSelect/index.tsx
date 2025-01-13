@@ -29,14 +29,13 @@ export const FieldMultiSelect = <
   const {
     errorMessage,
     id,
-    isValid,
-    isSubmitted,
-    resetKey,
+    isRequired,
+    shouldDisplayError,
+    setIsTouched,
     setValue,
     value,
     otherProps,
   } = useField(props);
-  const { required } = props;
   const {
     children,
     label,
@@ -51,12 +50,6 @@ export const FieldMultiSelect = <
     selectProps = {},
     ...rest
   } = otherProps;
-  const [isTouched, setIsTouched] = useState(false);
-  const showError = !isValid && (isTouched || isSubmitted);
-
-  useEffect(() => {
-    setIsTouched(false);
-  }, [resetKey]);
 
   const { t } = useTranslation();
 
@@ -64,9 +57,9 @@ export const FieldMultiSelect = <
     errorMessage,
     helper,
     id,
-    isRequired: !!required,
+    isRequired,
     label,
-    showError,
+    shouldDisplayError,
     ...rest,
   };
 
@@ -93,7 +86,7 @@ export const FieldMultiSelect = <
         noOptionsMessage={() =>
           noOptionsMessage || t('components:fieldMultiSelect.noOption')
         }
-        isError={showError}
+        isError={shouldDisplayError}
         size={size}
         isMulti
         {...selectProps}

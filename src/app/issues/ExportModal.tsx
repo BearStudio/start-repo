@@ -73,7 +73,7 @@ export const ExportModal = ({ onClose, initialValues }) => {
 
   const form = useForm({
     onValidSubmit: handleSubmit,
-    initialValues: initialValues ?? {},
+    initialValues: initialValues,
   });
 
   const fieldsValues = useFormFields({

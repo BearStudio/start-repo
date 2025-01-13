@@ -17,8 +17,8 @@ export const FieldDayPicker = (props: FieldDayPickerProps) => {
   const {
     errorMessage,
     id,
-    isValid,
-    isSubmitted,
+    shouldDisplayError,
+    isRequired,
     setValue,
     value,
     otherProps,
@@ -27,16 +27,14 @@ export const FieldDayPicker = (props: FieldDayPickerProps) => {
     ...fieldProps,
   });
   const { children, label, placeholder, helper, size, ...rest } = otherProps;
-  const { required } = props;
-  const showError = !isValid && isSubmitted;
 
   const formGroupProps = {
     errorMessage,
     helper,
     id,
-    isRequired: !!required,
+    isRequired,
     label,
-    showError,
+    shouldDisplayError,
     ...rest,
   };
 

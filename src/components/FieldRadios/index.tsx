@@ -19,9 +19,8 @@ export const FieldRadios = (props: FieldRadiosProps) => {
   const {
     errorMessage,
     id,
-    isValid,
-    isSubmitted,
-    resetKey,
+    isRequired,
+    shouldDisplayError,
     setValue,
     value,
     otherProps,
@@ -35,20 +34,13 @@ export const FieldRadios = (props: FieldRadiosProps) => {
     size = 'md',
     ...rest
   } = otherProps;
-  const [isTouched, setIsTouched] = useState(false);
-  const showError = !isValid && (isTouched || isSubmitted);
-
-  useEffect(() => {
-    setIsTouched(false);
-  }, [resetKey]);
-
   const formGroupProps = {
     errorMessage,
     helper,
     id,
-    isRequired: !!required,
+    isRequired,
     label,
-    showError,
+    shouldDisplayError,
     ...rest,
   };
 

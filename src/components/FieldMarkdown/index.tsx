@@ -34,32 +34,23 @@ export const FieldMarkdown = (props: FieldMarkdownProps) => {
   const {
     errorMessage,
     id,
-    isValid,
-    isSubmitted,
-    resetKey,
+    isRequired,
+    shouldDisplayError,
     setValue,
     value,
+    setIsTouched,
     otherProps,
   } = useField(props);
 
   const { helper, label, placeholder, ...rest } = otherProps;
 
-  const { required } = props;
-  const [isTouched, setIsTouched] = useState(false);
-
-  const showError = !isValid && (isTouched || isSubmitted);
-
-  useEffect(() => {
-    setIsTouched(false);
-  }, [resetKey]);
-
   const formGroupProps: FormGroupProps = {
     errorMessage,
     helper,
     id,
-    isRequired: !!required,
+    isRequired,
     label,
-    showError,
+    showError: shouldDisplayError,
     ...rest,
   };
 

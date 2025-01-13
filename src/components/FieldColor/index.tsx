@@ -11,8 +11,8 @@ export const FieldColor = (props) => {
     setValue,
     errorMessage,
     id,
-    isValid,
-    isSubmitted,
+    isRequired,
+    shouldDisplayError,
     otherProps,
   } = useField({
     defaultValue: '#FF0000',
@@ -20,18 +20,16 @@ export const FieldColor = (props) => {
   });
   const { colorMode } = useColorMode();
 
-  const { required } = props;
   const { children, label, helper, ...rest } = otherProps;
-  const showError = !isValid && isSubmitted;
   const bgColor = useColorModeValue('blackAlpha.50', 'whiteAlpha.50');
 
   const formGroupProps = {
     errorMessage,
     helper,
     id,
-    isRequired: !!required,
+    isRequired,
     label,
-    showError,
+    shouldDisplayError,
     ...rest,
   };
 

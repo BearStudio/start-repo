@@ -4,7 +4,6 @@ import React, {
   useContext,
   useEffect,
   useRef,
-  useState,
 } from 'react';
 
 import { Checkbox, CheckboxProps, Wrap, WrapItem } from '@chakra-ui/react';
@@ -93,12 +92,11 @@ export const FieldCheckboxes = <FormattedValue = Value[],>(
   const {
     errorMessage,
     id,
-    isValid,
-    isSubmitted,
-    resetKey,
+    shouldDisplayError,
     setValue,
     value,
     otherProps,
+    isRequired,
   } = useField(props);
   const {
     itemKey,
@@ -215,21 +213,13 @@ export const FieldCheckboxes = <FormattedValue = Value[],>(
     setStoreValues(value ?? []);
   }, [setStoreValues, value]);
 
-  const { required } = props;
-  const [isTouched, setIsTouched] = useState(false);
-  const showError = !isValid && (isTouched || isSubmitted);
-
-  useEffect(() => {
-    setIsTouched(false);
-  }, [resetKey]);
-
   const formGroupProps = {
     errorMessage,
     helper,
     id,
-    isRequired: !!required,
+    isRequired,
     label,
-    showError,
+    shouldDisplayError,
     ...rest,
   };
 

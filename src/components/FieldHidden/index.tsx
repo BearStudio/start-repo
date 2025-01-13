@@ -8,18 +8,16 @@ interface FieldHiddenProps extends FieldProps, FormGroupProps {}
 
 export const FieldHidden: React.FC<FieldHiddenProps> = (props) => {
   const {
-    isValid,
-    isSubmitted,
     errorMessage,
     otherProps: rest,
+    shouldDisplayError,
   } = useField(props);
-  const showError = !isValid && isSubmitted;
   const formGroupProps = {
     errorMessage,
-    showError,
+    shouldDisplayError,
   };
 
-  if (showError) {
+  if (shouldDisplayError) {
     return <FormGroup {...formGroupProps} {...rest} />;
   }
   return null;
