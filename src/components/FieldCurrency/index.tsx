@@ -6,25 +6,28 @@ import { FieldProps, useField } from '@formiz/core';
 import { FormGroup, FormGroupProps } from '@/components/FormGroup';
 import { InputCurrency, InputCurrencyProps } from '@/components/InputCurrency';
 
-export interface FieldCurrencyProps
-  extends Omit<FieldProps, 'value'>,
-    Omit<FormGroupProps, 'placeholder'>,
-    Pick<
-      InputCurrencyProps,
-      'currency' | 'locale' | 'decimals' | 'placeholder'
-    > {
-  size?: 'sm' | 'md' | 'lg';
-  value?: number;
-}
+export type FieldCurrencyProps<FormattedValue = number> = Omit<
+  FieldProps<number, FormattedValue>,
+  'value'
+> &
+  Omit<FormGroupProps, 'placeholder'> &
+  Pick<
+    InputCurrencyProps,
+    'currency' | 'locale' | 'decimals' | 'placeholder'
+  > & {
+    size?: 'sm' | 'md' | 'lg';
+  };
 
 export const FieldCurrency = (props: FieldCurrencyProps) => {
   const {
     errorMessage,
     id,
-    isValid,
+    shouldDisplayError,
     isSubmitted,
     isValidating,
-    resetKey,
+    isTouched,
+    setIsTouched,
+    isRequired,
     setValue,
     value,
     otherProps,
@@ -40,21 +43,14 @@ export const FieldCurrency = (props: FieldCurrencyProps) => {
     decimals,
     ...rest
   } = otherProps;
-  const { required } = props;
-  const [isTouched, setIsTouched] = useState(false);
-  const showError = !isValid && (isTouched || isSubmitted);
-
-  useEffect(() => {
-    setIsTouched(false);
-  }, [resetKey]);
 
   const formGroupProps = {
     errorMessage,
     helper,
     id,
-    isRequired: !!required,
+    isRequired,
     label,
-    showError,
+    shouldDisplayError,
     ...rest,
   };
 
@@ -63,8 +59,8 @@ export const FieldCurrency = (props: FieldCurrencyProps) => {
       <InputGroup size={size}>
         <InputCurrency
           id={id}
-          value={value ?? null}
-          onChange={setValue}
+          value={value ?? undefined}
+          onChange={(newValue) => setValue(newValue ?? null)}
           onBlur={() => setIsTouched(true)}
           placeholder={placeholder}
           currency={currency}

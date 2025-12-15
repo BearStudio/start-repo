@@ -1,37 +1,41 @@
-import { useEffect, useState } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 
-import { useField } from '@formiz/core';
+import { FieldProps, useField } from '@formiz/core';
 import { useTranslation } from 'react-i18next';
 import { GroupBase } from 'react-select';
 
-import { FieldSelectProps, FormGroup, Select } from '@/components';
+import { FormGroup, FormGroupProps, Select, SelectProps } from '@/components';
 
-export interface FieldMultiSelectProps<
-  Option,
-  IsMulti extends boolean = true,
+export type FieldMultiSelectProps<
+  Option extends { label: ReactNode; value: unknown },
   Group extends GroupBase<Option> = GroupBase<Option>,
-> extends FieldSelectProps<Option, IsMulti, Group> {
-  isNotClearable?: boolean;
-}
+> = FieldProps<Array<Option['value']>> &
+  FormGroupProps & {
+    placeholder?: string;
+    size?: 'sm' | 'md' | 'lg';
+    options?: Option[];
+    isClearable?: boolean;
+    isSearchable?: boolean;
+    selectProps?: SelectProps<Option, true, Group>;
+    noOptionsMessage?: string;
+  };
 
 export const FieldMultiSelect = <
-  Option,
-  IsMulti extends boolean = true,
+  Option extends { label: ReactNode; value: unknown },
   Group extends GroupBase<Option> = GroupBase<Option>,
 >(
-  props: FieldMultiSelectProps<Option, IsMulti, Group>
+  props: FieldMultiSelectProps<Option, Group>
 ) => {
   const {
     errorMessage,
     id,
-    isValid,
-    isSubmitted,
-    resetKey,
+    isRequired,
+    shouldDisplayError,
+    setIsTouched,
     setValue,
     value,
     otherProps,
   } = useField(props);
-  const { required } = props;
   const {
     children,
     label,
@@ -40,18 +44,12 @@ export const FieldMultiSelect = <
     helper,
     noOptionsMessage,
     isDisabled,
-    isNotClearable,
+    isClearable,
     isSearchable,
     size,
     selectProps = {},
     ...rest
   } = otherProps;
-  const [isTouched, setIsTouched] = useState(false);
-  const showError = !isValid && (isTouched || isSubmitted);
-
-  useEffect(() => {
-    setIsTouched(false);
-  }, [resetKey]);
 
   const { t } = useTranslation();
 
@@ -59,9 +57,9 @@ export const FieldMultiSelect = <
     errorMessage,
     helper,
     id,
-    isRequired: !!required,
+    isRequired,
     label,
-    showError,
+    shouldDisplayError,
     ...rest,
   };
 
@@ -83,12 +81,12 @@ export const FieldMultiSelect = <
         onChange={handleChange}
         options={options}
         isDisabled={isDisabled}
-        isClearable={!isNotClearable}
+        isClearable={isClearable}
         isSearchable={isSearchable}
         noOptionsMessage={() =>
           noOptionsMessage || t('components:fieldMultiSelect.noOption')
         }
-        isError={showError}
+        isError={shouldDisplayError}
         size={size}
         isMulti
         {...selectProps}

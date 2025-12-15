@@ -16,7 +16,7 @@ import { FormGroup, FormGroupProps, TextareaAutosize } from '@/components';
 
 import { components } from './components';
 
-export interface FieldMarkdownProps extends FieldProps, FormGroupProps {
+export interface FieldMarkdownProps extends FieldProps<string>, FormGroupProps {
   placeholder?: TextareaProps['placeholder'];
   TextareaProps?: Omit<
     TextareaProps,
@@ -34,32 +34,23 @@ export const FieldMarkdown = (props: FieldMarkdownProps) => {
   const {
     errorMessage,
     id,
-    isValid,
-    isSubmitted,
-    resetKey,
+    isRequired,
+    shouldDisplayError,
     setValue,
     value,
+    setIsTouched,
     otherProps,
   } = useField(props);
 
-  const { helper, label, placeholder, MarkdownProps, ...rest } = otherProps;
-
-  const { required } = props;
-  const [isTouched, setIsTouched] = useState(false);
-
-  const showError = !isValid && (isTouched || isSubmitted);
-
-  useEffect(() => {
-    setIsTouched(false);
-  }, [resetKey]);
+  const { helper, label, placeholder, ...rest } = otherProps;
 
   const formGroupProps: FormGroupProps = {
     errorMessage,
     helper,
     id,
-    isRequired: !!required,
+    isRequired,
     label,
-    showError,
+    showError: shouldDisplayError,
     ...rest,
   };
 
@@ -78,12 +69,11 @@ export const FieldMarkdown = (props: FieldMarkdownProps) => {
               onChange={(e) => setValue(e.target.value)}
               onBlur={() => setIsTouched(true)}
               placeholder={placeholder}
-              {...MarkdownProps}
             />
           </TabPanel>
           <TabPanel>
             <ReactMarkdown components={components} remarkPlugins={[remarkGfm]}>
-              {value}
+              {value ?? ''}
             </ReactMarkdown>
           </TabPanel>
         </TabPanels>

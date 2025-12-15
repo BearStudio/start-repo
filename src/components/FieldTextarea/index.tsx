@@ -5,7 +5,9 @@ import { FieldProps, useField } from '@formiz/core';
 
 import { FormGroup, FormGroupProps } from '@/components';
 
-export interface FieldTextareaProps extends FieldProps, FormGroupProps {
+export interface FieldTextareaProps
+  extends FieldProps<string | number | undefined>,
+    FormGroupProps {
   placeholder?: TextareaProps['placeholder'];
   textareaProps?: Omit<
     TextareaProps,
@@ -24,9 +26,9 @@ export const FieldTextarea = (props: FieldTextareaProps) => {
   const {
     errorMessage,
     id,
-    isValid,
-    isSubmitted,
-    resetKey,
+    isRequired,
+    shouldDisplayError,
+    setIsTouched,
     setValue,
     value,
     otherProps,
@@ -35,22 +37,13 @@ export const FieldTextarea = (props: FieldTextareaProps) => {
   const { helper, label, placeholder, textareaProps, autoFocus, ...rest } =
     otherProps;
 
-  const { required } = props;
-  const [isTouched, setIsTouched] = useState(false);
-
-  const showError = !isValid && (isTouched || isSubmitted);
-
-  useEffect(() => {
-    setIsTouched(false);
-  }, [resetKey]);
-
   const formGroupProps: FormGroupProps = {
     errorMessage,
     helper,
     id,
-    isRequired: !!required,
+    isRequired,
     label,
-    showError,
+    showError: shouldDisplayError,
     ...rest,
   };
 
@@ -58,7 +51,7 @@ export const FieldTextarea = (props: FieldTextareaProps) => {
     <FormGroup {...formGroupProps}>
       <Textarea
         id={id}
-        value={value ?? ''}
+        value={value ?? undefined}
         onChange={(e) => setValue(e.target.value)}
         onBlur={() => setIsTouched(true)}
         placeholder={placeholder}

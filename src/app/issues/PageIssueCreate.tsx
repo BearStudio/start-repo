@@ -1,5 +1,5 @@
 import { Box, Button, Flex, Heading } from '@chakra-ui/react';
-import { Formiz } from '@formiz/core';
+import { Formiz, useForm } from '@formiz/core';
 import { useQueryState } from 'next-usequerystate';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
@@ -39,12 +39,14 @@ export const PageIssueCreate = () => {
     });
   };
 
+  const form = useForm({ onValidSubmit: handleOnValidSubmit });
+
   return (
     <Page containerSize="lg" isFocusMode>
       <PageTopBar showBack onBack={() => navigate(-1)}>
         <Heading size="md">{t('issues:create.title')}</Heading>
       </PageTopBar>
-      <Formiz autoForm onValidSubmit={handleOnValidSubmit}>
+      <Formiz autoForm connect={form}>
         <PageContent>
           <Box
             bg={colorModeValue('white', 'gray.900')}

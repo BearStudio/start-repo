@@ -1,5 +1,5 @@
 import { Code } from '@chakra-ui/react';
-import { Formiz, useForm } from '@formiz/core';
+import { Formiz, useForm, useFormFields } from '@formiz/core';
 
 import { FieldMultiSelect } from '.';
 
@@ -7,7 +7,12 @@ export default {
   title: 'Fields/FieldMultiSelect',
 };
 export const Default = () => {
-  const form = useForm({ subscribe: true });
+  const form = useForm();
+  const fieldsValues = useFormFields({
+    connect: form,
+    fields: ['mySelect'] as const,
+    selector: 'value',
+  });
 
   const options = [
     { label: 'One', value: 'One' },
@@ -23,7 +28,7 @@ export const Default = () => {
         options={options}
       />
 
-      <Code mt={5}>{JSON.stringify(form.values, null, 2)}</Code>
+      <Code mt={5}>{JSON.stringify(fieldsValues.mySelect, null, 2)}</Code>
     </Formiz>
   );
 };

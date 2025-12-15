@@ -10,7 +10,7 @@ import {
   ModalOverlay,
   Stack,
 } from '@chakra-ui/react';
-import { Formiz, useForm } from '@formiz/core';
+import { Formiz, useForm, useFormFields } from '@formiz/core';
 import { Scope } from '@prisma/client';
 import { useMutation } from '@tanstack/react-query';
 import axios, { AxiosError, AxiosResponse } from 'axios';
@@ -23,8 +23,6 @@ import { trpc } from '@/utils/trpc';
 import { FieldSelectScopeOptions } from './IssueForm';
 
 export const ExportModal = ({ onClose, initialValues }) => {
-  const form = useForm();
-
   const { data: scopes, isLoading: isLoadingScopes } = trpc.scope.all.useQuery({
     search: '',
   });
@@ -73,14 +71,20 @@ export const ExportModal = ({ onClose, initialValues }) => {
     }
   };
 
+  const form = useForm({
+    onValidSubmit: handleSubmit,
+    initialValues: initialValues,
+  });
+
+  const fieldsValues = useFormFields({
+    connect: form,
+    fields: ['provider'] as const,
+    selector: 'value',
+  });
+
   return (
     <Modal isOpen onClose={onClose}>
-      <Formiz
-        autoForm
-        onValidSubmit={handleSubmit}
-        connect={form}
-        initialValues={initialValues ?? {}}
-      >
+      <Formiz autoForm connect={form}>
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>Export Issues</ModalHeader>
@@ -105,7 +109,7 @@ export const ExportModal = ({ onClose, initialValues }) => {
                 options={options}
                 required="Required"
               />
-              {form.values?.provider === 'github' && (
+              {fieldsValues.provider === 'github' && (
                 <>
                   <FieldInput
                     name="repositoryName"

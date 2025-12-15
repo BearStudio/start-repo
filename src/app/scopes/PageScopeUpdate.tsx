@@ -9,7 +9,7 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-import { Formiz } from '@formiz/core';
+import { Formiz, useForm } from '@formiz/core';
 import { Scope } from '@prisma/client';
 import { useTranslation } from 'react-i18next';
 import { VscIssues } from 'react-icons/vsc';
@@ -67,6 +67,11 @@ export const PageScopeUpdate = () => {
     );
   };
 
+  const form = useForm({
+    onValidSubmit: handleOnValidSubmit,
+    initialValues: { ...scope },
+  });
+
   return (
     <Page containerSize="lg" isFocusMode>
       <PageTopBar showBack onBack={() => navigate(-1)}>
@@ -75,13 +80,7 @@ export const PageScopeUpdate = () => {
       {isFetching && <Loader />}
       {isError && !isFetching && <Error404 />}
       {!isError && !isFetching && (
-        <Formiz
-          autoForm
-          onValidSubmit={handleOnValidSubmit}
-          initialValues={{
-            ...scope,
-          }}
-        >
+        <Formiz autoForm connect={form}>
           <PageContent>
             <Box
               bg={colorModeValue('white', 'gray.900')}
