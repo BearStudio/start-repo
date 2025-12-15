@@ -133,6 +133,44 @@ export const scopeRouter = t.router({
 
       return scope;
     }),
+
+  createMany: t.procedure
+    .use(isAuthed)
+    .input(
+      z.array(
+        z.object({
+          id: z.string().uuid(),
+          name: z.string().min(1),
+          description: z.string().nullish(),
+          color: z.string().length(7).nullish(),
+        })
+      )
+    )
+    .mutation(async ({ input, ctx }) => {
+      await Promise.all(
+        input.map(async (scope) => {
+          const scopeDoesExist = await ctx.db.scope.findFirst({
+            where: {
+              name: scope.name,
+            },
+          });
+
+          if (!scopeDoesExist) {
+            await ctx.db.scope.create({
+              data: {
+                id: scope.id,
+                name: scope.name,
+                description: scope.description,
+                color: scope.color,
+              },
+            });
+          }
+        })
+      );
+
+      return;
+    }),
+
   delete: t.procedure
     .use(isAuthed)
     .input(z.string().uuid())

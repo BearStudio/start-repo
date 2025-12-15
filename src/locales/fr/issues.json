@@ -1,0 +1,18 @@
+{
+  "feedbacks": {
+    "deleteIssueError": {
+      "description": "La suppression de l'issue {{title}} a échouée",
+      "title": "Suppression échouée"
+    }
+  },
+  "create": {
+    "title": "Créer une issue"
+  },
+  "update": {
+    "title": "Mettre à jour une issue"
+  },
+  "defaults": {
+    "title": "Issues suggérées",
+    "submit": "Importer les scopes et issues sélectionnés"
+  }
+}
