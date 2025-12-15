@@ -1,5 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { getSession } from 'next-auth/react';
+import { getServerSession } from 'next-auth/next';
+
+import { authOptions } from '@/lib/auth';
 
 type HttpVerbs = 'GET' | 'POST' | 'DELETE' | 'PATCH' | 'PUT';
 type Methods = {
@@ -16,7 +18,12 @@ export const badRequest = (res: NextApiResponse) => {
   return res.status(400).end();
 };
 
-export const notSignedIn = (res: NextApiResponse) => {
+export const notSignedIn = (res: NextApiResponse, req: NextApiRequest) => {
+  const provider = req.body.provider;
+  if (provider !== undefined) {
+    return res.status(401).json({ provider: provider });
+  }
+
   return res.status(401).end();
 };
 
@@ -46,9 +53,15 @@ export const apiMethods =
     }
 
     if (!method.isPublic) {
-      const session = await getSession({ req });
-      if (!session) {
-        return notSignedIn(res);
+      // getSession is now deprecated and is way slower than getServerSession because
+      // it does an extra fetch out over the internet to confirm data from itself
+      const session = await getServerSession(req, res, authOptions);
+      const provider = req.body.provider;
+      if (
+        !session ||
+        session.user.accounts.find((x) => x.provider === provider) === undefined // If the user doesn't have an account logged in with the given provider.
+      ) {
+        return notSignedIn(res, req);
       }
     }
 

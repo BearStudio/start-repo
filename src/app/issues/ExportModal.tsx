@@ -33,15 +33,19 @@ export const ExportModal = ({ onClose, initialValues }) => {
     AxiosResponse<string>,
     AxiosError,
     { scopes: Scope['id'][] }
-  >(({ scopes }) => axios.post('/api/csv/issue', { scopes }), {
-    onSuccess: (response) => {
-      const file = new File([response.data], 'issues.csv', {
-        type: 'text/csv;charset=utf-8',
-      });
-      saveAs(file);
-      onClose();
-    },
-  });
+  >(
+    ({ scopes }) =>
+      axios.post('/api/csv/issue', { scopes, provider: 'gitlab' }),
+    {
+      onSuccess: (response) => {
+        const file = new File([response.data], 'issues.csv', {
+          type: 'text/csv;charset=utf-8',
+        });
+        saveAs(file);
+        onClose();
+      },
+    }
+  );
 
   const { mutate: exportToGithub, isLoading: isExportToGithubLoading } =
     trpc.issue.export.github.useMutation({
